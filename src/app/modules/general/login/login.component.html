@@ -1,0 +1,13 @@
+<div class='main'>
+  <div  class="login-form" style="text-align: right;float: right;">
+    <nz-card style="width:300px;">
+      <div>
+        <b>Авторизация</b>
+        <input nz-input type="text" placeholder="Введите логин либо почту" [(ngModel)]="loginText" />
+        <input nz-input type="password" placeholder="Введите пароль"  [(ngModel)]="passwordText" />
+        <button nz-button class="login-form-button"   (click)="login(loginText,passwordText)">Войти</button>
+        <a>Регистрация</a><br/>
+      </div>
+    </nz-card>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+<div style="text-align: left; height:calc(100vh - 3.1em); width: 100%;">
+
+  <div style="height: calc(100% - 2.5em);">
+
+    <div style="height: 70%; width: 100%;" >
+      <div style="overflow-y: scroll;overflow-x:hidden; width: 100%; height: 100%;" class="scrollbar my_scroll">
+        <a (click)="Cancel()" style="cursor:pointer;font-size: 140%;"><b><----Назад</b></a>
+        <div *ngIf="store.data.note.isDownloadNote" style="text-align: center;float: center;"><i nz-icon [nzType]="'loading'" style="font-size: 38px; color:orange;"></i></div>
+        <div *ngIf="!store.data.note.isDownloadNote" >
+          <h2 style="text-align: center;">Страница редактирования заметки</h2>
+          <div>Название заметки</div>
+          <input  [(ngModel)]="store.data.note.title"  style="width: 100%; font-weight: bold;"/>
+          <div>текст заметки </div>
+          <div style="height: 100%; width: 100%;">
+            <textarea style="height: 100%; width: 100%;" rows="40" [placeholder]="'Введите текст заметки здесь'"  [(ngModel)]="store.data.note.text"></textarea>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <span style="height: 30%;overflow-y: scroll; overflow-x:hidden; width: 100%;" class="scrollbar my_scroll" >
+      <hr/>
+      <nz-tabset>
+        <nz-tab [nzTitle]="titleTemplate" >
+          <ng-template #titleTemplate>
+            <span>Фото</span>
+            <nz-badge
+              [nzCount]="store.data.note.FilesArray.length"
+              [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}" style='margin-top: -1em;'
+            ></nz-badge>
+          </ng-template>
+          <div>
+            <label nz-checkbox [(ngModel)]="store.data.note.hasAvatar" style="margin: 0.4em;">C аватаркой</label><br/>
+            <span *ngFor="let Photo of store.data.note.FilesArray; let i = index" style="max-height: 1em; margin:0.1em">
+              <span style="padding: 0.2em; margin: 0.1em; cursor:pointer">
+                <div style="float: left;">
+                  <div class="delete_picture"><i nz-icon nzType="close-circle" nzTheme="twotone" (click)="DeleteFile(Photo['id'], i)"></i></div>
+                  <img src="{{Photo['src']}}" [ngClass]="{'not_loaded': !Photo['loaded']}"   style="max-height: 8em;padding:0.2em"/>
+                  <div *ngIf="!Photo['loaded']" class="image_not_loaded"><nz-tag [nzColor]="'magenta'">Нажмите сохранить!</nz-tag></div>
+                </div>
+              </span>
+            </span>
+            <span class="clearfix">
+              <nz-upload
+                nzListType="picture-card"
+                nzType="drag"
+                [nzMultiple]="true"
+                [nzBeforeUpload]="beforeUpload"
+                [nzShowButton]="true"
+                [nzShowUploadList]="store.data.note.FilesArray"
+                [nzPreview]="beforeUpload"
+              >
+                <i nz-icon nzType="plus"></i>
+                <div class="ant-upload-text">Перетяните файлы в эту область для загрузки</div>
+              </nz-upload>
+            </span>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Аудио">
+          тут будут аудиофайлы
+        </nz-tab>
+        <nz-tab nzTitle="Файлы">
+          книги, pdf
+        </nz-tab>
+      </nz-tabset>
+    </span>
+
+  </div>
+
+  <div style="height: 2.5em;width: 100%;">
+    <button (click)="UpdateNote()" style="cursor:pointer;margin: 0.2em "><b>Сохранить изменения</b></button>
+    <button (click)="Cancel()" style="cursor:pointer; margin: 0.2em "><b>Отмена</b></button>
+    <span style="float: right;">
+      <span style="margin-right: 1em;"><b>Теги</b></span>
+      <nz-select nzMode="tags" nzPlaceHolder="Можете прикрепить теги здесь" [(ngModel)]="store.data.note.tags" style="width: 40em">
+        <nz-option *ngFor="let option of store.data.tags.tagsArray" [nzLabel]="option['title']" [nzValue]="option['id']"></nz-option>
+      </nz-select>
+    </span>
+  </div>
+</div>
+
+
+
+
+
+<!--
+<div style="text-align: left; height:calc(100vh - 3.1em)"  >
+  <div style="overflow-y: scroll;overflow-x:hidden; width: 100%; height: 100%;" class="scrollbar my_scroll">
+    <a (click)="Cancel()" style="cursor:pointer;font-size: 140%;"><b><----Назад</b></a>
+    <div *ngIf="store.data.note.isDownloadNote" style="text-align: center;float: center;"><i nz-icon [nzType]="'loading'" style="font-size: 38px; color:orange;"></i></div>
+    <div *ngIf="!store.data.note.isDownloadNote" >
+      <h2 style="text-align: center;">Страница редактирования заметки</h2>
+      <div>Название заметки</div>
+      <input  [(ngModel)]="store.data.note.title"  style="width: 100%; font-weight: bold;"/>
+      <div>текст заметки </div>
+      <div style="height: 20em;">
+        <angular-editor style="width: 100%; " rows="12" [placeholder]="'Введите текст заметки здесь'" [(ngModel)]="store.data.note.text"></angular-editor>
+      </div>
+      <div>Теги</div>
+      <nz-select nzMode="tags" nzPlaceHolder="Можете прикрепить теги здесь" [(ngModel)]="store.data.note.tags" style="width: 100%;">
+        <nz-option *ngFor="let option of store.data.tags.tagsArray" [nzLabel]="option['title']" [nzValue]="option['id']"></nz-option>
+      </nz-select>
+      <div class="footer">
+        <hr/>
+        <nz-tabset>
+          <nz-tab [nzTitle]="titleTemplate">
+            <ng-template #titleTemplate>
+              <span>Фото </span>
+              <nz-badge
+                [nzCount]="store.data.note.FilesArray.length"
+                [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}" style='margin-top: -1em;'
+              ></nz-badge>
+            </ng-template>
+            <span *ngFor="let Photo of store.data.note.FilesArray; let i = index" style="max-height: 1em; margin:0.1em">
+              <span style="padding: 0.2em; margin: 0.1em;">
+                <img src="https://ntree.online/uploads/{{Photo.src}}" style="max-height: 8em;padding:0.2em"/>
+              </span>
+            </span>
+            <br/>
+            <div>
+              <nz-upload
+                nzType="drag"
+                [nzMultiple]="true"
+                [nzBeforeUpload]="beforeUpload"
+                style="margin: 2em;"
+              >
+                <p class="ant-upload-drag-icon">
+                  <i nz-icon nzType="inbox"></i>
+                </p>
+                <p class="ant-upload-text">Нажмите либо перетяните файл в эту область</p>
+                <p class="ant-upload-hint">
+                  Вы можете выбрать сразу несколько файлов. Позже будет проверка только на фото и на музыку и фото будет отображаться как фото, а музыка иначе
+                </p>
+              </nz-upload>
+            </div>
+          </nz-tab>
+          <nz-tab nzTitle="Аудио">
+            тут будут аудиофайлы
+          </nz-tab>
+          <nz-tab nzTitle="Файлы">
+            книги, pdf
+          </nz-tab>
+        </nz-tabset>
+        <button (click)="UpdateNote()" style="cursor:pointer"><b>Сохранить изменения</b></button>
+        <button (click)="Cancel()" style="cursor:pointer"><b>Отмена</b></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+-->

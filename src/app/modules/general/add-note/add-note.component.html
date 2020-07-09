@@ -1,0 +1,13 @@
+<div style="text-align: left;">
+  <a class="nav-link" routerLink="/notes">Назад к заметкам</a>
+  <p>Здесь страница создания заметки</p>
+  <div>Название заметки</div>
+  <input [(ngModel)]="store.data.note.title"  style="width: 100%;" />
+  <div>Теги</div>
+  <nz-select nzMode="tags" nzPlaceHolder="Можете прикрепить теги здесь" [(ngModel)]="store.data.note.tags" style="width: 100%;">
+    <nz-option *ngFor="let option of store.data.tags.tagsArray" [nzLabel]="option['title']" [nzValue]="option['id']"></nz-option>
+  </nz-select>
+  <textarea  [(ngModel)]="store.data.note.text" style="width: 100%;" rows="12"></textarea><br/>
+  <button  (click)="AddNote()" style="cursor:pointer">Сохранить изменения</button>
+  <button (click)="Cancel()" style="cursor:pointer">Отмена</button>
+</div>

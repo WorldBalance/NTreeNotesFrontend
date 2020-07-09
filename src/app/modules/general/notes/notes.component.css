@@ -1,0 +1,115 @@
+:host {
+  text-align: left;
+}
+
+ul{
+  list-style-type: none;
+}
+
+nz-sider {
+
+}
+
+nz-content {
+
+
+}
+
+[nz-icon] {
+  font-size: 18px;
+  margin-right: -0.6em;
+}
+
+.tags_list{
+  margin:0.3em;
+}
+
+.tag_in_list{
+  cursor: pointer;
+}
+
+.note_img{
+  max-width:150px;
+  max-height: 200px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  vertical-align: top;
+  padding-bottom: 0.2em;
+}
+
+.note_small tr td{
+ vertical-align: top;
+}
+
+.del_note{
+ float: right;
+}
+
+.note_element:hover .del_note{
+ color:rosybrown;
+}
+
+.del_note:hover{
+ color:red;
+}
+
+.delete_tag{
+ color:transparent;
+}
+
+.delete_tag:hover{
+ color:red;
+}
+
+.note_element{
+  margin: 0.2em;
+  padding: 0.2em;
+  cursor: pointer;
+}
+
+.tag_element{
+  cursor: pointer;
+}
+
+.note_tag{
+  margin-left:0.3em ;
+}
+
+.search_note_input{
+  float: right;
+}
+
+.note_in_list{
+  margin: 0.65em;
+  background-color:gainsboro;
+  cursor: pointer;
+}
+
+.note_in_list{
+  border: 0.1em solid grey;
+  border-radius: 0 0 0.4em 0.4em;
+}
+
+.note_in_list:hover{
+  border: 0 0 0.4em 0.4em solid black;
+}
+
+.tag_in_note{
+  margin:0.16em;
+}
+
+.delete_note{
+  text-align: right;
+  float: right;
+  margin-right: 0.5em;
+  margin-top: 0.3em;
+}
+
+.tag_in_list i:hover{
+  color:red;
+}
+
+.delete_note:hover{
+  color: red;
+}
