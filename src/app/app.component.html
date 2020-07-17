@@ -1,39 +1,6 @@
 <div style=" position: fixed; height: 100%; width: 100%;">
   <nz-layout>
-    <div style="width:100%;">
-      <nz-header style="width:100%;">
-        <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu" style="margin-left:-3.6em;margin-right:-3.6em;">
-          <li nz-menu-item  routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
-            <a class="nav-link animated slideInDown" routerLink="" >
-              <i class="fas fa-home mr-1"></i>NtreeNote
-            </a>
-          </li>
-          <li nz-menu-item  routerLinkActive="ant-menu-item-selected" [hidden]="!store.user.isAuthorized">
-            <a class="nav-link animated slideInDown" routerLink="/notes" >
-              <i class="fas fa-book-open mr-1"></i>Заметки
-            </a>
-          </li>
-          <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-            <a class="nav-link animated slideInDown" routerLink="/about" >
-              <i class="fas fa-question-circle mr-1"></i>О проекте
-            </a>
-          </li>
-          <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-            <a class="nav-link animated slideInDown" routerLink="/contacts" >
-              <i class="far fa-envelope mr-1"></i>Контакты
-            </a>
-          </li>
-          <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="store.user.isAuthorized">
-            <a class="nav-link animated slideInDown" routerLink="/login" >
-              <i class="far fa-envelope mr-1"></i>Войти
-            </a>
-          </li>
-            <a class="animated slideInDown" style="margin-right: 1em;" (click)="logout()" routerLink="/logout" [hidden]="!store.user.isAuthorized">
-              <i class="fas fa-user mr-1" ></i>Юрий Выход
-            </a>
-        </ul>
-      </nz-header>
-    </div>
+    <app-header></app-header>
     <nz-layout>
       <main>
         <div class="container-fluid" [@routeAnimations]="prepareRoute(outlet)">

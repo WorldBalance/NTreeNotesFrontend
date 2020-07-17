@@ -9,19 +9,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
-import { StoreService } from '../app/services/store.service';
-import { CrudService } from '../app/services/crud.service';
+import { StoreService } from './services/store.service';
+import { CrudService } from './services/crud.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 import en from '@angular/common/locales/en';
+import { HeaderComponent } from './components/header/header.component';
+import {NotFoundComponent} from './components/not-found/not-found.component';
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

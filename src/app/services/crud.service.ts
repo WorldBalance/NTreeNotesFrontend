@@ -1,16 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, Observer, of} from 'rxjs';
-import { map, debounceTime  } from 'rxjs/operators';
-import { secret } from 'src/environments/secret';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {secret} from 'src/environments/secret';
+import {
+  CreationModel,
+  DeletionModel,
+  GetNotesModel,
+  GetTagsModel,
+  PostNotesModel
+} from '../models/crud-operations.model';
+import {TagModel} from '../models/tag.model';
+import {NoteModel} from '../models/note.model';
 
-export interface ServerResponse {
-  id: string;
-  title: string;
-  type: string;
-  text?: string;
-  tags?: [];
-}
+const NAMESPACE = 'NTreeNotes';
 
 @Injectable({providedIn: 'root'})
 export class CrudService {
@@ -25,202 +28,169 @@ export class CrudService {
     })
   };
 
-  public GetNotes(searchtext, tags_input, begin = 0, countMax = 20): Observable<[]>{
-    let tags = Array.from(tags_input);
-    const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'find',
-      'object': {},
-      'options': {}
+  public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
+    const postBody: PostNotesModel = {
+      namespace: NAMESPACE,
+      actionId: 'find',
+      object: {text, tags},
+      options: {offset, countMax}
     };
-    if(tags.length > 0){postBody['object']['tags'] = tags; }
-    if (searchtext > ''){postBody['object']['text'] = searchtext; }
-    postBody['options']['offset'] = begin;
-    postBody['options']['countMax'] = countMax;
-    return this.http
-      .post(this.urlapi, postBody, this.httpOptions)
-      .pipe(map(data => {
-        const NoteList = data['object'];
-        return NoteList.map(function(note: any) {
-            return {
-              id: note.id,
-              title: note.title,
-              type: note.type,
-              tags: note.tags,
-              text: note.text,
-              image_url: (note.image_url === undefined || note.image_url === '') ? '' : `http://ntree.online/${note.image_url}` ,
-              ts_updated_ms: note.ts_updated_ms};
+    return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
+      map((data: GetNotesModel) => {
+        return data.object.map((note: NoteModel) => {
+          return {
+            ...note,
+            image_url: !note.image_url ? '' : `http://ntree.online/${note.image_url}`,
+          };
         });
-    }));
+      }));
   }
 
-  public GetNote(id): Observable<object>{
+  public GetNote(id): Observable<NoteModel> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'read',
-      "objectId": [id]
+      namespace: NAMESPACE,
+      actionId: 'read',
+      objectId: [id]
     };
     return this.http
       .post(this.urlapi, postBody, this.httpOptions)
-      .pipe(map(data => {
-
-        //console.log(data);
-        const Note = data['object'][0];
-        return Note;
-    }));
+      .pipe(map((data: GetNotesModel) => data.object[0]));
   }
 
-  public GetTags(): Observable<[]>{
+  public GetTags(): Observable<TagModel[]> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'find',
-      'object': {
-        'type': 'tag'
+      namespace: NAMESPACE,
+      actionId: 'find',
+      object: {
+        type: 'tag'
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      const TagsList = data['object'];
-      return TagsList.map(function(tag: any) {
-          return {id: tag.id, title: tag.title, type: tag.type};
-      });
-    }));
+      .pipe(map((data: GetTagsModel) => data && data.object));
   }
 
-  public AddNote(title, text, tags): Observable<object>{
+  public AddNote(title, text, tags): Observable<CreationModel> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'create',
-      "objectId": 'fc3_20200326_XdBAcER1CHo8Y498',
-      'object':{
-        'type': 'note',
-        'title': title,
-        'text': text,
-        'tags': tags
+      namespace: NAMESPACE,
+      actionId: 'create',
+      objectId: 'fc3_20200326_XdBAcER1CHo8Y498',
+      object: {
+        type: 'note',
+        title,
+        text,
+        tags
       }
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      const result = data;
-      return result;
-    }));
+    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;
   }
 
-  public UpdateNote(id, title, text, tags, files): Observable<object>{
+  public UpdateNote(id, title, text, tags, files): Observable<CreationModel> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'update',
-      "objectId": id,
-      'object': {
-        'type': 'note',
-        'title': title,
-        'text': text,
-        'files': files,
-        'tags': tags
+      namespace: NAMESPACE,
+      actionId: 'update',
+      objectId: id,
+      object: {
+        type: 'note',
+        title,
+        text,
+        files,
+        tags
       }
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      const result = data;
-      return result;
-    }));
+    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;
   }
 
-  public DeleteNote(id): Observable<boolean>{
+  public DeleteNote(id): Observable<DeletionModel> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'delete',
-      "objectId": id
-    }
-    return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => { if (data['ok'] === true){ return true; } return false; }));
-  }
-
-  public DeleteTag(id): Observable<boolean>{
-    const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'delete',
-      "objectId": id
+      namespace: NAMESPACE,
+      actionId: 'delete',
+      objectId: id
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {if (data['ok'] === true){ return true; } return false; }));
+    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
   }
 
-  public AddTag(text): Observable<boolean>{
-    const postBody={
-      'namespace': 'NTreeNotes',
-      'actionId': 'create',
-      'object': {
-        'type': 'tag',
-        'title': text
+  public DeleteTag(id): Observable<DeletionModel> {
+    const postBody = {
+      namespace: NAMESPACE,
+      actionId: 'delete',
+      objectId: id
+    };
+    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
+  }
+
+  public AddTag(text): Observable<{ objectId: string, ok: boolean }> {
+    const postBody = {
+      namespace: NAMESPACE,
+      actionId: 'create',
+      object: {
+        type: 'tag',
+        title: text
       }
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {if (data['ok'] === true){ return true; } return false; }));
+    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<{ objectId: string, ok: boolean }>;
   }
 
-  public UploadFile(formdata): Observable<any>{
-    const Upload_Options = {
+  public UploadFile(formdata): Observable<any> {
+    const uploadOptions = {
       headers: new HttpHeaders({
         'X-SourceId': secret.uploadTicketId,
       })
     };
-    return this.http.post('https://ntree.online/upload', formdata, Upload_Options)
-    .pipe(map(data => { return data; }));
+    return this.http.post('https://ntree.online/upload', formdata, uploadOptions);
   }
 
-  public SaveFile(Fileid): Observable<object>{
+  public SaveFile(Fileid): Observable<object> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'create',
-      'object': {
-        'id': Fileid,
-        'type': 'file',
-        'title': Fileid
+      namespace: NAMESPACE,
+      actionId: 'create',
+      object: {
+        id: Fileid,
+        type: 'file',
+        title: Fileid
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      if (data['ok'] === true){
-        return data;
-      }else{
-        return data['ok'] = false;
-      }
-    }));
+      .pipe(map(data => {
+        if (data['ok']) {
+          return data;
+        } else {
+          return data['ok'] = false;
+        }
+      }));
   }
 
   public SaveFileToNote(FileId, NoteId): Observable<object>{
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'update',
-      "objectId": NoteId,
-      'object': {
-        'files': [FileId]
+      namespace: NAMESPACE,
+      actionId: 'update',
+      objectId: NoteId,
+      object: {
+        files: [FileId]
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      if (data['ok'] === true){
-        return data;
-      }else{
-        return data['ok'] = false;
-      }
-    }));
+      .pipe(map(data => {
+        if (data['ok']) {
+          return data;
+        } else {
+          return data['ok'] = false;
+        }
+      }));
   }
 
-  public DeleteFile(FileId): Observable<object>{
+  public DeleteFile(FileId): Observable<object> {
     const postBody = {
-      'namespace': 'NTreeNotes',
-      'actionId': 'delete',
-      "objectId": FileId
+      namespace: NAMESPACE,
+      actionId: 'delete',
+      objectId: FileId
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
-    .pipe(map(data => {
-      if (data['ok'] === true){
-        return data;
-      }else{
-        return data['ok'] = false;
-      }
-    }));
+      .pipe(map(data => {
+        if (data['ok'] === true) {
+          return data;
+        } else {
+          return data['ok'] = false;
+        }
+      }));
   }
 }

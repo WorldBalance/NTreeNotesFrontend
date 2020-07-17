@@ -1,78 +1,95 @@
 <nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
   <nz-sider style="overflow-y: scroll;overflow-x:hidden; background-color:rgb(27, 23, 49)" class="scrollbar my_scroll">
-    <div>
-      <table>
-        <tr>
-          <th>
-            <div style="height: 3.4em;" >
-              <nz-input-group [nzSuffix]="suffixIconAddTag" nzSize="small" >
-                <input type="text" nz-input nzSize="small"  [(ngModel)]="store.data.tags.createText" (keyup.enter)="AddTag(store.data.tags.createText)" placeholder="имя нового тега" />
-              </nz-input-group>
-              <ng-template #suffixIconAddTag nzSize="small">
-                <i nz-icon nzType="plus-circle" (click)="AddTag(store.data.tags.createText)" style="cursor:pointer"></i>
-              </ng-template>
-              <nz-input-group [nzSuffix]="suffixIconSearch"  nzSize="small">
-                <input type="text" nz-input nzSize="small" [(ngModel)]="store.data.tags.tagssearchtext" placeholder="поиск тегов" />
-              </nz-input-group>
-              <ng-template #suffixIconSearch>
-                <i nz-icon nzSize="small"  nzType="search"></i>
-              </ng-template>
-            </div>
-            <div *ngIf="store.data.tags.isDownloadTags" style="text-align: center;float: center;"><i nz-icon [nzType]="'loading'" style="font-size: 38px; color:orange;"></i></div>
-            <div [@tagAnimation]="store.data.tags.tagsArray.length" *ngIf="store.data.tags.tagsArray.length > 0">
-              <div class="tags_list" *ngFor="let Tag of store.data.tags.tagsArray | serch_Tag_Pipe: store.data.tags.tagssearchtext; let i = index ">
-                  <nz-tag  [nzColor]="is_Tag_selected(Tag.id)" class="tag_in_list" (click)="FilterNotesTag(Tag.id)" >
-                    {{Tag.title}}
-                    <i nz-icon nzType="close" nzTheme="outline" (click)="DeleteTag(Tag.id,$event)" nzTooltipTitle="Удалить тег" nzTooltipPlacement="right" nz-tooltip></i>
-                  </nz-tag>
-              </div>
-            </div>
-          </th>
-        </tr>
-      </table>
-    </div>
+    <nz-input-group [nzSuffix]="suffixIconAddTag" nzSize="small">
+      <input type="text" nz-input nzSize="small" [(ngModel)]="store.data.tags.createText"
+             (keyup.enter)="addTag(store.data.tags.createText)" placeholder="имя нового тега"/>
+    </nz-input-group>
+    <ng-template #suffixIconAddTag nzSize="small">
+      <i nz-icon nzType="plus-circle" (click)="addTag(store.data.tags.createText)" style="cursor:pointer"></i>
+    </ng-template>
+    <nz-input-group [nzSuffix]="suffixIconSearch" nzSize="small">
+      <input type="text" nz-input nzSize="small" #tagsSearchString placeholder="поиск тегов"/>
+    </nz-input-group>
+    <ng-template #suffixIconSearch>
+      <i nz-icon nzSize="small" nzType="search"></i>
+    </ng-template>
+    <ng-container *ngIf="tags$ | async as tags; else loader">
+      <div [@tagAnimation]="tags.length" *ngIf="tags.length" class="tags-list">
+        <div class="tags-list__item"
+             *ngFor="let tag of tags | serch_Tag_Pipe: (tagsSearchString.value); index as i">
+          <nz-tag [nzColor]="searchTags.includes(tag.id) ? 'green' : 'gold'"
+                  class="tag_in_list"
+                  (click)="FilterNotesTag(tag.id)">
+            {{tag.title}}
+            <i nz-icon nzType="close" nzTheme="outline" (click)="deleteTag(tag.id,$event)" nzTooltipTitle="Удалить тег"
+               nzTooltipPlacement="right" nz-tooltip></i>
+          </nz-tag>
+        </div>
+      </div>
+    </ng-container>
   </nz-sider>
   <nz-content style="height:calc(100vh - 3.1em)" class="scrollbar my_scroll" infiniteScroll
-  [infiniteScrollDistance]="1.9"
-  [infiniteScrollThrottle]="900"
-  (scrolled)="GetMoreNotesData()"
-  [scrollWindow]="false" >
+              [infiniteScrollDistance]="1.9"
+              [infiniteScrollThrottle]="900"
+              (scrolled)="GetMoreNotesData()"
+              [scrollWindow]="false">
     <div style="height: 100%;">
       <div style="margin-top:0.4em; margin-left: 0.5em; margin-right: 0.5em;">
-        <button (click)="AddNote()" type="button" class="btn btn-primary btn-sm" style="cursor:pointer;">Добавить заметку</button>
-        <nz-input-group [nzSuffix]="suffixIconSearchNote"  nzSize="small" style="float: right; width: 13em;">
-          <input [(ngModel)]="store.data.notes.searchText" nz-input nzSize="small" (ngModelChange)="onSearchNoteInputChange($event)" class="search_note_input" placeholder="поиск"  />
+        <button (click)="addNote()" type="button" class="btn btn-primary btn-sm" style="cursor:pointer;">Добавить
+          заметку
+        </button>
+        <nz-input-group [nzSuffix]="suffixIconSearchNote" nzSize="small" style="float: right; width: 13em;">
+          <input [(ngModel)]="notesSearchString" nz-input nzSize="small"
+                 (ngModelChange)="onSearchNoteInputChange($event)" class="search_note_input" placeholder="поиск"/>
         </nz-input-group>
         <ng-template #suffixIconSearchNote>
-          <i nz-icon nzSize="small"  nzType="search"></i>
+          <i nz-icon nzSize="small" nzType="search"></i>
         </ng-template>
       </div>
-      <div *ngIf="store.data.notes.isDownloadNotes" style="text-align: center;float: center;"><i nz-icon [nzType]="'loading'" style="font-size: 38px; color:orange;"></i></div>
-      <div  [@noteAnimation]="store.data.notes.notesArray.length" *ngIf="store.data.notes.notesArray.length > 0" >
-          <div *ngFor="let Note of store.data.notes.notesArray ; let i = index  "    class="note_in_list" >
-            <div (click)="NoteSelect(Note['id'])" [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === Note['id']}">
-              <div style="background-color:#C4C4C4; color: black">
-                <b style="margin-left:0.3em;">{{Note['title'] | TextContentTruncate}}</b>
-                <i nz-icon nzType="delete" style="float:right" nzTheme="outline" class="delete_note" (click)="DeleteNote(Note['id'],$event)" nzTooltipTitle="Удалить заметку" nzTooltipPlacement="left" nz-tooltip></i>
-                <div style="float:right; margin-right: 1em;" nzTooltipTitle="Время последнего редактирования" nzTooltipPlacement="left" nz-tooltip>{{Note['ts_updated_ms'] | date:'dd.MM.yyyy HH:mm:ss'}}</div>
-                <hr/>
-              </div>
-              <table class="note_small">
-                <tr>
-                  <td *ngIf="Note['image_url']>''">
-                    <img src="{{Note['image_url']}}"  class="note_img" />
-                  </td>
-                  <td>
-                    <div [innerHTML]="Note['text']  | TextContentTruncate :400"></div>
-                  </td>
-                </tr>
-              </table>
-              <nz-tag *ngFor="let tag of Note['tags']" [nzColor]="'gold'" class="tag_in_note" >{{action.Get_Tag_from_Id(tag)}}</nz-tag>
+      <div *ngIf="store.data.notes.isDownloadNotes" style="text-align: center;float: center;">
+        <i nz-icon nzType="loading" style="font-size: 38px; color:orange;"></i>
+      </div>
+      <div [@noteAnimation]="store.data.notes.notesArray.length" *ngIf="store.data.notes.notesArray.length > 0">
+        <div *ngFor="let Note of store.data.notes.notesArray ; let i = index  " class="note_in_list">
+          <div (click)="NoteSelect(Note['id'])"
+               [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === Note['id']}">
+            <div style="background-color:#C4C4C4; color: black">
+              <b style="margin-left:0.3em;">{{Note['title'] | TextContentTruncate}}</b>
+              <i nz-icon nzType="delete" style="float:right" nzTheme="outline" class="delete_note"
+                 (click)="DeleteNote(Note['id'],$event)" nzTooltipTitle="Удалить заметку" nzTooltipPlacement="left"
+                 nz-tooltip></i>
+              <div style="float:right; margin-right: 1em;" nzTooltipTitle="Время последнего редактирования"
+                   nzTooltipPlacement="left" nz-tooltip>{{Note['ts_updated_ms'] | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+              <hr/>
             </div>
+            <table class="note_small">
+              <tr>
+                <td *ngIf="Note['image_url']>''">
+                  <img src="{{Note['image_url']}}" class="note_img"/>
+                </td>
+                <td>
+                  <div [innerHTML]="Note['text']  | TextContentTruncate :400"></div>
+                </td>
+              </tr>
+            </table>
+            <nz-tag *ngFor="let tag of Note['tags']" [nzColor]="'gold'"
+                    class="tag_in_note">{{action.Get_Tag_from_Id(tag)}}</nz-tag>
           </div>
-          <div *ngIf="store.data.notes.downloadMore" style="text-align: center;float: center;"><i nz-icon [nzType]="'loading'" style="font-size: 38px; color:orange;"></i></div>
+        </div>
+        <div *ngIf="store.data.notes.downloadMore" style="text-align: center;float: center;">
+          <i nz-icon
+             [nzType]="'loading'"
+             style="font-size: 38px; color:orange;"></i>
+        </div>
       </div>
 
     </div>
   </nz-content>
 </nz-layout>
+
+
+<ng-template #loader>
+  <div style="text-align: center;float: center;">
+    <i nz-icon nzType="loading" style="font-size: 38px; color:orange;"></i>
+  </div>
+</ng-template>
