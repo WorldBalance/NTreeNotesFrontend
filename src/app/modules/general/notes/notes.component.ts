@@ -76,7 +76,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         data.shift();
         this.searchTags = data;
       }
-      this.action.GetNotes(this.searchTags, this.notesSearchString);
+      this.action.GetNotes(this.searchTags, this.notesSearchString, { refresh: true });
     });
     this.setupSearchNotesDebouncer();
   }

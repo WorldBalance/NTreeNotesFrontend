@@ -36,8 +36,8 @@ export class ActionService {
     }
   }
 
-  public async GetNotes(tags: string[], searchString: string) {
-    this.store.data.RefreshNotesList();
+  public async GetNotes(tags: string[], searchString: string, opt?: { refresh?: boolean }) {
+    opt && opt.refresh && this.store.data.RefreshNotesList();
     if (this.store.data.notes.notesArray.length === 0) {
       this.store.data.notes.isDownloadNotes = true;
     }
