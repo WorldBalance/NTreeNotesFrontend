@@ -6,22 +6,18 @@ ul{
   list-style-type: none;
 }
 
-nz-sider {
-
-}
-
-nz-content {
-
-
-}
-
 [nz-icon] {
   font-size: 18px;
   margin-right: -0.6em;
 }
 
-.tags_list{
-  margin:0.3em;
+.tags-list__item{
+  padding: 5px 5px 0 5px;
+  cursor: pointer;
+}
+
+.tags-list:last-child {
+  padding-bottom: 5px;
 }
 
 .tag_in_list{

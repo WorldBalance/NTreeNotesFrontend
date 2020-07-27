@@ -1,21 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ContactComponent } from './contact.component';
-import { ContactRoutingModule } from './contact-routing.module';
+import {RouterModule, Routes} from '@angular/router';
+
+const routes: Routes = [
+  { path: '', component: ContactComponent },
+];
 
 @NgModule({
   imports: [
     CommonModule,
-    ContactRoutingModule
-  ],
-  exports: [
-    ContactComponent
+    RouterModule.forChild(routes)
   ],
   declarations: [
     ContactComponent
-  ],
-  providers: [
   ],
 })
 export class ContactModule { }

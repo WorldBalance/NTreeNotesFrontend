@@ -2,17 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AddNoteComponent } from './add-note.component';
-import { AddNoteRoutingModule } from './add-note.routing.module';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import {RouterModule, Routes} from '@angular/router';
+
+const routes: Routes = [
+  { path: '', component: AddNoteComponent },
+];
 
 @NgModule({
   declarations: [AddNoteComponent],
   imports: [
     CommonModule,
-    AddNoteRoutingModule,
     FormsModule,
-    NzSelectModule
+    NzSelectModule,
+    RouterModule.forChild(routes)
   ],
-  providers: []
 })
 export class AddNoteModule { }

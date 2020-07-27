@@ -5,12 +5,11 @@ html, body {
 
 :host {
   text-align: right;
-}
 
-nz-header{
-  height: 3em;
+  > div > nz-layout, main, .container-fluid {
+    height: 100%;
+  }
 }
-
 
 nz-sider {
 

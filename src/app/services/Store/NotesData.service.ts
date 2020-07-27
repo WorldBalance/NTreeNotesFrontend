@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import {TagModel} from '../../models/tag.model';
+import {NoteFileModel} from '../../models/note.model';
 
 class Tags {
   public createText = '';
-  public tagssearchtext = '';
-  public tagsArray: Array<string> = [];
-  public isDownloadTags = true;
+  public tagsArray: Array<TagModel> = [];
 }
 
 class Note {
@@ -14,7 +14,7 @@ class Note {
   public tags: Array<string> = [];
   public isDownloadNote = true;
   public lastUpdatedId = '';
-  public FilesArray: Array<object> = [];
+  public FilesArray: Array<NoteFileModel> = [];
   public hasAvatar = false;
 }
 
@@ -22,8 +22,6 @@ class Notes {
   public createTags: Array<object> = [];
   public notesArray: Array<any> = [];
   public isDownloadNotes = true;
-  public searchText = '';
-  public searchTags: Set<string> = new Set<string>();
   public lastNoteIndex = 0;
   public countMax = 15;
   public downloadMore = true;
@@ -45,7 +43,6 @@ export class NotesData{
   }
 
   public RefreshNotesList(){
-    //this.notes.searchText = '';
     this.notes.createTags = [];
     this.notes.notesArray  = [];
     this.notes.lastNoteIndex = 0;
