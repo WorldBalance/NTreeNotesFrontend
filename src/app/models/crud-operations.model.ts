@@ -21,6 +21,10 @@ export interface GetTagsModel extends CrudOperationModel {
   object: TagModel[];
 }
 
+export interface UploadFileModel extends CrudOperationModel {
+  acceptedId: string[];
+}
+
 interface PostModel {
   namespace: string;
   actionId: string;

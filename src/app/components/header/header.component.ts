@@ -1,5 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {UserInfoModel} from '../../models/user-info.model';
 import {AuthorizationService} from '../../services/authorization.service';
 import {StoreService} from '../../services/store.service';
@@ -11,18 +10,14 @@ import {Router} from '@angular/router';
   styleUrls: ['./header.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
-  public userData$: Observable<UserInfoModel>;
+  @Input() userData: UserInfoModel;
 
   constructor(private authService: AuthorizationService,
               private storeService: StoreService,
               public store: StoreService,
               private router: Router) {
-  }
-
-  public ngOnInit(): void {
-    this.userData$ = this.authService.getUserInfo();
   }
 
   public logout(): void {

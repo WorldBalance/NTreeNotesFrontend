@@ -26,36 +26,34 @@
       </a>
     </li>
     <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-      <ng-container *ngIf="userData$ | async as userData">
-        <ng-container *ngIf="userData.ok; else loginBtn">
-          <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight" class="avatar-btn">
-            <div>
-              {{userData?.object?.name}}
-              <img nz-icon nzType="user" [src]="userData?.object?.photo_url" alt="Avatar" class="avatar-image">
-              <i nz-icon nzType="down"></i>
-            </div>
-          </button>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link animated slideInDown" routerLink="">NtreeNote</a>
-              </li>
-              <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-                <a class="nav-link animated slideInDown" routerLink="/notes">Заметки</a>
-              </li>
-              <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-                <a class="nav-link animated slideInDown" routerLink="/about">О проекте</a>
-              </li>
-              <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-                <a class="nav-link animated slideInDown" routerLink="/contacts">Контакты</a>
-              </li>
-              <li nz-menu-divider></li>
-              <li nz-menu-item>
-                <a class="nav-link animated slideInDown" (click)="logout()">Выйти</a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </ng-container>
+      <ng-container *ngIf="userData?.ok; else loginBtn">
+        <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight" class="avatar-btn">
+          <div>
+            {{userData?.object?.name}}
+            <img nz-icon nzType="user" [src]="userData?.object?.photo_url" alt="Avatar" class="avatar-image">
+            <i nz-icon nzType="down"></i>
+          </div>
+        </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
+              <a class="nav-link animated slideInDown" routerLink="">NtreeNote</a>
+            </li>
+            <li nz-menu-item routerLinkActive="ant-menu-item-selected">
+              <a class="nav-link animated slideInDown" routerLink="/notes">Заметки</a>
+            </li>
+            <li nz-menu-item routerLinkActive="ant-menu-item-selected">
+              <a class="nav-link animated slideInDown" routerLink="/about">О проекте</a>
+            </li>
+            <li nz-menu-item routerLinkActive="ant-menu-item-selected">
+              <a class="nav-link animated slideInDown" routerLink="/contacts">Контакты</a>
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item>
+              <a class="nav-link animated slideInDown" (click)="logout()">Выйти</a>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </ng-container>
     </li>
   </ul>
