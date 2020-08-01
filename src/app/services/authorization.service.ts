@@ -28,7 +28,7 @@ export class AuthorizationService {
       },
       withCredentials: true
     }).pipe(
-      tap((info: UserInfoModel) => this.uploadTicketId = info.object.uploadTicketId),
+      tap((info: UserInfoModel) => this.uploadTicketId = info && info.object && info.object.uploadTicketId),
     ) as Observable<UserInfoModel>;
   }
 }
