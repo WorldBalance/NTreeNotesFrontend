@@ -1,5 +1,5 @@
 <nz-header>
-  <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu">
+  <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu" *ngIf="userData?.ok">
     <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
       <a class="nav-link animated slideInDown" routerLink="">
         <i class="fas fa-home mr-1"></i>NtreeNote
@@ -26,7 +26,6 @@
       </a>
     </li>
     <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-      <ng-container *ngIf="userData?.ok; else loginBtn">
         <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight" class="avatar-btn">
           <div>
             {{userData?.object?.name}}
@@ -54,7 +53,6 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-      </ng-container>
     </li>
   </ul>
 </nz-header>
