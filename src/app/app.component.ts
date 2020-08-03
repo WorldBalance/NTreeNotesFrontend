@@ -1,18 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {slideInAnimation} from './animations/slide-in.animation';
-import {slideInOutAnimation} from './animations';
 import {ActionService} from './services/action.service';
 import {Observable} from 'rxjs';
 import {UserInfoModel} from './models/user-info.model';
 import {AuthorizationService} from './services/authorization.service';
-import {CrudService} from './services/crud.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less'],
-  animations: [slideInAnimation, slideInOutAnimation]
+  styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
 
@@ -23,7 +20,14 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.userData$ = this.authService.getUserInfo();
+    this.userData$ = this.authService.getUserInfo().pipe(
+      tap((userInfo: UserInfoModel) => {
+        if(!userInfo.ok){
+          const currentUrl = encodeURIComponent(window.location.pathname);
+          window.location.href = `https://ntree.online/login?url_local=${currentUrl}`;
+        }
+      })
+    );
   }
 
   prepareRoute(outlet: RouterOutlet) {
