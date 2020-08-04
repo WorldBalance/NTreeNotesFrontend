@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { concatMap } from 'rxjs/operators';
-import { StoreService } from '../../../services/store.service';
-import { Router } from '@angular/router';
-import { ActionService } from '../../../services/action.service';
+import {Component} from '@angular/core';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {concatMap, filter} from 'rxjs/operators';
+import {StoreService} from '../../../services/store.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {ActionService} from '../../../services/action.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   public loginText = '1';
   public passwordText = '1';
 
@@ -19,44 +19,46 @@ export class LoginComponent implements OnInit {
     private store: StoreService,
     private router: Router,
     private action: ActionService
-    ) {}
-
-  ngOnInit(): void {
-
+  ) {
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        console.log('prev:', event.urlAfterRedirects);
+      });
   }
 
-  login(l, p){
-    if (l === '' || p === ''){
+  login(l, p) {
+    if (l === '' || p === '') {
       // tslint:disable-next-line: no-unused-expression
-      this.message.error('Поля не могут быть пустыми!', { nzDuration: 2500 }).onClose;
+      this.message.error('Поля не могут быть пустыми!', {nzDuration: 2500}).onClose;
       return;
     }
-    if ((l !== '1' || p !== '1')){
+    if ((l !== '1' || p !== '1')) {
       // tslint:disable-next-line: no-non-null-assertion
       this.message
-      .loading('Авторизация', { nzDuration: 1300 })
-      .onClose!.pipe(
+        .loading('Авторизация', {nzDuration: 1300})
+        .onClose!.pipe(
         // tslint:disable-next-line: no-non-null-assertion
-        concatMap(() => this.message.error('Логин либо пароль не подходят!', { nzDuration: 2000 }).onClose!)
+        concatMap(() => this.message.error('Логин либо пароль не подходят!', {nzDuration: 2000}).onClose!)
       )
-      .subscribe(() => {
-        this.store.user.isAuthorized = false;
-        return;
-      });
+        .subscribe(() => {
+          this.store.user.isAuthorized = false;
+          return;
+        });
 
-    }else{
+    } else {
       // tslint:disable-next-line: no-non-null-assertion
       this.message
-      .loading('Авторизация', { nzDuration: 900 })
-      .onClose!.pipe(
+        .loading('Авторизация', {nzDuration: 900})
+        .onClose!.pipe(
         // tslint:disable-next-line: no-non-null-assertion
-        concatMap(() => this.message.success('Успешно авторизован', { nzDuration: 700 }).onClose!)
+        concatMap(() => this.message.success('Успешно авторизован', {nzDuration: 700}).onClose!)
       )
-      .subscribe(() => {
-        this.router.navigate(['/notes']);
-        this.store.user.isAuthorized = true;
-        this.action.appStart();
-      });
+        .subscribe(() => {
+          this.router.navigate(['/notes']);
+          this.store.user.isAuthorized = true;
+          this.action.appStart();
+        });
     }
   }
 

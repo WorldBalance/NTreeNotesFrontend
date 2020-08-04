@@ -2,30 +2,31 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {secret} from 'src/environments/secret';
 import {
   CreationModel,
   DeletionModel,
   GetNotesModel,
   GetTagsModel,
-  PostNotesModel
+  PostNotesModel, UploadFileModel
 } from '../models/crud-operations.model';
 import {TagModel} from '../models/tag.model';
 import {NoteModel} from '../models/note.model';
+import {AuthorizationService} from './authorization.service';
 
 const NAMESPACE = 'NTreeNotes';
 
 @Injectable({providedIn: 'root'})
 export class CrudService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authorizationService: AuthorizationService) {
+  }
 
   public urlapi = 'https://ntree.online/proxy/NTreeNotesServer/api';
   private httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json',
-      'X-SourceId': secret.apiTokenId,
-    })
+      'Content-Type': 'application/json',
+    }),
+    withCredentials: true,
   };
 
   public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
@@ -130,13 +131,13 @@ export class CrudService {
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<{ objectId: string, ok: boolean }>;
   }
 
-  public UploadFile(formdata): Observable<any> {
+  public UploadFile(formdata): Observable<UploadFileModel> {
     const uploadOptions = {
       headers: new HttpHeaders({
-        'X-SourceId': secret.uploadTicketId,
+        'X-SourceId': this.authorizationService.uploadTicketId,
       })
     };
-    return this.http.post('https://ntree.online/upload', formdata, uploadOptions);
+    return this.http.post('https://ntree.online/upload', formdata, uploadOptions) as Observable<UploadFileModel>;
   }
 
   public SaveFile(Fileid): Observable<object> {
@@ -159,7 +160,7 @@ export class CrudService {
       }));
   }
 
-  public SaveFileToNote(FileId, NoteId): Observable<object>{
+  public SaveFileToNote(FileId, NoteId): Observable<object> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: 'update',

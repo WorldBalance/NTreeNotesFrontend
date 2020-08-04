@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import { StoreService } from './services/store.service';
@@ -19,6 +19,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import en from '@angular/common/locales/en';
 import { HeaderComponent } from './components/header/header.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
+import {AuthInterceptor} from './services/auth-interceptor.service';
 registerLocaleData(en);
 
 @NgModule({
@@ -41,7 +42,9 @@ registerLocaleData(en);
     NzTabsModule,
     NzBadgeModule
   ],
-  providers: [StoreService, CrudService, { provide: NZ_I18N, useValue: en_US }],
+  providers: [StoreService, CrudService, { provide: NZ_I18N, useValue: en_US },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

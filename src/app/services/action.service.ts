@@ -3,7 +3,7 @@ import {CrudService} from './crud.service';
 import {StoreService} from './store.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {Router} from '@angular/router';
-import {CreationModel, DeletionModel} from '../models/crud-operations.model';
+import {CreationModel, DeletionModel, UploadFileModel} from '../models/crud-operations.model';
 import {filter, switchMap} from 'rxjs/operators';
 import {NoteFileModel, NoteModel} from '../models/note.model';
 
@@ -15,9 +15,10 @@ export class ActionService {
     private message: NzMessageService,
     private store: StoreService,
     private router: Router
-  ) { }
+  ) {
+  }
 
-  public async appStart(){
+  public async appStart() {
     await this.store.StoreRefresh();
   }
 
@@ -141,25 +142,22 @@ export class ActionService {
   }
 
   public UploadFile(formdata) {
-    this.getData.UploadFile(formdata).subscribe((returningData) => {
-      if (returningData['acceptedId'][0] !== undefined) {
-        this.store.data.note.FilesArray.push({
-          id: returningData['acceptedId'][0],
-          src: `https://ntree.online/uploads/${returningData['acceptedId'][0]}`,
-          loaded: false,
-          text: 'Не сохранено!'
-        });
-        this.message.remove();
-        this.message.success('Данные загружены', {nzDuration: 1500}).onClose;
-        return;
-      }
-      this.message.error('Произошла ошибка. Сервер не ответил, либо проблема с интернет соединением', {nzDuration: 4000}).onClose;
-      return;
+    this.getData.UploadFile(formdata).pipe(
+      filter((response: UploadFileModel) => response && response.ok)
+    ).subscribe((response: UploadFileModel) => {
+      this.store.data.note.FilesArray.push({
+        id: response.acceptedId[0],
+        src: `https://ntree.online/uploads/${response.acceptedId[0]}`,
+        loaded: false,
+        text: 'Не сохранено!'
+      });
+      this.message.remove();
+      this.message.success('Данные загружены', {nzDuration: 1500}).onClose;
     });
   }
 
   public async SaveFiles() {
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const AddArray = [];
       this.store.data.note.FilesArray.forEach((val, index) => {
         if (!val['loaded']) {
@@ -181,7 +179,6 @@ export class ActionService {
         }
       });
     });
-    return promise;
   }
 
   public DeleteFile(fileId, FileIndex) {

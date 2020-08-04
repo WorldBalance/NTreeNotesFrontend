@@ -14,7 +14,7 @@
       <i nz-icon nzSize="small" nzType="search"></i>
     </ng-template>
     <ng-container *ngIf="tags$ | async as tags; else loader">
-      <div [@tagAnimation]="tags.length" *ngIf="tags.length" class="tags-list">
+      <div *ngIf="tags.length" class="tags-list">
         <div class="tags-list__item"
              *ngFor="let tag of tags | serch_Tag_Pipe: (tagsSearchString.value); index as i">
           <nz-tag [nzColor]="searchTags.includes(tag.id) ? 'green' : 'gold'"
@@ -46,10 +46,10 @@
           <i nz-icon nzSize="small" nzType="search"></i>
         </ng-template>
       </div>
-      <div *ngIf="store.data.notes.isDownloadNotes" style="text-align: center;float: center;">
+      <div *ngIf="store.data.notes.isDownloadNotes" style="text-align: center;">
         <i nz-icon nzType="loading" style="font-size: 38px; color:orange;"></i>
       </div>
-      <div [@noteAnimation]="store.data.notes.notesArray.length" *ngIf="store.data.notes.notesArray.length > 0">
+      <div *ngIf="store.data.notes.notesArray.length > 0">
         <div *ngFor="let Note of store.data.notes.notesArray ; let i = index  " class="note_in_list">
           <div (click)="NoteSelect(Note['id'])"
                [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === Note['id']}">
@@ -76,7 +76,7 @@
                     class="tag_in_note">{{action.Get_Tag_from_Id(tag)}}</nz-tag>
           </div>
         </div>
-        <div *ngIf="store.data.notes.downloadMore" style="text-align: center;float: center;">
+        <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
           <i nz-icon
              [nzType]="'loading'"
              style="font-size: 38px; color:orange;"></i>
@@ -87,9 +87,8 @@
   </nz-content>
 </nz-layout>
 
-
 <ng-template #loader>
-  <div style="text-align: center;float: center;">
-    <i nz-icon nzType="loading" style="font-size: 38px; color:orange;"></i>
+  <div class="app-loader">
+    <i nz-icon nzType="loading"></i>
   </div>
 </ng-template>

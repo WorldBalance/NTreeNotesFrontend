@@ -1,18 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute} from '@angular/router';
 import { StoreService } from '../../../services/store.service';
 import { ActionService } from '../../../services/action.service';
 import { Subscription, Observable, Observer } from 'rxjs';
-
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadChangeParam, UploadFile } from 'ng-zorro-antd/upload';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { concatMap } from 'rxjs/operators';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { secret } from 'src/environments/secret';
 
 @Component({
   selector: 'app-note',
@@ -26,8 +16,7 @@ export class NoteComponent implements OnInit {
     public store: StoreService,
     public action: ActionService,
     private route: ActivatedRoute,
-    private router: Router,
-    private msg: NzMessageService
+    private router: Router
   ) {
 
     this.routeSubscription = route.params.subscribe(params => {
@@ -54,15 +43,8 @@ export class NoteComponent implements OnInit {
     this.router.navigate(['/notes']);
   }
 
-  setMediaUploadHeaders = () => {
-    return {
-      "X-SourceId": secret.uploadTicketId,
-    };
-  }
-
   public setFile(event) {
     if (event.target.files.length > 0) {
-      const file = event.target.files[0];
       alert(event.target.files.length);
     }
   }

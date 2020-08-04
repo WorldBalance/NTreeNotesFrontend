@@ -16,6 +16,7 @@ export interface UserInfoModel {
   object?: {
     id: string;
     name: string;
-    photo_url: string
+    photo_url: string,
+    uploadTicketId: string,
   }
 }
