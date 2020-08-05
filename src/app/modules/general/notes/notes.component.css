@@ -83,12 +83,13 @@ ul{
 }
 
 .note_in_list{
-  border: 0.1em solid grey;
+  border: 0.2em solid;
+  border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
 }
 
 .note_in_list:hover{
-  border: 0 0 0.4em 0.4em solid black;
+  border-color: darkblue;
 }
 
 .tag_in_note{
