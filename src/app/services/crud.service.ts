@@ -58,7 +58,7 @@ export class CrudService {
       .pipe(map((data: GetNotesModel) => data.object[0]));
   }
 
-  public GetTags(): Observable<TagModel[]> {
+  public getTags(): Observable<TagModel[]> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: 'find',

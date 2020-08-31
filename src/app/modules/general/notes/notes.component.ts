@@ -126,7 +126,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    this.router.navigate(['/create']);
+    this.router.navigate(['/note']);
   }
 
   async FilterNotesTag(tagId) {
@@ -177,7 +177,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   private getTags(): void {
     this.tagsLoading = true;
-    this.tags$ = this.crudService.GetTags().pipe(
+    this.tags$ = this.crudService.getTags().pipe(
       tap((tags: TagModel[]) => {
         this.store.data.tags.tagsArray = tags;
       })

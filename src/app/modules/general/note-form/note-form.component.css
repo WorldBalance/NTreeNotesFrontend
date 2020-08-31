@@ -1,0 +1,30 @@
+.note-form-container {
+  text-align: left;
+  padding: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-title-field, .note-tags-field, .node-text-field, .additional-info-block {
+  width: 100%;
+}
+
+.note-form-button {
+  cursor: pointer;
+}
+
+.additional-info-block {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 175px;
+}
+
+.note-photo-badge {
+  margin-top: -1em;
+}
+
+.note-form-photo {
+  max-height: 8em;
+  padding: 0.2em
+}

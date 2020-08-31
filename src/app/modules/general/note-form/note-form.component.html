@@ -1,0 +1,73 @@
+<div class="note-form-container">
+  <a class="nav-link" routerLink="/notes">Назад к заметкам</a>
+  <div>Название заметки</div>
+  <input [(ngModel)]="store.data.note.title" class="note-title-field"/>
+  <div>Теги</div>
+  <nz-select nzMode="tags"
+             nzPlaceHolder="Можете прикрепить теги здесь"
+             class="note-tags-field"
+             [ngModel]="currentNote?.tags"
+             #nzSelectComponent>
+    <ng-container *ngIf="tags$ | async as tags">
+      <nz-option *ngFor="let tag of tags"
+                 [nzLabel]="tag.title"
+                 [nzValue]="tag.id"
+      ></nz-option>
+    </ng-container>
+  </nz-select>
+  <textarea [(ngModel)]="store.data.note.text" class="node-text-field" rows="12"></textarea>
+
+  <span class="additional-info-block">
+      <nz-tabset>
+        <nz-tab [nzTitle]="titleTemplate">
+          <ng-template #titleTemplate>
+            <span>Фото</span>
+            <nz-badge class="note-photo-badge"
+                      [nzCount]="store.data.note.FilesArray.length"
+                      [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
+            ></nz-badge>
+          </ng-template>
+          <div>
+            <label nz-checkbox [(ngModel)]="store.data.note.hasAvatar" style="margin: 0.4em;" ngDefaultControl>C аватаркой</label>
+             <span *ngFor="let photo of store.data.note.FilesArray; let i = index"
+                   style="max-height: 1em; margin:0.1em">
+              <span style="padding: 0.2em; margin: 0.1em; cursor:pointer">
+                <div style="float: left;">
+                  <div class="delete_picture"><i nz-icon nzType="close-circle" nzTheme="twotone"
+                                                 (click)="deleteFile(photo.id, i)"></i></div>
+                  <img src="{{photo.src}}" [ngClass]="{'not_loaded': !photo.loaded}" class="note-form-photo"/>
+                  <div *ngIf="!photo.loaded" class="image_not_loaded"><nz-tag
+                    [nzColor]="'magenta'">Нажмите сохранить!</nz-tag></div>
+                </div>
+              </span>
+            </span>
+            <span class="clearfix">
+              <nz-upload
+                nzListType="picture-card"
+                nzType="drag"
+                [nzMultiple]="true"
+                [nzBeforeUpload]="beforeUpload"
+                [nzShowButton]="true"
+                [nzShowUploadList]="store.data.note.FilesArray"
+                [nzPreview]="beforeUpload"
+              >
+                <i nz-icon nzType="plus"></i>
+                <div class="ant-upload-text">Перетяните файлы в эту область для загрузки</div>
+              </nz-upload>
+            </span>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Аудио">
+          тут будут аудиофайлы
+        </nz-tab>
+        <nz-tab nzTitle="Файлы">
+          книги, pdf
+        </nz-tab>
+      </nz-tabset>
+    </span>
+
+  <button (click)="addNote()"
+          class="note-form-button"
+  >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
+  <button (click)="cancel()" class="note-form-button">Отмена</button>
+</div>

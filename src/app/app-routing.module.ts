@@ -19,10 +19,16 @@ const routes: Routes = [
       .then(mod => mod.NotesModule)
   },
   {
+    path: 'note',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/general/note-form/note-form.module')
+      .then(mod => mod.NoteFormModule)
+  },
+  {
     path: 'note/:id',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/general/note/note.module')
-      .then(mod => mod.NoteModule)
+    loadChildren: () => import('./modules/general/note-form/note-form.module')
+      .then(mod => mod.NoteFormModule)
   },
   {
     path: 'about',
@@ -39,12 +45,6 @@ const routes: Routes = [
     data: {animation: 'LoginPageAnimation'},
     loadChildren: () => import('./modules/general/login/login.module')
       .then(mod => mod.LoginModule)
-  },
-  {
-    path: 'create',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/general/add-note/add-note.module')
-      .then(mod => mod.AddNoteModule)
   },
   { path: '**', component: NotFoundComponent },
 ];
