@@ -4,9 +4,10 @@ import {StoreService} from './store.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {Router} from '@angular/router';
 import {CreationModel, DeletionModel, UploadFileModel} from '../models/crud-operations.model';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {NoteFileModel, NoteModel} from '../models/note.model';
 import {Observable} from 'rxjs';
+import {Note} from './Store/NotesData.service';
 
 @Injectable({providedIn: 'root'})
 export class ActionService {
@@ -85,19 +86,19 @@ export class ActionService {
     return await promise;
   }
 
-  public GetNote(id): Observable<NoteModel> {
+  public GetNote(id): Observable<Note> {
     this.store.data.note.isDownloadNote = true;
     this.store.data.note.id = '';
     this.store.data.note.title = '';
     this.store.data.note.text = '';
-    this.store.data.note.FilesArray = [];
+    this.store.data.note.files = [];
 
     return this.getData.GetNote(id).pipe(
-      tap((note: NoteModel) => {
-        this.store.data.note = {
+      map((note: NoteModel) => {
+        return {
           ...note,
           isDownloadNote: false,
-          FilesArray: note.files ? note.files.map((el: string) => {
+          files: note.files ? note.files.map((el: string) => {
             return {
               id: el,
               src: `http://ntree.online/files/NTreeNotes/${el}`,
@@ -108,14 +109,15 @@ export class ActionService {
           hasAvatar: note.tags.includes('st_hsIm'),
           tags: note.tags.filter((tag: string) => tag !== 'st_hsIm')
         };
-      })
+      }),
+      tap((note: Note) => this.store.data.note = note)
     );
   }
 
-  public async updateNote(tags: string[]) {
+  public async updateNote(tags: string[], hasAvatar: boolean) {
     await this.SaveFiles();
-    const filesArr = this.store.data.note.FilesArray.map((el: NoteFileModel) => el.id);
-    this.store.data.note.hasAvatar ? tags.push('st_hsIm') : console.log('Нет авы');
+    const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);
+    hasAvatar && tags.push('st_hsIm');
 
     this.getData.UpdateNote(this.store.data.note.id, this.store.data.note.title, this.store.data.note.text, tags, filesArr)
       .pipe(filter((data: CreationModel) => data.ok))
@@ -128,15 +130,6 @@ export class ActionService {
       });
   }
 
-  public addNote(tags: string[]) {
-    this.getData.AddNote(this.store.data.note.title, this.store.data.note.text, tags).pipe(
-      filter((data: CreationModel) => data.ok)
-    ).subscribe((data) => {
-      this.store.data.note.lastUpdatedId = data.objectId;
-      this.router.navigate(['/notes']);
-    });
-  }
-
   public DeleteNote(id, tags: string[], searchString: string) {
     this.getData.DeleteNote(id).pipe(
       filter((data: DeletionModel) => data.ok)
@@ -147,7 +140,7 @@ export class ActionService {
     this.getData.UploadFile(formdata).pipe(
       filter((response: UploadFileModel) => response && response.ok)
     ).subscribe((response: UploadFileModel) => {
-      this.store.data.note.FilesArray.push({
+      this.store.data.note.files.push({
         id: response.acceptedId[0],
         src: `https://ntree.online/uploads/${response.acceptedId[0]}`,
         loaded: false,
@@ -161,7 +154,7 @@ export class ActionService {
   public async SaveFiles() {
     return new Promise((resolve, reject) => {
       const AddArray = [];
-      this.store.data.note.FilesArray.forEach((val, index) => {
+      this.store.data.note.files.forEach((val, index) => {
         if (!val['loaded']) {
           AddArray.push(index)
         }
@@ -172,7 +165,7 @@ export class ActionService {
       }
       AddArray.forEach((val, index) => {
         if (!val['loaded']) {
-          this.getData.SaveFile(this.store.data.note.FilesArray[val]['id']).subscribe((returningData) => {
+          this.getData.SaveFile(this.store.data.note.files[val]['id']).subscribe((returningData) => {
             if (returningData['ok'] === false) {
               alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
             }
@@ -187,8 +180,8 @@ export class ActionService {
     this.getData.DeleteFile(fileId).pipe(
       filter(data => data['ok']),
       switchMap(() => {
-        this.store.data.note.FilesArray.splice(FileIndex, 1);
-        const filesArr = this.store.data.note.FilesArray.map((el: NoteFileModel) => el.id);
+        this.store.data.note.files.splice(FileIndex, 1);
+        const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);
         return this.getData.UpdateNote(this.store.data.note.id, '', '', '', filesArr);
       }),
       filter((data: CreationModel) => data.ok)

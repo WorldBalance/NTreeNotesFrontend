@@ -17,7 +17,7 @@
 .additional-info-block {
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 175px;
+  min-height: 235px;
 }
 
 .note-photo-badge {

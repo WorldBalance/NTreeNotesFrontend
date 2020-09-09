@@ -23,13 +23,13 @@
           <ng-template #titleTemplate>
             <span>Фото</span>
             <nz-badge class="note-photo-badge"
-                      [nzCount]="store.data.note.FilesArray.length"
+                      [nzCount]="store.data.note.files.length"
                       [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
             ></nz-badge>
           </ng-template>
           <div>
-            <label nz-checkbox [(ngModel)]="store.data.note.hasAvatar" style="margin: 0.4em;" ngDefaultControl>C аватаркой</label>
-             <span *ngFor="let photo of store.data.note.FilesArray; let i = index"
+            <label nz-checkbox [(ngModel)]="currentNote.hasAvatar" style="margin: 0.4em;" ngDefaultControl>C аватаркой</label>
+             <span *ngFor="let photo of store.data.note.files; let i = index"
                    style="max-height: 1em; margin:0.1em">
               <span style="padding: 0.2em; margin: 0.1em; cursor:pointer">
                 <div style="float: left;">
@@ -48,7 +48,7 @@
                 [nzMultiple]="true"
                 [nzBeforeUpload]="beforeUpload"
                 [nzShowButton]="true"
-                [nzShowUploadList]="store.data.note.FilesArray"
+                [nzShowUploadList]="store.data.note.files"
                 [nzPreview]="beforeUpload"
               >
                 <i nz-icon nzType="plus"></i>
