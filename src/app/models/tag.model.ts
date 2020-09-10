@@ -1,7 +1,7 @@
-export interface TagModel {
+import { Item } from "../../../in/Api";
+
+export interface TagModel extends Item {
   id: string;
   title: string;
   type: 'tag';
-  ts_created_ms: string;
-  ts_updated_ms: string;
 }

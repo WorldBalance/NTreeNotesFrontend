@@ -1,13 +1,12 @@
-export interface NoteModel {
+import { Note } from "../../../in/Api";
+
+export interface NoteModel extends Note {
   id: string;
   type: 'note';
   title: string;
-  ts_created_ms?: string;
-  ts_updated_ms: string,
   text: string;
-  tags: string[];
-  files?: string[];
-  image_url: string
+
+  image_url?: string;
 }
 
 export interface NoteFileModel {

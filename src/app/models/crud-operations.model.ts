@@ -35,7 +35,7 @@ export interface UploadFileModel extends ResponseModel {
 }
 
 export interface PostNotesModel extends RequestModel {
-  object: { tags: string[], text: string };
+  object: { type?: string, text?: string, tags?: string[] };
   options: { offset: number; countMax: number };
   sequence?: PostNotesModel[];
 }

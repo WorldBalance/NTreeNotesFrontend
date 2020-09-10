@@ -101,13 +101,13 @@ export class ActionService {
           files: note.files ? note.files.map((el: string) => {
             return {
               id: el,
-              src: `http://ntree.online/files/NTreeNotes/${el}`,
+              src: `https://ntree.online/files/NTreeNotes/${el}`,
               loaded: true
             }
           }) : [],
-          lastUpdatedId: note.ts_updated_ms,
-          hasAvatar: note.tags.includes('st_hsIm'),
-          tags: note.tags.filter((tag: string) => tag !== 'st_hsIm')
+          lastUpdatedId: '',
+          hasAvatar: note.tags && note.tags.includes('st_hsIm'),
+          tags: note.tags && note.tags.filter((tag: string) => tag !== 'st_hsIm')
         };
       }),
       tap((note: Note) => this.store.data.note = note)

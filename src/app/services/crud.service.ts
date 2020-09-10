@@ -19,10 +19,12 @@ const NAMESPACE = 'NTreeNotes';
 @Injectable({providedIn: 'root'})
 export class CrudService {
 
+  public urlapi = 'https://ntree.online/proxy/NTreeNotesServer/api';
+  public typeCur = 'note';
+
   constructor(private http: HttpClient, private authorizationService: AuthorizationService) {
   }
 
-  public urlapi = 'https://ntree.online/proxy/NTreeNotesServer/api';
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -31,10 +33,12 @@ export class CrudService {
   };
 
   public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
+    globalThis.jdCrudService = this; // DEBUG
+
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
-      object: {text, tags},
+      object: { type: this.typeCur, text, tags },
       options: {offset, countMax}
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
@@ -42,7 +46,7 @@ export class CrudService {
         return data.object.map((note: NoteModel) => {
           return {
             ...note,
-            image_url: !note.image_url ? '' : `http://ntree.online/${note.image_url}`,
+            image_url: !note.image_url ? '' : `https://ntree.online/${note.image_url}`,
           };
         });
       }));
@@ -89,7 +93,7 @@ export class CrudService {
       namespace: NAMESPACE,
       actionId: ActionIds.create,
       object: {
-        type: 'note',
+        type: this.typeCur,
         title,
         text,
         tags
@@ -106,7 +110,7 @@ export class CrudService {
       actionId: ActionIds.update,
       objectId: id,
       object: {
-        type: 'note',
+        type: this.typeCur,
         title,
         text,
         files,
