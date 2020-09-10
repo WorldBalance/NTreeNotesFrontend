@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {
+  ActionIds,
   CreationModel,
   DeletionModel,
   GetNotesModel,
   GetTagsModel,
-  PostNotesModel, UploadFileModel
+  PostNotesModel, RequestModel, UploadFileModel
 } from '../models/crud-operations.model';
 import {TagModel} from '../models/tag.model';
 import {NoteModel} from '../models/note.model';
@@ -32,7 +33,7 @@ export class CrudService {
   public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
-      actionId: 'find',
+      actionId: ActionIds.find,
       object: {text, tags},
       options: {offset, countMax}
     };
@@ -50,7 +51,7 @@ export class CrudService {
   public GetNote(id): Observable<NoteModel> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'read',
+      actionId: ActionIds.read,
       objectId: [id]
     };
     return this.http
@@ -58,10 +59,10 @@ export class CrudService {
       .pipe(map((data: GetNotesModel) => data.object[0]));
   }
 
-  public GetTags(): Observable<TagModel[]> {
+  public getTags(): Observable<TagModel[]> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'find',
+      actionId: ActionIds.find,
       object: {
         type: 'tag'
       }
@@ -70,25 +71,39 @@ export class CrudService {
       .pipe(map((data: GetTagsModel) => data && data.object));
   }
 
-  public AddNote(title, text, tags): Observable<CreationModel> {
-    const postBody = {
+  public addNote(title: string, text: string, tags: string[], files: string[]): Observable<CreationModel> {
+    const body: RequestModel = {
+      sequence: files.map((file: string) => {
+        return {
+          namespace: NAMESPACE,
+          actionId: ActionIds.create,
+          object: {
+            id: file,
+            type: 'file',
+            title: file
+          }
+        }
+      })
+    }
+    body.sequence.push({
       namespace: NAMESPACE,
-      actionId: 'create',
-      objectId: 'fc3_20200326_XdBAcER1CHo8Y498',
+      actionId: ActionIds.create,
       object: {
         type: 'note',
         title,
         text,
         tags
       }
-    };
-    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;
+    })
+    return this.http.post(this.urlapi, body, this.httpOptions).pipe(
+      filter((data: CreationModel) => data.ok)
+    )
   }
 
   public UpdateNote(id, title, text, tags, files): Observable<CreationModel> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'update',
+      actionId: ActionIds.update,
       objectId: id,
       object: {
         type: 'note',
@@ -104,7 +119,7 @@ export class CrudService {
   public DeleteNote(id): Observable<DeletionModel> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'delete',
+      actionId: ActionIds.delete,
       objectId: id
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
@@ -113,7 +128,7 @@ export class CrudService {
   public DeleteTag(id): Observable<DeletionModel> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'delete',
+      actionId: ActionIds.delete,
       objectId: id
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
@@ -122,7 +137,7 @@ export class CrudService {
   public AddTag(text): Observable<{ objectId: string, ok: boolean }> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'create',
+      actionId: ActionIds.create,
       object: {
         type: 'tag',
         title: text
@@ -143,7 +158,7 @@ export class CrudService {
   public SaveFile(Fileid): Observable<object> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'create',
+      actionId: ActionIds.create,
       object: {
         id: Fileid,
         type: 'file',
@@ -163,7 +178,7 @@ export class CrudService {
   public SaveFileToNote(FileId, NoteId): Observable<object> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'update',
+      actionId: ActionIds.update,
       objectId: NoteId,
       object: {
         files: [FileId]
@@ -182,7 +197,7 @@ export class CrudService {
   public DeleteFile(FileId): Observable<object> {
     const postBody = {
       namespace: NAMESPACE,
-      actionId: 'delete',
+      actionId: ActionIds.delete,
       objectId: FileId
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)

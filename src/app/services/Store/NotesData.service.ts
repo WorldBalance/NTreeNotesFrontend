@@ -7,14 +7,14 @@ class Tags {
   public tagsArray: Array<TagModel> = [];
 }
 
-class Note {
+export class Note {
   public id = '';
   public title = '';
   public text = '';
   public tags: Array<string> = [];
   public isDownloadNote = true;
   public lastUpdatedId = '';
-  public FilesArray: Array<NoteFileModel> = [];
+  public files: Array<NoteFileModel> = [];
   public hasAvatar = false;
 }
 
