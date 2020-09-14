@@ -9,6 +9,7 @@ import {NzBadgeModule} from 'ng-zorro-antd/badge';
 import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {NzTagModule} from 'ng-zorro-antd/tag';
 import {NzCheckboxModule} from 'ng-zorro-antd';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 const routes: Routes = [
   {path: '', component: NoteFormComponent},
@@ -25,7 +26,8 @@ const routes: Routes = [
     NzBadgeModule,
     NzUploadModule,
     NzTagModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzIconModule,
   ],
 })
 export class NoteFormModule {
