@@ -17,7 +17,7 @@
       <div *ngIf="tags.length" class="tags-list">
         <div class="tags-list__item"
              *ngFor="let tag of tags | serch_Tag_Pipe: (tagsSearchString.value); index as i">
-          <nz-tag [nzColor]="searchTags.includes(tag.id) ? 'green' : 'gold'"
+          <nz-tag [nzColor]="searchTags.includes(tag.id) ? 'green' : 'orange'"
                   class="tag_in_list"
                   (click)="FilterNotesTag(tag.id)">
             {{tag.title}}
@@ -72,7 +72,7 @@
                 </td>
               </tr>
             </table>
-            <nz-tag *ngFor="let tag of Note['tags']" [nzColor]="'gold'"
+            <nz-tag *ngFor="let tag of Note['tags']" [nzColor]="'orange'"
                     class="tag_in_note">{{action.Get_Tag_from_Id(tag)}}</nz-tag>
           </div>
         </div>
