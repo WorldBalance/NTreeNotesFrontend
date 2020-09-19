@@ -54,13 +54,13 @@
           <div (click)="NoteSelect(Note['id'])"
                [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === Note['id']}">
             <div style="background-color:#C4C4C4; color: black">
-              <b style="margin-left:0.3em;">{{Note['title'] | TextContentTruncate}}</b>
+              <b class="note_title">{{Note['title'] | TextContentTruncate}}</b>
               <i nz-icon nzType="delete" style="float:right" nzTheme="outline" class="delete_note"
                  (click)="DeleteNote(Note['id'],$event)" nzTooltipTitle="Удалить заметку" nzTooltipPlacement="left"
                  nz-tooltip></i>
-              <div style="float:right; margin-right: 1em;" nzTooltipTitle="Время последнего редактирования"
+              <div class="note_time" style="float:right;" nzTooltipTitle="Время последнего редактирования"
                    nzTooltipPlacement="left" nz-tooltip>{{Note['ts_updated_ms'] | date:'dd.MM.yyyy HH:mm:ss'}}</div>
-              <hr/>
+              <hr class="note_l1"/>
             </div>
             <table class="note_small">
               <tr>

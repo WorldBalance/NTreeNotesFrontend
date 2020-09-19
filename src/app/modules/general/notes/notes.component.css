@@ -64,6 +64,22 @@ ul{
   cursor: pointer;
 }
 
+.note_title {
+  display: inline-block;
+  margin-left: 0.3em;
+  margin-top: 0.25em;
+}
+
+.note_time {
+  margin-right: 1em;
+  margin-top: 0.25em;
+}
+
+.note_l1 {
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
 .tag_element{
   cursor: pointer;
 }
