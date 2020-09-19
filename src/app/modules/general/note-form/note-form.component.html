@@ -66,8 +66,10 @@
       </nz-tabset>
     </span>
 
-  <button (click)="addNote()"
-          class="note-form-button"
-  >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
-  <button (click)="cancel()" class="note-form-button">Отмена</button>
+  <div>
+    <button (click)="addNote()"
+            class="note-form-button"
+    >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
+    <button (click)="cancel()" class="note-form-button">Отмена</button>
+  </div>
 </div>
