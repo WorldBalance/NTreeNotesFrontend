@@ -1,18 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { version } from '../../../../../package.json';
+import {Component} from '@angular/core';
+
+const packageJsonObject = require('../../../../../package.json');
 
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
 
-  public appVersion: string = version;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  public appVersion: string = packageJsonObject.version;
 
 }
