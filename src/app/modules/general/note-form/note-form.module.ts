@@ -9,6 +9,7 @@ import {NzBadgeModule} from 'ng-zorro-antd/badge';
 import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {NzTagModule} from 'ng-zorro-antd/tag';
 import {NzCheckboxModule} from 'ng-zorro-antd';
+import {AppSharedModule} from '../../shared/shared.module';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
     NzUploadModule,
     NzTagModule,
     NzCheckboxModule,
+    AppSharedModule,
     NzIconModule,
   ],
 })

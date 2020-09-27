@@ -15,6 +15,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 import en from '@angular/common/locales/en';
 import { HeaderComponent } from './components/header/header.component';
@@ -40,7 +41,8 @@ registerLocaleData(en);
     InfiniteScrollModule,
     DragDropModule,
     NzTabsModule,
-    NzBadgeModule
+    NzBadgeModule,
+    NzMessageModule
   ],
   providers: [StoreService, CrudService, { provide: NZ_I18N, useValue: en_US },
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {iif, Observable, Observer, of, Subject} from 'rxjs';
-import {filter, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, finalize, switchMap, takeUntil} from 'rxjs/operators';
 import {CrudService} from '../../../services/crud.service';
 import {TagModel} from '../../../models/tag.model';
 import {NzSelectComponent} from 'ng-zorro-antd';
@@ -19,7 +19,10 @@ import {NoteFileModel} from '../../../models/note.model';
 export class NoteFormComponent implements OnInit, OnDestroy {
 
   public currentNote = new Note();
-  public tags$: Observable<TagModel[]>;
+  public tagsLoading: boolean;
+  public tags: TagModel[];
+  public confirmPopupVisibility: boolean;
+  public newTagName: string;
 
   @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
   private unsubscribe$ = new Subject<void>();
@@ -36,7 +39,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.data.note.title = this.store.data.note.text = '';
     this.store.data.note.files = [];
-    this.tags$ = this.crudService.getTags();
+    this.crudService.getTags().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((tags: TagModel[]) => this.tags = tags);
 
     this.activatedRoute.params.pipe(
       filter(params => params.id),
@@ -93,6 +98,31 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     this.action.deleteFile(fileId, index);
   }
 
+  public addTag(tags: string[]): void {
+    const newTag = tags.find((tag: string) => !this.tags.map((gotTag: TagModel) => gotTag.id).includes(tag));
+    if (newTag) {
+      tags.shift();
+      if(this.filterInputOption(newTag)){
+        this.selectComponent.toggleDropDown();
+        this.newTagName = newTag;
+        setTimeout(() => {
+          this.confirmPopupVisibility = true;
+        }, 100);
+      }
+    }
+  }
+
+  public createTag(): void {
+    this.tagsLoading = true;
+    this.crudService.AddTag(this.newTagName).pipe(
+      finalize(() => this.confirmPopupVisibility = this.tagsLoading = false),
+      takeUntil(this.unsubscribe$)
+    ).subscribe((id: string) => {
+      this.tags.push({id, title: this.newTagName, type: 'tag'});
+      this.newTagName = '';
+    });
+  }
+
   beforeUpload = (file: File) => {
     return new Observable((observer: Observer<boolean>) => {
       const formData = new FormData();
@@ -100,5 +130,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       this.action.UploadFile(formData);
       observer.complete();
     });
+  }
+
+  public filterInputOption = (input: string): boolean => {
+    return !!input.replace(/\s/g, '').length;
   }
 }
