@@ -9,7 +9,6 @@
              [ngModel]="currentNote?.tags"
              #nzSelectComponent
              (ngModelChange)="addTag($event)"
-             [nzFilterOption]="filterInputOption"
              [nzLoading]="tagsLoading">
     <nz-option *ngFor="let tag of this.tags"
                [nzLabel]="tag.title"

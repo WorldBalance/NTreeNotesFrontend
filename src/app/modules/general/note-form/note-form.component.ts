@@ -101,8 +101,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public addTag(tags: string[]): void {
     const newTag = tags.find((tag: string) => !this.tags.map((gotTag: TagModel) => gotTag.id).includes(tag));
     if (newTag) {
-      tags.shift();
-      if(this.filterInputOption(newTag)){
+      const newTagIndex = tags.findIndex((tag: string) => tag === newTag);
+      tags.splice(newTagIndex, 1);
+      if(!!newTag.replace(/\s/g, '').length){
         this.selectComponent.toggleDropDown();
         this.newTagName = newTag;
         setTimeout(() => {
@@ -120,6 +121,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     ).subscribe((id: string) => {
       this.tags.push({id, title: this.newTagName, type: 'tag'});
       this.newTagName = '';
+      this.selectComponent.value.push(id);
     });
   }
 
@@ -130,9 +132,5 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       this.action.UploadFile(formData);
       observer.complete();
     });
-  }
-
-  public filterInputOption = (input: string): boolean => {
-    return !!input.replace(/\s/g, '').length;
   }
 }
