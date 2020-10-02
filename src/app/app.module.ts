@@ -20,7 +20,12 @@ import en from '@angular/common/locales/en';
 import { HeaderComponent } from './components/header/header.component';
 import {NotFoundComponent} from './components/not-found/not-found.component';
 import {AuthInterceptor} from './services/auth-interceptor.service';
+import { createGlobalThis } from '../utils/utils1';
+
+
 registerLocaleData(en);
+!globalThis && createGlobalThis();
+
 
 @NgModule({
   declarations: [

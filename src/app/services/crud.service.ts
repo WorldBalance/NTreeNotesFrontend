@@ -23,6 +23,7 @@ export class CrudService {
   public typeCur = 'note';
 
   constructor(private http: HttpClient, private authorizationService: AuthorizationService) {
+    globalThis.jdCrudService = this; // DEBUG
   }
 
   private httpOptions = {
@@ -33,8 +34,6 @@ export class CrudService {
   };
 
   public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
-    globalThis.jdCrudService = this; // DEBUG
-
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
