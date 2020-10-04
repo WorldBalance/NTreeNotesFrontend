@@ -1,0 +1,21 @@
+<nz-select nzMode="tags"
+           nzPlaceHolder="Можете прикрепить теги здесь"
+           class="note-tags-field"
+           [ngModel]="noteTags"
+           #nzSelectComponent
+           (ngModelChange)="addTag($event)"
+           [nzLoading]="loading">
+  <ng-container *ngIf="tags$ | async as tags">
+    <nz-option *ngFor="let tag of tags"
+               [nzLabel]="tag.title"
+               [nzValue]="tag.id"
+    ></nz-option>
+  </ng-container>
+</nz-select>
+
+<nz-modal [(nzVisible)]="confirmPopupVisibility"
+          nzTitle="New tag"
+          (nzOnCancel)="confirmPopupVisibility = false"
+          (nzOnOk)="createTag()">
+  Тег '{{newTagName}}' не существует. Создать его?
+</nz-modal>

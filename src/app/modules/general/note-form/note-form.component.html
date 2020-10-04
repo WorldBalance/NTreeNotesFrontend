@@ -3,18 +3,7 @@
   <div>Название заметки</div>
   <input [(ngModel)]="store.data.note.title" class="note-title-field"/>
   <div>Теги</div>
-  <nz-select nzMode="tags"
-             nzPlaceHolder="Можете прикрепить теги здесь"
-             class="note-tags-field"
-             [ngModel]="currentNote?.tags"
-             #nzSelectComponent
-             (ngModelChange)="addTag($event)"
-             [nzLoading]="tagsLoading">
-    <nz-option *ngFor="let tag of this.tags"
-               [nzLabel]="tag.title"
-               [nzValue]="tag.id"
-    ></nz-option>
-  </nz-select>
+  <app-tags [(noteTags)]="currentNote.tags"></app-tags>
   <textarea [(ngModel)]="store.data.note.text" class="node-text-field" rows="12"></textarea>
 
   <span class="additional-info-block">
@@ -71,10 +60,3 @@
   >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
   <button (click)="cancel()" class="note-form-button">Отмена</button>
 </div>
-
-<nz-modal [(nzVisible)]="confirmPopupVisibility"
-          nzTitle="New tag"
-          (nzOnCancel)="confirmPopupVisibility = false"
-          (nzOnOk)="createTag()">
-  Тег '{{newTagName}}' не существует. Создать его?
-</nz-modal>
