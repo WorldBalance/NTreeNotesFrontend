@@ -22,9 +22,8 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
     this.userData$ = this.authService.getUserInfo().pipe(
       tap((userInfo: UserInfoModel) => {
-        if(!userInfo.ok){
-          const currentUrl = encodeURIComponent(window.location.pathname);
-          window.location.href = `https://ntree.online/login?url_local=${currentUrl}`;
+        if (!userInfo.ok) {
+          this.authService.login();
         }
       })
     );
