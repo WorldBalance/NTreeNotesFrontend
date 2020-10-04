@@ -48,39 +48,15 @@ export class ActionService {
       this.getData.GetNotes(
         searchString,
         tags,
-        this.store.data.notes.lastNoteIndex,
+        this.store.data.notes.notesArray.length,
         this.store.data.notes.countMax)
         .subscribe(data => {
           this.store.data.notes.isDownloadNotes = false;
-          if (!data.length) {
-            this.store.data.notes.downloadMore = false; // если нет записей, то больше не грузим
-            resolve();
-            return;
-          } else {
-            let delParameter = 0;
-            if (!this.store.data.notes.notesArray.length) {
-              // console.log('первый запрос');
-              if (data.length > 0) {
-                this.store.data.notes.notesArray.push(...data);
-                this.store.data.notes.lastNoteIndex += data.length;
-                if (data.length < this.store.data.notes.countMax) {
-                  this.store.data.notes.downloadMore = false;
-                }
-                resolve();
-                return;
-              }
-            } else {
-              // console.log('последующий запрос');
-              delParameter = data.length % this.store.data.notes.notesArray.length - this.store.data.notes.lastNoteIndex;
-              this.store.data.notes.notesArray.push(...data);
-              this.store.data.notes.lastNoteIndex += data.length;
-              if (delParameter >= 1) {// достигнут конец
-                this.store.data.notes.downloadMore = false;
-              }
-              resolve();
-              return;
-            }
+          if (data.length > 0) {
+            this.store.data.notes.notesArray.push(...data);
           }
+          this.store.data.notes.downloadMore = (data.length === this.store.data.notes.countMax);
+          resolve();
         });
     });
     return await promise;
@@ -130,10 +106,15 @@ export class ActionService {
       });
   }
 
-  public DeleteNote(id, tags: string[], searchString: string) {
+  public DeleteNote(id) {
     this.getData.DeleteNote(id).pipe(
       filter((data: DeletionModel) => data.ok)
-    ).subscribe(() => this.GetNotes(tags, searchString));
+    ).subscribe(() => {
+      const index = this.store.data.notes.notesArray.findIndex((note: NoteModel) => (note.id === id));
+      if (index >= 0) {
+        this.store.data.notes.notesArray.splice(index, 1);
+      }
+    });
   }
 
   public UploadFile(formdata) {

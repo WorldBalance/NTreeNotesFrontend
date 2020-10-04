@@ -151,7 +151,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
     if (r === true) {
-      this.action.DeleteNote(id, this.searchTags, this.notesSearchString);
+      this.action.DeleteNote(id);
     }
   }
 
