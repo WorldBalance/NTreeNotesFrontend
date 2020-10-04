@@ -1,9 +1,10 @@
 {
   "name": "note-tree-v2",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start2": "ng serve --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
     "build2": "ng build --prod",
     "test": "ng test",

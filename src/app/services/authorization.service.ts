@@ -31,4 +31,16 @@ export class AuthorizationService {
       tap((info: UserInfoModel) => this.uploadTicketId = info && info.object && info.object.uploadTicketId),
     ) as Observable<UserInfoModel>;
   }
+
+  public async login() {
+    const currentUrl = encodeURIComponent(window.location.pathname);
+    window.location.href = `https://ntree.online/login?url_local=${currentUrl}`;
+  }
+
+  public async logout(): Promise<any> {
+    return this.http.get("https://ntree.online/logout?res=ok", {
+      withCredentials: true
+    }).toPromise();
+  }
+
 }

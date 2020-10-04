@@ -29,7 +29,7 @@
         <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight" class="avatar-btn">
           <div>
             {{userData?.object?.name}}
-            <img nz-icon nzType="user" [src]="userData?.object?.photo_url" alt="Avatar" class="avatar-image">
+            <img nz-icon nzType="user" [src]="userData?.object?.photo_url"  loading="lazy" alt="Avatar" class="avatar-image">
             <i nz-icon nzType="down"></i>
           </div>
         </button>
