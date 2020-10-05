@@ -23,7 +23,7 @@ export class CrudService {
   public urlapi = 'https://ntree.online/proxy/NTreeNotesServer/api';
   public typeCur = 'note';
 
-  constructor(private http: HttpClient, private authorizationService: AuthorizationService) {
+  constructor(private http: HttpClient, private authorizationService: AuthorizationService, private messageService: NzMessageService) {
     globalThis.jdCrudService = this; // DEBUG
   }
 

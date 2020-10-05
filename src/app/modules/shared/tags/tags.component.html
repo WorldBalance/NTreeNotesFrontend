@@ -14,8 +14,7 @@
 </nz-select>
 
 <nz-modal [(nzVisible)]="confirmPopupVisibility"
-          nzTitle="New tag"
-          (nzOnCancel)="confirmPopupVisibility = false"
-          (nzOnOk)="createTag()">
-  Тег '{{newTagName}}' не существует. Создать его?
+          (nzOnOk)="createTag()"
+          (nzOnCancel)="onCancel()">
+Тег '<b>{{newTagName}}</b>' не существует. Создать его?
 </nz-modal>

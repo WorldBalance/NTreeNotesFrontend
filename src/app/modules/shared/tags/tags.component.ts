@@ -50,14 +50,13 @@ export class TagsComponent implements OnDestroy, OnInit {
   }
 
   public addTag(tags: string[]): void {
-    const newTag = tags.find((tag: string) => !this.tags
-      .map((existedTag: TagModel) => existedTag.id)
-      .includes(tag));
+    const tagsArray = this.tags.map((existedTag: TagModel) => existedTag.id);
+    const newTag = tags.find((tag: string) => !tagsArray.includes(tag));
     if (newTag) {
       const newTagIndex = tags.findIndex((tag: string) => tag === newTag);
       tags.splice(newTagIndex, 1);
       if (!!newTag.replace(/\s/g, '').length) {
-        this.selectComponent.toggleDropDown();
+        this.selectComponent.closeDropDown();
         this.newTagName = newTag;
         setTimeout(() => {
           this.confirmPopupVisibility = true;
@@ -80,6 +79,12 @@ export class TagsComponent implements OnDestroy, OnInit {
       this.noteTagsChange.emit(this.noteTags);
       this.newTagName = '';
       this.selectComponent.value.push(id);
+      this.selectComponent.toggleDropDown();
     });
+  }
+
+  public onCancel() {
+    this.confirmPopupVisibility = false;
+    this.selectComponent.toggleDropDown();
   }
 }
