@@ -6,7 +6,7 @@
   flex-direction: column;
 }
 
-.note-title-field, .note-tags-field, .node-text-field, .additional-info-block {
+.note-title-field, .node-text-field, .additional-info-block {
   width: 100%;
 }
 

@@ -1,12 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {iif, Observable, Observer, of, Subject} from 'rxjs';
 import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {CrudService} from '../../../services/crud.service';
-import {TagModel} from '../../../models/tag.model';
-import {NzSelectComponent} from 'ng-zorro-antd';
 import {Note} from 'src/app/services/Store/NotesData.service';
 import {CreationModel} from '../../../models/crud-operations.model';
 import {NoteFileModel} from '../../../models/note.model';
@@ -19,9 +17,7 @@ import {NoteFileModel} from '../../../models/note.model';
 export class NoteFormComponent implements OnInit, OnDestroy {
 
   public currentNote = new Note();
-  public tags$: Observable<TagModel[]>;
 
-  @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -36,7 +32,6 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.data.note.title = this.store.data.note.text = '';
     this.store.data.note.files = [];
-    this.tags$ = this.crudService.getTags();
 
     this.activatedRoute.params.pipe(
       filter(params => params.id),
@@ -48,14 +43,14 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public addNote(): void {
     if (this.currentNote.id) {
       this.store.data.note.lastUpdatedId = '';
-      this.action.updateNote(this.selectComponent.value, this.currentNote.hasAvatar);
+      this.action.updateNote(this.currentNote.tags, this.currentNote.hasAvatar);
     } else {
       if (!this.store.data.note.text) {
         alert('Введите сперва текст заметки!');
       } else {
         const {title, text, files} = this.store.data.note;
         const filesIds = files.map((file: NoteFileModel) => file.id);
-        const tags = this.selectComponent.value;
+        const tags = this.currentNote.tags;
         this.crudService.addNote(title, text, tags, filesIds)
           .pipe(
             switchMap((data: CreationModel) => {

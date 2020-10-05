@@ -3,18 +3,7 @@
   <div>Название заметки</div>
   <input [(ngModel)]="store.data.note.title" class="note-title-field"/>
   <div>Теги</div>
-  <nz-select nzMode="tags"
-             nzPlaceHolder="Можете прикрепить теги здесь"
-             class="note-tags-field"
-             [ngModel]="currentNote?.tags"
-             #nzSelectComponent>
-    <ng-container *ngIf="tags$ | async as tags">
-      <nz-option *ngFor="let tag of tags"
-                 [nzLabel]="tag.title"
-                 [nzValue]="tag.id"
-      ></nz-option>
-    </ng-container>
-  </nz-select>
+  <app-tags [(noteTags)]="currentNote.tags"></app-tags>
   <textarea [(ngModel)]="store.data.note.text" class="node-text-field" rows="12"></textarea>
 
   <span class="additional-info-block">
@@ -66,10 +55,8 @@
       </nz-tabset>
     </span>
 
-  <div>
-    <button (click)="addNote()"
-            class="note-form-button"
-    >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
-    <button (click)="cancel()" class="note-form-button">Отмена</button>
-  </div>
+  <button (click)="addNote()"
+          class="note-form-button"
+  >{{currentNote ? "Сохранить изменения" : "Создать заметку"}}</button>
+  <button (click)="cancel()" class="note-form-button">Отмена</button>
 </div>

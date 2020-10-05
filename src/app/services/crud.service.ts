@@ -13,6 +13,7 @@ import {
 import {TagModel} from '../models/tag.model';
 import {NoteModel} from '../models/note.model';
 import {AuthorizationService} from './authorization.service';
+import {NzMessageService} from 'ng-zorro-antd';
 
 const NAMESPACE = 'NTreeNotes';
 
@@ -137,7 +138,7 @@ export class CrudService {
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
   }
 
-  public AddTag(text): Observable<{ objectId: string, ok: boolean }> {
+  public AddTag(text): Observable<string> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.create,
@@ -146,7 +147,15 @@ export class CrudService {
         title: text
       }
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<{ objectId: string, ok: boolean }>;
+    return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
+      filter((result: { objectId: string, ok: boolean }) => {
+        if(!result.ok) {
+          this.messageService.create('error', 'Ошибка выполнения операции \'создать тег\'');
+        }
+        return result.ok;
+      }),
+      map((result: { objectId: string, ok: boolean }) => result.objectId)
+    );
   }
 
   public UploadFile(formdata): Observable<UploadFileModel> {
