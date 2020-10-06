@@ -34,7 +34,7 @@ export class CrudService {
     withCredentials: true,
   };
 
-  public GetNotes(text: string, tags: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
+  public GetNotes(text?: string, tags?: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
