@@ -3,12 +3,12 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
 import {ActionService, AVATAR_TAG} from '../../../services/action.service';
 import {iif, Observable, Observer, of, Subject} from 'rxjs';
-import {filter, switchMap, takeUntil, pluck, tap} from 'rxjs/operators';
+import {switchMap, takeUntil, pluck, tap} from 'rxjs/operators';
 import {CrudService} from '../../../services/crud.service';
 import {Note} from 'src/app/services/Store/NotesData.service';
 import {CreationModel} from '../../../models/crud-operations.model';
 import {NoteFileModel, NoteModel} from '../../../models/note.model';
-import { QueryParamsPacked, queryParamsUnpack } from "src/utils/params";
+import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -39,33 +39,47 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     this.store.data.note.files = [];
 
     this.initForm();
-    this.activatedRoute.queryParams.pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe((params: QueryParamsPacked) => {
-      const params1 = queryParamsUnpack(params);
-      if (params1.search) { this.store.data.note.title = params1.search; }
-      if (params1.tags)   { this.currentNote.tags = params1.tags; }
-    });
 
     this.activatedRoute.params.pipe(
       pluck('id'),
       tap((id: string) => this.noteId = id),
-      filter((id: string) => !!id),
-      switchMap((id: string) => this.action.GetNote(id)),
+      switchMap(
+        (id: string) => {
+          return iif(
+            () => !!id,
+            this.action.GetNote(id),
+            this.activatedRoute.queryParams
+          )
+        }
+      ),
       takeUntil(this.unsubscribe$)
-    ).subscribe((note: Note) => {
-      this.initialNote = note;
-      this.form.patchValue({
-        title: note.title,
-        text: note.text,
-        tags: note.tags,
-        hasAvatar: note.hasAvatar,
-        id: note.id,
-        withUrl: !!(Array.isArray(note.url) || note.url)
-      });
-      if ((Array.isArray(note.url) && note.url.length) || note.url) {
-        this.form.setControl('url',
-          this.formBuilder.control(Array.isArray(note.url) ? note.url.join('\n') : note.url));
+    ).subscribe((note: (Note | QueryParamsPacked)) => {
+      if (this.noteId) {
+        this.initialNote = note as Note;
+        this.form.patchValue({
+          title: this.initialNote.title,
+          text: this.initialNote.text,
+          tags: this.initialNote.tags,
+          hasAvatar: this.initialNote.hasAvatar,
+          id: this.initialNote.id,
+          withUrl: !!(Array.isArray(this.initialNote.url) || this.initialNote.url)
+        });
+        if ((Array.isArray(this.initialNote.url) && this.initialNote.url.length) || this.initialNote.url) {
+          this.form.setControl('url',
+            this.formBuilder.control(Array.isArray(this.initialNote.url) ? this.initialNote.url.join('\n') : this.initialNote.url));
+        }
+      } else {
+        const params1 = queryParamsUnpack(note as QueryParamsPacked);
+        if (params1.search) {
+          this.form.patchValue({
+            title: params1.search
+          })
+        }
+        if (params1.tags) {
+          this.form.patchValue({
+            tags: params1.tags
+          })
+        }
       }
     });
   }

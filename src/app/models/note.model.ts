@@ -5,7 +5,6 @@ export interface NoteModel extends Note {
   type: 'note';
   title?: string;
   text?: string;
-  url?: string | string[];
 
   image_url?: string;
 }

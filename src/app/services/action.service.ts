@@ -103,17 +103,6 @@ export class ActionService {
       });
   }
 
-  public DeleteNote(id) {
-    this.getData.DeleteNote(id).pipe(
-      filter((data: DeletionModel) => data.ok)
-    ).subscribe(() => {
-      const index = this.store.data.notes.notesArray.findIndex((note: NoteModel) => (note.id === id));
-      if (index >= 0) {
-        this.store.data.notes.notesArray.splice(index, 1);
-      }
-    });
-  }
-
   public UploadFile(formdata) {
     this.getData.UploadFile(formdata).pipe(
       filter((response: UploadFileModel) => response && response.ok)

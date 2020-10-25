@@ -102,4 +102,9 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
   writeValue(value: string[]): void {
     this.value = value;
   }
+
+  public onCancel() {
+    this.confirmPopupVisibility = false;
+    this.selectComponent.toggleDropDown();
+  }
 }
