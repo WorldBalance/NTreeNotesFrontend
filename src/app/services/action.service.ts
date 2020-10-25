@@ -3,11 +3,13 @@ import {CrudService} from './crud.service';
 import {StoreService} from './store.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {Router} from '@angular/router';
-import {CreationModel, DeletionModel, UploadFileModel} from '../models/crud-operations.model';
-import {filter, map, switchMap, tap} from 'rxjs/operators';
+import {CreationModel, ResponseModel, UploadFileModel} from '../models/crud-operations.model';
+import {filter, map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {NoteFileModel, NoteModel} from '../models/note.model';
 import {Observable} from 'rxjs';
 import {Note} from './Store/NotesData.service';
+
+export const AVATAR_TAG = 'st_hsIm';
 
 @Injectable({providedIn: 'root'})
 export class ActionService {
@@ -28,62 +30,55 @@ export class ActionService {
     if (this.store.data.tags.tagsArray === [] || id === '' || id === undefined) {
       return null;
     }
-    if (id === 'st_hsIm') {
+    if (id === AVATAR_TAG) {
       return null;
     }
     try {
       const data = this.store.data.tags.tagsArray.find((x: any) => x.id === id);
-      return data['title'];
+      return data.title;
     } catch {
       return 'ошибка системы! Тег был удалён! ';
     }
   }
 
-  public async GetNotes(tags: string[], searchString: string, opt?: { refresh?: boolean }) {
+  public GetNotes(tags: string[], searchString: string, opt?: { refresh?: boolean }): Observable<NoteModel[]> {
     opt && opt.refresh && this.store.data.RefreshNotesList();
-    if (this.store.data.notes.notesArray.length === 0) {
+    if (!this.store.data.notes.notesArray.length) {
       this.store.data.notes.isDownloadNotes = true;
     }
-    const promise = new Promise((resolve, reject) => {
-      this.getData.GetNotes(
-        searchString,
-        tags,
-        this.store.data.notes.lastNoteIndex,
-        this.store.data.notes.countMax)
-        .subscribe(data => {
-          this.store.data.notes.isDownloadNotes = false;
-          if (!data.length) {
-            this.store.data.notes.downloadMore = false; // если нет записей, то больше не грузим
-            resolve();
-            return;
-          } else {
-            let delParameter = 0;
-            if (!this.store.data.notes.notesArray.length) {
-              // console.log('первый запрос');
-              if (data.length > 0) {
-                this.store.data.notes.notesArray.push(...data);
-                this.store.data.notes.lastNoteIndex += data.length;
-                if (data.length < this.store.data.notes.countMax) {
-                  this.store.data.notes.downloadMore = false;
-                }
-                resolve();
-                return;
-              }
-            } else {
-              // console.log('последующий запрос');
-              delParameter = data.length % this.store.data.notes.notesArray.length - this.store.data.notes.lastNoteIndex;
-              this.store.data.notes.notesArray.push(...data);
-              this.store.data.notes.lastNoteIndex += data.length;
-              if (delParameter >= 1) {// достигнут конец
-                this.store.data.notes.downloadMore = false;
-              }
-              resolve();
-              return;
+    const notes$ = this.getData.GetNotes(
+      searchString,
+      tags,
+      this.store.data.notes.lastNoteIndex,
+      this.store.data.notes.countMax)
+      .pipe(shareReplay(1));
+    notes$.subscribe(data => {
+      this.store.data.notes.isDownloadNotes = false;
+      if (!data.length) {
+        this.store.data.notes.downloadMore = false; // если нет записей, то больше не грузим
+      } else {
+        let delParameter = 0;
+        if (!this.store.data.notes.notesArray.length) {
+          // console.log('первый запрос');
+          if (data.length > 0) {
+            this.store.data.notes.notesArray.push(...data);
+            this.store.data.notes.lastNoteIndex += data.length;
+            if (data.length < this.store.data.notes.countMax) {
+              this.store.data.notes.downloadMore = false;
             }
           }
-        });
+        } else {
+          // console.log('последующий запрос');
+          delParameter = data.length % this.store.data.notes.notesArray.length - this.store.data.notes.lastNoteIndex;
+          this.store.data.notes.notesArray.push(...data);
+          this.store.data.notes.lastNoteIndex += data.length;
+          if (delParameter >= 1) {// достигнут конец
+            this.store.data.notes.downloadMore = false;
+          }
+        }
+      }
     });
-    return await promise;
+    return notes$;
   }
 
   public GetNote(id): Observable<Note> {
@@ -114,12 +109,10 @@ export class ActionService {
     );
   }
 
-  public async updateNote(tags: string[], hasAvatar: boolean) {
+  public async updateNote(note: NoteModel) {
     await this.SaveFiles();
-    const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);
-    hasAvatar && tags.push('st_hsIm');
-
-    this.getData.UpdateNote(this.store.data.note.id, this.store.data.note.title, this.store.data.note.text, tags, filesArr)
+    const files = this.store.data.note.files.map((el: NoteFileModel) => el.id);
+    this.getData.updateNote({...note, files})
       .pipe(filter((data: CreationModel) => data.ok))
       .subscribe((data) => {
         this.store.data.note.lastUpdatedId = data.objectId;
@@ -128,12 +121,6 @@ export class ActionService {
           this.store.data.note.lastUpdatedId = '';
         }, 3000);
       });
-  }
-
-  public DeleteNote(id, tags: string[], searchString: string) {
-    this.getData.DeleteNote(id).pipe(
-      filter((data: DeletionModel) => data.ok)
-    ).subscribe(() => this.GetNotes(tags, searchString));
   }
 
   public UploadFile(formdata) {
@@ -152,7 +139,7 @@ export class ActionService {
   }
 
   public async SaveFiles() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const AddArray = [];
       this.store.data.note.files.forEach((val, index) => {
         if (!val['loaded']) {
@@ -163,7 +150,7 @@ export class ActionService {
         resolve();
         return;
       }
-      AddArray.forEach((val, index) => {
+      AddArray.forEach((val) => {
         if (!val['loaded']) {
           this.getData.SaveFile(this.store.data.note.files[val]['id']).subscribe((returningData) => {
             if (returningData['ok'] === false) {
@@ -178,11 +165,15 @@ export class ActionService {
 
   public deleteFile(fileId, FileIndex) {
     this.getData.DeleteFile(fileId).pipe(
-      filter(data => data['ok']),
+      filter((data: ResponseModel) => data.ok),
       switchMap(() => {
         this.store.data.note.files.splice(FileIndex, 1);
         const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);
-        return this.getData.UpdateNote(this.store.data.note.id, '', '', '', filesArr);
+        return this.getData.updateNote({
+          id: this.store.data.note.id,
+          files: filesArr,
+          type: 'note',
+        });
       }),
       filter((data: CreationModel) => data.ok)
     ).subscribe((data) => this.store.data.note.lastUpdatedId = data.objectId);

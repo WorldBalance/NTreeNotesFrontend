@@ -4,11 +4,12 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
+import {NoteModel} from '../../../models/note.model';
 
 @Component({
   selector: 'app-notes',
@@ -44,6 +45,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
   public notesSearchString: string;
+  public notes$: Observable<NoteModel[]>;
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -76,7 +78,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         data.shift();
         this.searchTags = data;
       }
-      this.action.GetNotes(this.searchTags, this.notesSearchString, { refresh: true });
+      this.notes$ = this.getNotes();
     });
     this.setupSearchNotesDebouncer();
   }
@@ -147,17 +149,19 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note/' + id]);
   }
 
-  DeleteNote(id, event) {
+  public deleteNote(id, event) {
     event.stopPropagation();
     const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
-    if (r === true) {
-      this.action.DeleteNote(id, this.searchTags, this.notesSearchString);
+    if (r) {
+      this.crudService.deleteNote(id).pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe(() => this.notes$ = this.getNotes());
     }
   }
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise((resolve) => {
       const returnObj = {};
       if (this.notesSearchString) {
         returnObj['search'] = this.notesSearchString;
@@ -182,5 +186,20 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.store.data.tags.tagsArray = tags;
       })
     );
+  }
+
+  private getNotes(): Observable<NoteModel[]> {
+    return this.action.GetNotes(this.searchTags, this.notesSearchString, {refresh: true})
+      .pipe(
+        map((notes: NoteModel[]) => {
+          return notes.map((note: NoteModel) => {
+            let url = '';
+            if ((Array.isArray(note.url) && note.url.length) || note.url) {
+              url = Array.isArray(note.url) ? note.url.join() : note.url;
+            }
+            return {...note, url}
+          })
+        })
+      );
   }
 }

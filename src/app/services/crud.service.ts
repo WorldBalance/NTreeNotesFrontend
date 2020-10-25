@@ -76,7 +76,7 @@ export class CrudService {
       .pipe(map((data: GetTagsModel) => data && data.object));
   }
 
-  public addNote(title: string, text: string, tags: string[], files: string[]): Observable<CreationModel> {
+  public addNote(note: NoteModel, files: string[]): Observable<CreationModel> {
     const body: RequestModel = {
       sequence: files.map((file: string) => {
         return {
@@ -94,10 +94,8 @@ export class CrudService {
       namespace: NAMESPACE,
       actionId: ActionIds.create,
       object: {
+        ...note,
         type: this.typeCur,
-        title,
-        text,
-        tags
       }
     })
     return this.http.post(this.urlapi, body, this.httpOptions).pipe(
@@ -105,29 +103,26 @@ export class CrudService {
     )
   }
 
-  public UpdateNote(id, title, text, tags, files): Observable<CreationModel> {
+  public updateNote(note: NoteModel): Observable<CreationModel> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.update,
-      objectId: id,
+      objectId: note.id,
       object: {
+        ...note,
         type: this.typeCur,
-        title,
-        text,
-        files,
-        tags
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;
   }
 
-  public DeleteNote(id): Observable<DeletionModel> {
+  public deleteNote(id): Observable<DeletionModel> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.delete,
       objectId: id
     };
-    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
+    return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(filter((data: DeletionModel) => data.ok));
   }
 
   public DeleteTag(id): Observable<DeletionModel> {

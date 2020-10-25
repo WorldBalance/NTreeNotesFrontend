@@ -41,3 +41,28 @@
 nz-upload {
   padding: 20px 0;
 }
+
+.additional-fields-dropdown {
+  line-height: 40px;
+}
+
+.url-title {
+  display: flex;
+}
+
+form {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 50% 41% auto;
+  overflow: hidden;
+}
+
+.main-section {
+  overflow: scroll;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

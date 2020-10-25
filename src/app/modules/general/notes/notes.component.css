@@ -64,6 +64,11 @@ ul{
   cursor: pointer;
 }
 
+.note-title-wrapper {
+  background-color:#C4C4C4;
+  color: black;
+}
+
 .note_title {
   display: inline-block;
   margin-left: 0.3em;
@@ -73,6 +78,7 @@ ul{
 .note_time {
   margin-right: 1em;
   margin-top: 0.25em;
+  float:right;
 }
 
 .note_l1 {

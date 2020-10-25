@@ -1,10 +1,11 @@
-import { Note } from "../../../in/Api";
+import { Note } from '../../../in/Api';
 
 export interface NoteModel extends Note {
   id: string;
   type: 'note';
-  title: string;
-  text: string;
+  title?: string;
+  text?: string;
+  url?: string | string[];
 
   image_url?: string;
 }

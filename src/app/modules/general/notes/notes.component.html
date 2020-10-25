@@ -16,13 +16,18 @@
     <ng-container *ngIf="tags$ | async as tags; else loader">
       <div *ngIf="tags.length" class="tags-list">
         <div class="tags-list__item"
-             *ngFor="let tag of tags | serch_Tag_Pipe: (tagsSearchString.value); index as i">
+             *ngFor="let tag of tags | serch_Tag_Pipe: (tagsSearchString.value)">
           <nz-tag [nzColor]="searchTags.includes(tag.id) ? 'green' : 'orange'"
                   class="tag_in_list"
                   (click)="FilterNotesTag(tag.id)">
             {{tag.title}}
-            <i nz-icon nzType="close" nzTheme="outline" (click)="deleteTag(tag.id,$event)" nzTooltipTitle="Удалить тег"
-               nzTooltipPlacement="right" nz-tooltip></i>
+            <i nz-icon
+               nzType="close"
+               nzTheme="outline"
+               nzTooltipTitle="Удалить тег"
+               nzTooltipPlacement="right" nz-tooltip
+               (click)="deleteTag(tag.id,$event)"
+            ></i>
           </nz-tag>
         </div>
       </div>
@@ -35,52 +40,82 @@
               [scrollWindow]="false">
     <div style="height: 100%;">
       <div style="margin-top:0.4em; margin-left: 0.5em; margin-right: 0.5em;">
-        <button (click)="addNote()" type="button" class="btn btn-primary btn-sm" style="cursor:pointer;">Добавить
-          заметку
+        <button (click)="addNote()"
+                type="button"
+                class="btn btn-primary btn-sm"
+                style="cursor:pointer;">Добавить заметку
         </button>
-        <nz-input-group [nzSuffix]="suffixIconSearchNote" nzSize="small" style="float: right; width: 13em;">
-          <input [(ngModel)]="notesSearchString" nz-input nzSize="small"
-                 (ngModelChange)="onSearchNoteInputChange($event)" class="search_note_input" placeholder="поиск"/>
+        <nz-input-group [nzSuffix]="suffixIconSearchNote"
+                        nzSize="small"
+                        style="float: right; width: 13em;">
+          <input nz-input
+                 nzSize="small"
+                 class="search_note_input"
+                 placeholder="поиск"
+                 [(ngModel)]="notesSearchString"
+                 (ngModelChange)="onSearchNoteInputChange($event)" />
         </nz-input-group>
         <ng-template #suffixIconSearchNote>
-          <i nz-icon nzSize="small" nzType="search"></i>
+          <i nz-icon
+             nzSize="small"
+             nzType="search"
+          ></i>
         </ng-template>
       </div>
-      <div *ngIf="store.data.notes.isDownloadNotes" style="text-align: center;">
-        <i nz-icon nzType="loading" style="font-size: 38px; color:orange;"></i>
+      <div *ngIf="store.data.notes.isDownloadNotes"
+           style="text-align: center">
+        <i nz-icon
+           nzType="loading"
+           style="font-size: 38px; color:orange;"
+        ></i>
       </div>
-      <div *ngIf="store.data.notes.notesArray.length > 0">
-        <div *ngFor="let Note of store.data.notes.notesArray ; let i = index  " class="note_in_list">
-          <div (click)="NoteSelect(Note['id'])"
-               [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === Note['id']}">
-            <div style="background-color:#C4C4C4; color: black">
-              <b class="note_title">{{Note['title'] | TextContentTruncate}}</b>
-              <i nz-icon nzType="delete" style="float:right" nzTheme="outline" class="delete_note"
-                 (click)="DeleteNote(Note['id'],$event)" nzTooltipTitle="Удалить заметку" nzTooltipPlacement="left"
-                 nz-tooltip></i>
-              <div class="note_time" style="float:right;" nzTooltipTitle="Время последнего редактирования"
-                   nzTooltipPlacement="left" nz-tooltip>{{Note['ts_updated_ms'] | date:'dd.MM.yyyy HH:mm:ss'}}</div>
-              <hr class="note_l1"/>
+      <div *ngFor="let note of (notes$|async)"
+           class="note_in_list">
+        <div (click)="NoteSelect(note.id)"
+             [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === note.id}">
+          <div class="note-title-wrapper">
+            <div class="note_title">
+              <b>{{note.title| TextContentTruncate}}</b>
+              <p *ngIf="note.url">{{"(" + note.url + ")"}}</p>
             </div>
-            <table class="note_small">
-              <tr>
-                <td *ngIf="Note['image_url']>''">
-                  <img src="{{Note['image_url']}}" class="note_img"/>
-                </td>
-                <td>
-                  <div [innerHTML]="Note['text']  | TextContentTruncate :400"></div>
-                </td>
-              </tr>
-            </table>
-            <nz-tag *ngFor="let tag of Note['tags']" [nzColor]="'orange'"
-                    class="tag_in_note">{{action.Get_Tag_from_Id(tag)}}</nz-tag>
+            <i nz-icon
+               nzType="delete"
+               nzTheme="outline"
+               class="delete_note"
+               nzTooltipTitle="Удалить заметку"
+               nzTooltipPlacement="left"
+               nz-tooltip
+               (click)="deleteNote(note.id,$event)"
+            ></i>
+            <div class="note_time"
+                 nzTooltipTitle="Время последнего редактирования"
+                 nzTooltipPlacement="left"
+                 nz-tooltip>
+              {{note.ts_updated_ms | date:'dd.MM.yyyy HH:mm:ss'}}
+            </div>
+            <hr class="note_l1"/>
           </div>
+          <table class="note_small">
+            <tr>
+              <td *ngIf="note.image_url">
+                <img src="{{note.image_url}}" class="note_img"/>
+              </td>
+              <td>
+                <div [innerHTML]="note.text  | TextContentTruncate :400"></div>
+              </td>
+            </tr>
+          </table>
+          <nz-tag *ngFor="let tag of note.tags"
+                  nzColor="orange"
+                  class="tag_in_note">
+            {{action.Get_Tag_from_Id(tag)}}
+          </nz-tag>
         </div>
-        <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
-          <i nz-icon
-             [nzType]="'loading'"
-             style="font-size: 38px; color:orange;"></i>
-        </div>
+      </div>
+      <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
+        <i nz-icon
+           nzType="loading"
+           style="font-size: 38px; color:orange;"></i>
       </div>
 
     </div>

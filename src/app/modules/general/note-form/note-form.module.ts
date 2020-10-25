@@ -8,6 +8,10 @@ import {NzTagModule} from 'ng-zorro-antd/tag';
 import {NzCheckboxModule} from 'ng-zorro-antd';
 import {AppSharedModule} from '../../shared/shared.module';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import {ReactiveFormsModule} from '@angular/forms';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 const routes: Routes = [
   {path: '', component: NoteFormComponent},
@@ -24,6 +28,10 @@ const routes: Routes = [
     NzCheckboxModule,
     AppSharedModule,
     NzIconModule,
+    NzInputModule,
+    ReactiveFormsModule,
+    NzCollapseModule,
+    NzDropDownModule
   ],
 })
 export class NoteFormModule {

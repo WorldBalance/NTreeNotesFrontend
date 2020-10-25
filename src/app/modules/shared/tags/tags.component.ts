@@ -5,32 +5,35 @@ import {
   OnDestroy,
   ViewChild,
   Input,
-  EventEmitter,
-  Output,
-  ChangeDetectorRef
+  ChangeDetectorRef, forwardRef
 } from '@angular/core';
 import {TagModel} from '../../../models/tag.model';
 import {finalize, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {NzSelectComponent} from 'ng-zorro-antd';
 import {CrudService} from '../../../services/crud.service';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => TagsComponent),
+    multi: true
+  }]
 })
-export class TagsComponent implements OnDestroy, OnInit {
+export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
 
   public confirmPopupVisibility: boolean;
   public loading: boolean;
   public newTagName: string;
   public tags$: Observable<TagModel[]>;
-  @Input() public noteTags: string[];
+  @Input() value: string[] = [];
 
   @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
-  @Output() private noteTagsChange = new EventEmitter<string[]>();
   private tags: TagModel[] = [];
 
   private unsubscribe$ = new Subject<void>();
@@ -65,7 +68,8 @@ export class TagsComponent implements OnDestroy, OnInit {
         }, 100);
       }
     } else {
-      this.noteTagsChange.emit(tags);
+      this.value = tags;
+      this.onChange(tags);
     }
   }
 
@@ -76,10 +80,26 @@ export class TagsComponent implements OnDestroy, OnInit {
       takeUntil(this.unsubscribe$)
     ).subscribe((id: string) => {
       this.tags.push({id, title: this.newTagName, type: 'tag'});
-      this.noteTags.push(id);
-      this.noteTagsChange.emit(this.noteTags);
       this.newTagName = '';
       this.selectComponent.value.push(id);
+      this.value = this.selectComponent.value;
+      this.onChange(this.selectComponent.value);
     });
+  }
+
+  private onChange: any = () => {}
+
+  private onTouched: any = () => {}
+
+  registerOnChange(fn: any) {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any) {
+    this.onTouched = fn;
+  }
+
+  writeValue(value: string[]): void {
+    this.value = value;
   }
 }
