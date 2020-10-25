@@ -20,8 +20,9 @@ export class HeaderComponent {
               private router: Router) {
   }
 
-  public logout(): void {
-    this.storeService.user.isAuthorized = false;
-    this.router.navigate(['/login']);
+  public logout() {
+    this.authService.logout().then(() => this.authService.login());
+    // this.storeService.user.isAuthorized = false;
+    // this.router.navigate(['/login']);
   }
 }

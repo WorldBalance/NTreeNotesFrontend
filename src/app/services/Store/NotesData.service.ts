@@ -23,7 +23,6 @@ class Notes {
   public createTags: Array<object> = [];
   public notesArray: Array<any> = [];
   public isDownloadNotes = true;
-  public lastNoteIndex = 0;
   public countMax = 15;
   public downloadMore = true;
 }
@@ -46,7 +45,6 @@ export class NotesData{
   public RefreshNotesList(){
     this.notes.createTags = [];
     this.notes.notesArray  = [];
-    this.notes.lastNoteIndex = 0;
     this.notes.countMax = 15;
     this.notes.downloadMore = true;
   }

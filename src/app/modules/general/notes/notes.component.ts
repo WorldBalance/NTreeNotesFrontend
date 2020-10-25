@@ -9,6 +9,7 @@ import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
+import { queryParamsPack, queryParamsUnpack } from "src/utils/params"
 import {NoteModel} from '../../../models/note.model';
 
 @Component({
@@ -69,15 +70,10 @@ export class NotesComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.getTags();
     this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe((params: Params) => {
-      this.searchTags = [];
-      if (params.search) {
-        this.notesSearchString = params.search;
-      }
-      if (params.tags) {
-        const data: [] = params.tags.split('-');
-        data.shift();
-        this.searchTags = data;
-      }
+      const params1 = queryParamsUnpack(params);
+      this.notesSearchString = params1.search || "";
+      this.searchTags = params1.tags || [];
+      this.action.GetNotes(params1.tags, params1.search, { refresh: true });
       this.notes$ = this.getNotes();
     });
     this.setupSearchNotesDebouncer();
@@ -128,7 +124,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    this.router.navigate(['/note']);
+    const queryParams = queryParamsPack( { tags: this.searchTags, search: this.notesSearchString } );
+    this.router.navigate(['/note'], { queryParams });
   }
 
   async FilterNotesTag(tagId) {
@@ -152,7 +149,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   public deleteNote(id, event) {
     event.stopPropagation();
     const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
-    if (r) {
+    if (r === true) {
+      this.action.DeleteNote(id);
       this.crudService.deleteNote(id).pipe(
         takeUntil(this.unsubscribe$)
       ).subscribe(() => this.notes$ = this.getNotes());
@@ -161,22 +159,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const promise = new Promise((resolve) => {
-      const returnObj = {};
-      if (this.notesSearchString) {
-        returnObj['search'] = this.notesSearchString;
-      }
-      if (this.searchTags.length) {
-        let result = '';
-        this.searchTags.forEach((tag:string) =>{
-          result += '-' + tag;
-        });
-        returnObj['tags'] = result;
-      }
-      this.router.navigate(['/notes'], {queryParams: returnObj});
-      resolve();
-    });
-    return await promise;
+    const queryParams = queryParamsPack( { tags: this.searchTags, search: this.notesSearchString } );
+    return this.router.navigate(['/notes'], { queryParams });
   }
 
   private getTags(): void {

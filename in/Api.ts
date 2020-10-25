@@ -29,6 +29,7 @@ export interface Item {
 
     type?: Type;
     title?: TitleUTF8;
+    url?: string | string[];
     text?: TitleUTF8;
 
     ts_updated_ms?: number;

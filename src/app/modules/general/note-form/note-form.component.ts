@@ -8,6 +8,7 @@ import {CrudService} from '../../../services/crud.service';
 import {Note} from 'src/app/services/Store/NotesData.service';
 import {CreationModel} from '../../../models/crud-operations.model';
 import {NoteFileModel, NoteModel} from '../../../models/note.model';
+import { QueryParamsPacked, queryParamsUnpack } from "src/utils/params";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -38,6 +39,14 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     this.store.data.note.files = [];
 
     this.initForm();
+    this.activatedRoute.queryParams.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((params: QueryParamsPacked) => {
+      const params1 = queryParamsUnpack(params);
+      if (params1.search) { this.store.data.note.title = params1.search; }
+      if (params1.tags)   { this.currentNote.tags = params1.tags; }
+    });
+
     this.activatedRoute.params.pipe(
       pluck('id'),
       tap((id: string) => this.noteId = id),
