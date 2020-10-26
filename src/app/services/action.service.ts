@@ -8,6 +8,7 @@ import {filter, map, shareReplay, switchMap, tap} from 'rxjs/operators';
 import {NoteFileModel, NoteModel} from '../models/note.model';
 import {Observable} from 'rxjs';
 import {Note} from './Store/NotesData.service';
+import {isEqual} from 'lodash';
 
 export const AVATAR_TAG = 'st_hsIm';
 
@@ -92,7 +93,8 @@ export class ActionService {
   public async updateNote(note: NoteModel) {
     await this.SaveFiles();
     const files = this.store.data.note.files.map((el: NoteFileModel) => el.id);
-    this.getData.updateNote({...note, files})
+    isEqual(note.files.sort(), files.sort()) ? (delete note.files) : (note.files = files);
+    this.getData.updateNote(note)
       .pipe(filter((data: CreationModel) => data.ok))
       .subscribe((data) => {
         this.store.data.note.lastUpdatedId = data.objectId;
@@ -120,20 +122,17 @@ export class ActionService {
 
   public async SaveFiles() {
     return new Promise((resolve) => {
-      const AddArray = [];
-      this.store.data.note.files.forEach((val, index) => {
-        if (!val['loaded']) {
-          AddArray.push(index)
-        }
-      });
-      if (AddArray.length === 0) {
+      const AddArray = this.store.data.note.files
+        .filter((val: NoteFileModel) => !val.loaded)
+        .map((val: NoteFileModel, index: number) => index);
+      if (!AddArray.length) {
         resolve();
         return;
       }
       AddArray.forEach((val) => {
         if (!val['loaded']) {
-          this.getData.SaveFile(this.store.data.note.files[val]['id']).subscribe((returningData) => {
-            if (returningData['ok'] === false) {
+          this.getData.SaveFile(this.store.data.note.files[val].id).subscribe((returningData: ResponseModel) => {
+            if (!returningData.ok) {
               alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
             }
             resolve();
@@ -145,7 +144,6 @@ export class ActionService {
 
   public deleteFile(fileId, FileIndex) {
     this.getData.DeleteFile(fileId).pipe(
-      filter((data: ResponseModel) => data.ok),
       switchMap(() => {
         this.store.data.note.files.splice(FileIndex, 1);
         const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);

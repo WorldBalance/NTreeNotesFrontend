@@ -10,6 +10,7 @@ import {CreationModel} from '../../../models/crud-operations.model';
 import {NoteFileModel, NoteModel} from '../../../models/note.model';
 import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {cloneDeep, isEqual} from 'lodash';
 
 @Component({
   selector: 'app-note-form',
@@ -55,7 +56,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$)
     ).subscribe((note: (Note | QueryParamsPacked)) => {
       if (this.noteId) {
-        this.initialNote = note as Note;
+        this.initialNote = cloneDeep(note as Note);
         this.form.patchValue({
           title: this.initialNote.title,
           text: this.initialNote.text,
@@ -101,7 +102,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
             const newNoteId = data.sequence[data.sequence.length - 1].objectId;
             data.sequence.pop();
             const newFilesIds = data.sequence.map((response: CreationModel) => response.objectId);
-            value.hasAvatar && value.tags.push('st_hsIm');
+            value.hasAvatar && value.tags.push(AVATAR_TAG);
             return iif(
               () => !!files.length,
               this.crudService.updateNote({...value, files: newFilesIds, id: newNoteId}),
@@ -154,20 +155,21 @@ export class NoteFormComponent implements OnInit, OnDestroy {
 
   private updateNote(value: NoteModel & { hasAvatar: boolean }, url: string | string[]): void {
     this.store.data.note.lastUpdatedId = '';
-    const updatedNote = {} as NoteModel;
-    Object.keys(value).forEach((key: string) => {
+    const updatedNote: NoteModel = Object.keys(value).reduce((acc: NoteModel, key: string) => {
       if (Array.isArray(value[key]) || value[key] !== this.initialNote[key]) {
-        updatedNote[key] = value[key]
+        acc[key] = value[key]
       }
-    });
+      return acc;
+    }, {} as NoteModel);
     const initialNoteUrl = Array.isArray(this.initialNote.url) ? this.initialNote.url.join('\n') : this.initialNote.url;
     (initialNoteUrl === url) ? delete updatedNote.url : updatedNote.url = url;
-    if ((this.initialNote.hasAvatar === value.hasAvatar) &&
-      (JSON.stringify(this.initialNote.tags) === JSON.stringify(updatedNote.tags))) {
+    if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
       delete updatedNote.tags;
-    } else if (value.hasAvatar){
+    } else if (value.hasAvatar) {
       updatedNote.tags.push(AVATAR_TAG);
     }
+    updatedNote.files = this.initialNote.files.map((file: NoteFileModel) => file.id);
+
     this.action.updateNote({...updatedNote, id: value.id});
   }
 
