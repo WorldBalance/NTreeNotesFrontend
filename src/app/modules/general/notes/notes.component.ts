@@ -180,7 +180,7 @@ export class NotesComponent implements OnInit, OnDestroy {
           return notes.map((note: NoteModel) => {
             let url = '';
             if ((Array.isArray(note.url) && note.url.length) || note.url) {
-              url = Array.isArray(note.url) ? note.url.join() : note.url;
+              url = Array.isArray(note.url) ? note.url.join(', ') : note.url;
             }
             return {...note, url}
           })

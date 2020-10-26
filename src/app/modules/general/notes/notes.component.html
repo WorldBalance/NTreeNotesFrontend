@@ -53,7 +53,7 @@
                  class="search_note_input"
                  placeholder="поиск"
                  [(ngModel)]="notesSearchString"
-                 (ngModelChange)="onSearchNoteInputChange($event)" />
+                 (ngModelChange)="onSearchNoteInputChange($event)"/>
         </nz-input-group>
         <ng-template #suffixIconSearchNote>
           <i nz-icon
@@ -75,25 +75,26 @@
              [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === note.id}">
           <div class="note-title-wrapper">
             <div class="note_title">
-              <b>{{note.title| TextContentTruncate}}</b>
-              <p *ngIf="note.url">{{"(" + note.url + ")"}}</p>
+              <b>{{note.title}}</b>
+              <span *ngIf="note.url">{{"  (" + note.url + ")"}}</span>
             </div>
-            <i nz-icon
-               nzType="delete"
-               nzTheme="outline"
-               class="delete_note"
-               nzTooltipTitle="Удалить заметку"
-               nzTooltipPlacement="left"
-               nz-tooltip
-               (click)="deleteNote(note.id,$event)"
-            ></i>
-            <div class="note_time"
-                 nzTooltipTitle="Время последнего редактирования"
+            <div>
+              <i nz-icon
+                 nzType="delete"
+                 nzTheme="outline"
+                 class="delete_note"
+                 nzTooltipTitle="Удалить заметку"
                  nzTooltipPlacement="left"
-                 nz-tooltip>
-              {{note.ts_updated_ms | date:'dd.MM.yyyy HH:mm:ss'}}
+                 nz-tooltip
+                 (click)="deleteNote(note.id,$event)"
+              ></i>
+              <div class="note_time"
+                   nzTooltipTitle="Время последнего редактирования"
+                   nzTooltipPlacement="left"
+                   nz-tooltip>
+                {{note.ts_updated_ms | date:'dd.MM.yyyy HH:mm:ss'}}
+              </div>
             </div>
-            <hr class="note_l1"/>
           </div>
           <table class="note_small">
             <tr>

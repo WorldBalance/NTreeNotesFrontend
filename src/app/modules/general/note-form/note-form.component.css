@@ -6,6 +6,10 @@
   flex-direction: column;
 }
 
+.note-title-field {
+  font-weight: bold;
+}
+
 .note-title-field, .node-text-field, .additional-info-block {
   width: 100%;
 }
@@ -29,7 +33,6 @@
   padding: 0.2em
 }
 
-
 .picture-container {
   float: left;
   display: flex;
@@ -40,10 +43,6 @@
 
 nz-upload {
   padding: 20px 0;
-}
-
-.additional-fields-dropdown {
-  line-height: 40px;
 }
 
 .url-title {
@@ -58,7 +57,7 @@ form {
 }
 
 .main-section {
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .footer {

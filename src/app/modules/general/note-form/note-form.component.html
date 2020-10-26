@@ -3,12 +3,9 @@
   <form *ngIf="form" [formGroup]="form">
     <div class="main-section">
       <div>Название заметки:</div>
-      <input formControlName="title" class="note-title-field"/>
+      <input formControlName="title" class="note-title-field ant-input"/>
       <div>Теги:</div>
       <app-tags formControlName="tags"></app-tags>
-      <span>Описание:</span>
-      <textarea nz-input formControlName="text" class="node-text-field"
-                [nzAutosize]="{minRows: 1,maxRows: 3}"></textarea>
       <ng-container *ngIf="form.controls.url">
         <span class="url-title">URL(s):</span>
         <textarea nz-input
@@ -17,6 +14,8 @@
                   [nzAutosize]="{minRows: 1,maxRows: 3}"
         ></textarea>
       </ng-container>
+      <span>Описание:</span>
+      <textarea nz-input formControlName="text" class="node-text-field"></textarea>
     </div>
     <span class="additional-info-block">
       <nz-tabset>
@@ -79,10 +78,12 @@
         </button>
         <button (click)="cancel()" class="note-form-button">Отмена</button>
       </div>
-      <a nz-dropdown [nzDropdownMenu]="menu" class="additional-fields-dropdown">
+      <button nz-button nz-dropdown
+              class="ant-dropdown-trigger"
+              [nzDropdownMenu]="menu">
         Другие поля
         <i nz-icon nzType="down"></i>
-      </a>
+      </button>
 
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu>
