@@ -74,14 +74,14 @@
         <button (click)="addNote()"
                 class="note-form-button"
                 [disabled]="form.invalid">
-          {{form.value.id ? "Сохранить изменения" : "Создать заметку"}}
+          <b>{{form.value.id ? "Сохранить изменения" : "Создать заметку"}}</b>
         </button>
-        <button (click)="cancel()" class="note-form-button">Отмена</button>
+        <button (click)="cancel()" class="note-form-button"><b>Отмена</b></button>
       </div>
       <button nz-button nz-dropdown
               class="ant-dropdown-trigger"
               [nzDropdownMenu]="menu">
-        Другие поля
+        <b>Другие поля</b>
         <i nz-icon nzType="down"></i>
       </button>
 
