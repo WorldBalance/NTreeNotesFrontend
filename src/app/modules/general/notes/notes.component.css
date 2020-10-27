@@ -36,6 +36,7 @@ ul{
 
 .note_small tr td{
  vertical-align: top;
+  padding: 5px;
 }
 
 .del_note{
@@ -64,20 +65,31 @@ ul{
   cursor: pointer;
 }
 
+.note-title-wrapper {
+  background-color:#C4C4C4;
+  color: black;
+  display: flex;
+  border-bottom: 0.1em solid gray;
+  justify-content: space-between;
+  padding: 5px;
+  align-items: center;
+}
+.note-title-wrapper div:last-child{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+
 .note_title {
-  display: inline-block;
-  margin-left: 0.3em;
-  margin-top: 0.25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note_time {
   margin-right: 1em;
-  margin-top: 0.25em;
-}
-
-.note_l1 {
-  margin-top: 0.25em;
-  margin-bottom: 0.5em;
+  float:right;
+  white-space: nowrap;
 }
 
 .tag_element{
@@ -115,8 +127,7 @@ ul{
 .delete_note{
   text-align: right;
   float: right;
-  margin-right: 0.5em;
-  margin-top: 0.3em;
+  margin-right: 0;
 }
 
 .tag_in_list i:hover{

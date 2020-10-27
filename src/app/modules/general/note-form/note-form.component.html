@@ -1,12 +1,23 @@
 <div class="note-form-container">
   <a class="nav-link" routerLink="/notes">Назад к заметкам</a>
-  <div>Название заметки</div>
-  <input [(ngModel)]="store.data.note.title" class="note-title-field"/>
-  <div>Теги</div>
-  <app-tags [(noteTags)]="currentNote.tags"></app-tags>
-  <textarea [(ngModel)]="store.data.note.text" class="node-text-field" rows="12"></textarea>
-
-  <span class="additional-info-block">
+  <form *ngIf="form" [formGroup]="form">
+    <div class="main-section">
+      <div>Название заметки:</div>
+      <input formControlName="title" class="note-title-field ant-input"/>
+      <div>Теги:</div>
+      <app-tags formControlName="tags"></app-tags>
+      <ng-container *ngIf="form.value.withUrl">
+        <span class="url-title">URL(s):</span>
+        <textarea nz-input
+                  class="node-text-field"
+                  formControlName="url"
+                  [nzAutosize]="{minRows: 1,maxRows: 3}"
+        ></textarea>
+      </ng-container>
+      <span>Описание:</span>
+      <textarea nz-input formControlName="text" class="node-text-field"></textarea>
+    </div>
+    <span class="additional-info-block">
       <nz-tabset>
         <nz-tab [nzTitle]="titleTemplate">
           <ng-template #titleTemplate>
@@ -17,7 +28,7 @@
             ></nz-badge>
           </ng-template>
             <label nz-checkbox
-                   [(ngModel)]="currentNote.hasAvatar"
+                   formControlName="hasAvatar"
                    ngDefaultControl>C аватаркой</label>
              <div *ngFor="let photo of store.data.note.files; let i = index"
                   style="max-height: 1em; margin:0.1em">
@@ -26,8 +37,12 @@
                        [ngClass]="{'not_loaded': !photo.loaded}"
                        class="note-form-photo"/>
                   <div>
-                  <div class="delete_picture"><i nz-icon nzType="close-circle" nzTheme="twotone"
-                                                 (click)="deleteFile(photo.id, i)"></i></div>
+                  <div class="delete_picture">
+                    <i nz-icon nzType="close-circle"
+                       nzTheme="twotone"
+                       (click)="deleteFile(photo.id, i)"
+                    ></i>
+                  </div>
                   <div *ngIf="!photo.loaded" class="image_not_loaded">
                     <nz-tag nzColor="magenta">Нажмите сохранить!</nz-tag>
                   </div>
@@ -54,9 +69,30 @@
         </nz-tab>
       </nz-tabset>
     </span>
+    <div class="footer">
+      <div>
+        <button (click)="addNote()"
+                class="note-form-button"
+                [disabled]="form.invalid">
+          <b>{{form.value.id ? "Сохранить изменения" : "Создать заметку"}}</b>
+        </button>
+        <button (click)="cancel()" class="note-form-button"><b>Отмена</b></button>
+      </div>
+      <button nz-dropdown
+              nzTrigger="click"
+              [nzDropdownMenu]="menu">
+        <b>Другие поля</b>
+        <i nz-icon nzType="down"></i>
+      </button>
 
-  <div>
-    <button (click)="addNote()" class="note-form-button">Сохранить изменения</button>
-    <button (click)="cancel()" class="note-form-button">Отмена</button>
-  </div>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item>
+            <label nz-checkbox
+                   formControlName="withUrl">URL(s)</label>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+  </form>
 </div>

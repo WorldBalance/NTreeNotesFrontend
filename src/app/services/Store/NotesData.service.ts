@@ -9,13 +9,14 @@ class Tags {
 
 export class Note {
   public id = '';
-  public title = '';
-  public text = '';
-  public tags: Array<string> = [];
+  public title? = '';
+  public text? = '';
+  public tags?: Array<string> = [];
   public isDownloadNote = true;
   public lastUpdatedId = '';
   public files: Array<NoteFileModel> = [];
   public hasAvatar = false;
+  public url?: string[] | string = [];
 }
 
 class Notes {

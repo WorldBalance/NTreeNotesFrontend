@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgZorroAntdModule} from 'ng-zorro-antd';
-import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login.component';
 import {RouterModule, Routes} from '@angular/router';
+import {AppSharedModule} from '../../shared/shared.module';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -11,10 +9,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
     RouterModule.forChild(routes),
-    FormsModule,
-    NgZorroAntdModule
+    AppSharedModule
   ],
   declarations: [
     LoginComponent

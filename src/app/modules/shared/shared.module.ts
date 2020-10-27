@@ -1,13 +1,12 @@
 import {NgModule} from '@angular/core';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { TagsComponent } from './tags/tags.component';
-import {NzSelectModule} from 'ng-zorro-antd/select';
+import {TagsComponent} from './tags/tags.component';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import { NgZorroAntdModule} from 'ng-zorro-antd';
 
 @NgModule({
-  imports: [NzModalModule, NzSelectModule, CommonModule, FormsModule],
-  exports: [NzModalModule, FormsModule, CommonModule, TagsComponent],
+  imports: [CommonModule, FormsModule, NgZorroAntdModule],
+  exports: [FormsModule, CommonModule, TagsComponent, NgZorroAntdModule],
   declarations: [TagsComponent],
 })
 export class AppSharedModule {

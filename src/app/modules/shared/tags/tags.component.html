@@ -1,7 +1,7 @@
 <nz-select nzMode="tags"
            nzPlaceHolder="Можете прикрепить теги здесь"
            class="note-tags-field"
-           [ngModel]="noteTags"
+           [ngModel]="value"
            #nzSelectComponent
            (ngModelChange)="addTag($event)"
            [nzLoading]="loading">

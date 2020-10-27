@@ -4,12 +4,13 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
-import { queryParamsPack, queryParamsUnpack } from "src/utils/params"
+import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
+import {NoteModel} from '../../../models/note.model';
 
 @Component({
   selector: 'app-notes',
@@ -45,6 +46,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
   public notesSearchString: string;
+  public notes$: Observable<NoteModel[]>;
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -68,10 +70,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.getTags();
     this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe((params: Params) => {
-      const params1 = queryParamsUnpack(params);
-      this.notesSearchString = params1.search || "";
-      this.searchTags = params1.tags || [];
-      this.action.GetNotes(params1.tags, params1.search, { refresh: true });
+      this.notes$ = this.getNotes(params);
     });
     this.setupSearchNotesDebouncer();
   }
@@ -143,11 +142,16 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note/' + id]);
   }
 
-  DeleteNote(id, event) {
+  public deleteNote(id, event) {
     event.stopPropagation();
     const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
-    if (r === true) {
-      this.action.DeleteNote(id);
+    if (r) {
+      this.crudService.deleteNote(id).pipe(
+        switchMap(() => this.route.queryParams),
+        takeUntil(this.unsubscribe$)
+      ).subscribe((params: Params) => {
+        this.notes$ = this.getNotes(params)
+      });
     }
   }
 
@@ -164,5 +168,23 @@ export class NotesComponent implements OnInit, OnDestroy {
         this.store.data.tags.tagsArray = tags;
       })
     );
+  }
+
+  private getNotes(params: Params): Observable<NoteModel[]> {
+    const params1 = queryParamsUnpack(params);
+    this.notesSearchString = params1.search || '';
+    this.searchTags = params1.tags || [];
+    return this.action.GetNotes(params1.tags, params1.search, { refresh: true })
+      .pipe(
+        map((notes: NoteModel[]) => {
+          return notes.map((note: NoteModel) => {
+            let url = '';
+            if ((Array.isArray(note.url) && note.url.length) || note.url) {
+              url = Array.isArray(note.url) ? note.url.join(', ') : note.url;
+            }
+            return {...note, url}
+          })
+        })
+      );
   }
 }
