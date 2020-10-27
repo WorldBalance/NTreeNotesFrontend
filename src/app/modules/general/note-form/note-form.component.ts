@@ -84,14 +84,11 @@ export class NoteFormComponent implements OnInit, OnDestroy {
 
   public addNote(): void {
     const value = this.form.value;
-    let url = null;
-    if (value.withUrl) {
-      url = (value.url && value.url.split('\n')) || null;
-      if (url && url.length <= 1) {
-        url = url[0] || null;
-      } else if (url) {
-        url = (url as string[]).filter((part: string) => !!part);
-      }
+    let url = (value.url && value.url.split('\n')) || null;
+    if (url && url.length <= 1) {
+      url = url[0] || null;
+    } else if (url) {
+      url = (url as string[]).filter((part: string) => !!part);
     }
     if (value.id) {
       this.updateNote(value, url);
