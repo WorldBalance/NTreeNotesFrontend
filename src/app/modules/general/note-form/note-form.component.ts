@@ -63,12 +63,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
           tags: this.initialNote.tags,
           hasAvatar: this.initialNote.hasAvatar,
           id: this.initialNote.id,
-          withUrl: !!(Array.isArray(this.initialNote.url) || this.initialNote.url)
+          withUrl: !!(Array.isArray(this.initialNote.url) || this.initialNote.url),
+          url: Array.isArray(this.initialNote.url) ? this.initialNote.url.join('\n') : (this.initialNote.url || null)
         });
-        if ((Array.isArray(this.initialNote.url) && this.initialNote.url.length) || this.initialNote.url) {
-          this.form.setControl('url',
-            this.formBuilder.control(Array.isArray(this.initialNote.url) ? this.initialNote.url.join('\n') : this.initialNote.url));
-        }
       } else {
         const params1 = queryParamsUnpack(note as QueryParamsPacked);
         if (params1.search) {
@@ -87,9 +84,14 @@ export class NoteFormComponent implements OnInit, OnDestroy {
 
   public addNote(): void {
     const value = this.form.value;
-    let url = (value.url && value.url.split('\n')) || '';
-    if (url && url.length <= 1) {
-      url = url[0] || '';
+    let url = null;
+    if (value.withUrl) {
+      url = (value.url && value.url.split('\n')) || null;
+      if (url && url.length <= 1) {
+        url = url[0] || null;
+      } else if (url) {
+        url = (url as string[]).filter((part: string) => !!part);
+      }
     }
     if (value.id) {
       this.updateNote(value, url);
@@ -139,18 +141,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       tags: [[]],
       hasAvatar: false,
       id: '',
-      withUrl: false
+      withUrl: false,
+      url: null,
     });
-
-    this.form.controls.withUrl.valueChanges.pipe(takeUntil(this.unsubscribe$))
-      .subscribe(newValue => {
-        if (newValue) {
-          this.form.setControl('url', this.formBuilder.control(''));
-        } else {
-          this.form.patchValue({url: ''});
-          this.form.removeControl('url');
-        }
-      })
   }
 
   private updateNote(value: NoteModel & { hasAvatar: boolean }, url: string | string[]): void {
@@ -161,8 +154,12 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       }
       return acc;
     }, {} as NoteModel);
-    const initialNoteUrl = Array.isArray(this.initialNote.url) ? this.initialNote.url.join('\n') : this.initialNote.url;
-    (initialNoteUrl === url) ? delete updatedNote.url : updatedNote.url = url;
+    if ((Array.isArray(this.initialNote.url) && Array.isArray(url) && isEqual(this.initialNote.url.sort(), url.sort()))
+      || (this.initialNote.url || null) === url) {
+      delete updatedNote.url;
+    } else {
+      updatedNote.url = url;
+    }
     if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {

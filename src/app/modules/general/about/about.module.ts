@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AboutComponent } from './about.component';
 import {RouterModule, Routes} from '@angular/router';
+import {AppSharedModule} from '../../shared/shared.module';
 
 const routes: Routes = [
   { path: '', component: AboutComponent },
@@ -9,7 +9,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
+    AppSharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [

@@ -6,7 +6,7 @@
       <input formControlName="title" class="note-title-field ant-input"/>
       <div>Теги:</div>
       <app-tags formControlName="tags"></app-tags>
-      <ng-container *ngIf="form.controls.url">
+      <ng-container *ngIf="form.value.withUrl">
         <span class="url-title">URL(s):</span>
         <textarea nz-input
                   class="node-text-field"
@@ -78,8 +78,8 @@
         </button>
         <button (click)="cancel()" class="note-form-button"><b>Отмена</b></button>
       </div>
-      <button nz-button nz-dropdown
-              class="ant-dropdown-trigger"
+      <button nz-dropdown
+              nzTrigger="click"
               [nzDropdownMenu]="menu">
         <b>Другие поля</b>
         <i nz-icon nzType="down"></i>
