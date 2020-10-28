@@ -11,6 +11,7 @@ import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
 import {NoteModel} from '../../../models/note.model';
+import { toArray, truncateForHtml } from '../../../../utils/utils1';
 
 @Component({
   selector: 'app-notes',
@@ -178,11 +179,12 @@ export class NotesComponent implements OnInit, OnDestroy {
       .pipe(
         map((notes: NoteModel[]) => {
           return notes.map((note: NoteModel) => {
-            let url = '';
-            if ((Array.isArray(note.url) && note.url.length) || note.url) {
-              url = Array.isArray(note.url) ? note.url.join(', ') : note.url;
+            let urlHtml = "";
+            if (note.url) {
+              const s1 = toArray(note.url).map((url1) => `<a href=${url1}>${truncateForHtml(url1, 50)}</a>`).join(', ');
+              urlHtml = "  (" + s1 + ")";
             }
-            return {...note, url}
+            return {...note, urlHtml};
           })
         })
       );
