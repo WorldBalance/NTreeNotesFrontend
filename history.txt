@@ -1,0 +1,13 @@
+
+
+
+
+
+
+
+
+
+2020-10-28, v 0.8.4
+- Added URL field
+- Fixed deleting notes
+- Refactoring

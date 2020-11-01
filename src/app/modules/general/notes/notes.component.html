@@ -76,7 +76,7 @@
           <div class="note-title-wrapper">
             <div class="note_title">
               <b>{{note.title}}</b>
-              <span *ngIf="note.url">{{"  (" + note.url + ")"}}</span>
+              <span *ngIf="note.urlHtml" [innerHTML]="note.urlHtml"></span>
             </div>
             <div>
               <i nz-icon
