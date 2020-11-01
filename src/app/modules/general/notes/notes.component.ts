@@ -46,7 +46,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
   public notesSearchString: string;
-  public notes$: Observable<NoteModel[]>;
+  public notes: NoteModel[];
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -63,15 +63,18 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public GetMoreNotesData() {
     if (this.store.data.notes.downloadMore) {
-      this.action.GetNotes(this.searchTags, this.notesSearchString);
+      this.action.GetNotes(this.searchTags, this.notesSearchString)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((notes: NoteModel[]) => this.notes = this.notes.concat(notes));
     }
   }
 
   public ngOnInit(): void {
     this.getTags();
-    this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe((params: Params) => {
-      this.notes$ = this.getNotes(params);
-    });
+    this.route.queryParams.pipe(
+      switchMap((params: Params) => this.getNotes(params)),
+      takeUntil(this.unsubscribe$)
+    ).subscribe((notes: NoteModel[]) => this.notes = notes);
     this.setupSearchNotesDebouncer();
   }
 
@@ -148,10 +151,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     if (r) {
       this.crudService.deleteNote(id).pipe(
         switchMap(() => this.route.queryParams),
+        switchMap((params: Params) => this.getNotes(params)),
         takeUntil(this.unsubscribe$)
-      ).subscribe((params: Params) => {
-        this.notes$ = this.getNotes(params)
-      });
+      ).subscribe((notes: NoteModel[]) => this.notes = notes);
     }
   }
 

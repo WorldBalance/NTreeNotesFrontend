@@ -69,7 +69,7 @@
            style="font-size: 38px; color:orange;"
         ></i>
       </div>
-      <div *ngFor="let note of (notes$|async)"
+      <div *ngFor="let note of notes"
            class="note_in_list">
         <div (click)="NoteSelect(note.id)"
              [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === note.id}">
