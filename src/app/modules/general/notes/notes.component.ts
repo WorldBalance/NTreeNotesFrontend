@@ -11,7 +11,7 @@ import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
 import {NoteModel} from '../../../models/note.model';
-import { toArray, truncateForHtml } from '../../../../utils/utils1';
+import {toArray, truncateForHtml} from '../../../../utils/utils1';
 
 @Component({
   selector: 'app-notes',
@@ -24,7 +24,7 @@ import { toArray, truncateForHtml } from '../../../../utils/utils1';
         query('div', style({transform: 'translatex(-100%)'})),
         query('div',
           stagger('15ms', [
-            animate('220ms', style ({transform: 'translateX(0)'}))
+            animate('220ms', style({transform: 'translateX(0)'}))
           ])
         )
       ])
@@ -34,7 +34,7 @@ import { toArray, truncateForHtml } from '../../../../utils/utils1';
         query('div', style({transform: 'translatex(-100%)'})),
         query('div',
           stagger('10ms', [
-            animate('250ms ease-in', style ({transform: 'translateX(0)'}))
+            animate('250ms ease-in', style({transform: 'translateX(0)'}))
           ])
         )
       ])
@@ -124,8 +124,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    const queryParams = queryParamsPack( { tags: this.searchTags, search: this.notesSearchString } );
-    this.router.navigate(['/note'], { queryParams });
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    this.router.navigate(['/note'], {queryParams});
   }
 
   async FilterNotesTag(tagId) {
@@ -152,16 +152,18 @@ export class NotesComponent implements OnInit, OnDestroy {
     if (r) {
       this.crudService.deleteNote(id).pipe(
         switchMap(() => this.route.queryParams),
-        switchMap((params: Params) => this.getNotes(params)),
         takeUntil(this.unsubscribe$)
-      ).subscribe((notes: NoteModel[]) => this.notes = notes);
+      ).subscribe(() => {
+        const deletedNote = this.notes.findIndex((note: NoteModel) => note.id === id);
+        this.notes.splice(deletedNote, 1);
+      });
     }
   }
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack( { tags: this.searchTags, search: this.notesSearchString } );
-    return this.router.navigate(['/notes'], { queryParams });
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    return this.router.navigate(['/notes'], {queryParams});
   }
 
   private getTags(): void {
@@ -177,7 +179,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     const params1 = queryParamsUnpack(params);
     this.notesSearchString = params1.search || '';
     this.searchTags = params1.tags || [];
-    return this.action.GetNotes(params1.tags, params1.search, { refresh: true })
+    return this.action.GetNotes(params1.tags, params1.search, {refresh: true})
       .pipe(
         map((notes: NoteModel[]) => {
           return notes.map((note: NoteModel) => {
