@@ -134,7 +134,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   private initForm(): void {
     this.form = this.formBuilder.group({
       title: ['', Validators.required],
-      text: ['', Validators.required],
+      text: '',
       tags: [[]],
       hasAvatar: false,
       id: '',
