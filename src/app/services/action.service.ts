@@ -93,7 +93,7 @@ export class ActionService {
   public async updateNote(note: NoteModel) {
     await this.SaveFiles();
     const files = this.store.data.note.files.map((el: NoteFileModel) => el.id);
-    isEqual(note.files.sort(), files.sort()) ? (delete note.files) : (note.files = files);
+    isEqual(note.files.sort(), files.sort()) ? (delete note.files) : (note.files = files.length ? files : null);
     this.getData.updateNote(note)
       .pipe(filter((data: CreationModel) => data.ok))
       .subscribe((data) => {
