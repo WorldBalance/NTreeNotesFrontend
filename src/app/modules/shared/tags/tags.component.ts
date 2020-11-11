@@ -30,8 +30,9 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
   public confirmPopupVisibility: boolean;
   public loading: boolean;
   public newTagName: string;
-  public tags$: Observable<TagModel[]>;
   @Input() value: string[] = [];
+  @Input() placeholder: string;
+  @Input() tags$: Observable<TagModel[]>;
 
   @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
   private tags: TagModel[] = [];
@@ -42,7 +43,7 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
   }
 
   public ngOnInit() {
-    this.tags$ = this.crudService.getTags().pipe(
+    this.tags$ = this.tags$.pipe(
       tap((tags: TagModel[]) => this.tags = tags)
     );
   }

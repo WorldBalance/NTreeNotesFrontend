@@ -5,7 +5,7 @@
       <div>Название заметки:</div>
       <input formControlName="title" class="note-title-field ant-input"/>
       <div>Теги:</div>
-      <app-tags formControlName="tags"></app-tags>
+      <app-tags formControlName="tags" placeholder="Можете прикрепить теги здесь" [tags$]="tags$"></app-tags>
       <ng-container *ngIf="form.value.withUrl">
         <span class="url-title">URL(s):</span>
         <textarea nz-input

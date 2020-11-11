@@ -4,7 +4,7 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
@@ -105,7 +105,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       this.tagsLoading = true;
       this.crudService.AddTag(text).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
         this.getTags();
-        this.store.data.tags.createText = '';
+        // this.store.data.tags.createText = '';
       });
     }
   }
@@ -171,7 +171,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.tags$ = this.crudService.getTags().pipe(
       tap((tags: TagModel[]) => {
         this.store.data.tags.tagsArray = tags;
-      })
+      }),
+      shareReplay(1),
     );
   }
 

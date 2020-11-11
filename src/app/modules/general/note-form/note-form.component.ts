@@ -11,6 +11,7 @@ import {NoteFileModel, NoteModel} from '../../../models/note.model';
 import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {cloneDeep, isEqual} from 'lodash';
+import {TagModel} from '../../../models/tag.model';
 
 @Component({
   selector: 'app-note-form',
@@ -22,6 +23,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public initialNote: Note;
   public form: FormGroup;
   public noteId: string;
+  public tags$: Observable<TagModel[]>;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -80,6 +82,8 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.tags$ = this.crudService.getTags();
   }
 
   public addNote(): void {

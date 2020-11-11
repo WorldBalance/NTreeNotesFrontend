@@ -137,3 +137,14 @@ ul{
 .delete_note:hover{
   color: red;
 }
+
+nz-sider {
+  overflow-y: scroll;
+  overflow-x:hidden;
+  background-color:rgb(27, 23, 49);
+  color: white;
+}
+
+.white-text {
+  color: white;
+}

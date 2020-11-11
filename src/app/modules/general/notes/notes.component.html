@@ -1,18 +1,25 @@
 <nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
-  <nz-sider style="overflow-y: scroll;overflow-x:hidden; background-color:rgb(27, 23, 49)" class="scrollbar my_scroll">
-    <nz-input-group [nzSuffix]="suffixIconAddTag" nzSize="small">
-      <input type="text" nz-input nzSize="small" [(ngModel)]="store.data.tags.createText"
-             (keyup.enter)="addTag(store.data.tags.createText)" placeholder="имя нового тега"/>
-    </nz-input-group>
-    <ng-template #suffixIconAddTag nzSize="small">
-      <i nz-icon nzType="plus-circle" (click)="addTag(store.data.tags.createText)" style="cursor:pointer"></i>
-    </ng-template>
-    <nz-input-group [nzSuffix]="suffixIconSearch" nzSize="small">
+  <nz-sider class="scrollbar my_scroll">
+    <h3 class="white-text">Фильтр</h3>
+    <span>Включает:</span>
+    <app-tags [tags$]="tags$"></app-tags>
+    <br><br>
+    <span>Исключает:</span>
+    <app-tags [tags$]="tags$"></app-tags>
+
+<!--        <nz-input-group [nzSuffix]="suffixIconAddTag" nzSize="small">-->
+<!--      <input type="text" nz-input nzSize="small" [(ngModel)]="store.data.tags.createText"-->
+<!--             (keyup.enter)="addTag(store.data.tags.createText)" placeholder="имя нового тега"/>-->
+<!--    </nz-input-group>-->
+<!--    <ng-template #suffixIconAddTag nzSize="small">-->
+<!--      <i nz-icon nzType="plus-circle" (click)="addTag(store.data.tags.createText)" style="cursor:pointer"></i>-->
+<!--    </ng-template>-->
+<!--    <nz-input-group [nzSuffix]="suffixIconSearch" nzSize="small">-->
       <input type="text" nz-input nzSize="small" #tagsSearchString placeholder="поиск тегов"/>
-    </nz-input-group>
-    <ng-template #suffixIconSearch>
-      <i nz-icon nzSize="small" nzType="search"></i>
-    </ng-template>
+<!--    </nz-input-group>-->
+<!--    <ng-template #suffixIconSearch>-->
+<!--      <i nz-icon nzSize="small" nzType="search"></i>-->
+<!--    </ng-template>-->
     <ng-container *ngIf="tags$ | async as tags; else loader">
       <div *ngIf="tags.length" class="tags-list">
         <div class="tags-list__item"
