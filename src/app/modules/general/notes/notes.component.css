@@ -148,10 +148,9 @@ ul{
 
 .notes-list-header {
   padding: 6px 7px 0;
-}
-
-.notes-search-group {
-  float: right; width: 13em;
+  display: grid;
+  grid-template-columns: 85px auto 180px;
+  align-items: center;
 }
 
 .list-container {
