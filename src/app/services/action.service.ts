@@ -47,7 +47,7 @@ export class ActionService {
     if (!this.store.data.notes.notesArray.length) {
       this.store.data.notes.isDownloadNotes = true;
     }
-    const notes$ = this.getData.GetNotes(
+    const notes$ = this.getData.getElements(
       searchString,
       tags,
       this.store.data.notes.notesArray.length,
@@ -94,7 +94,7 @@ export class ActionService {
     await this.SaveFiles();
     const files = this.store.data.note.files.map((el: NoteFileModel) => el.id);
     isEqual(note.files.sort(), files.sort()) ? (delete note.files) : (note.files = files.length ? files : null);
-    this.getData.updateNote(note)
+    this.getData.updateElement(note)
       .pipe(filter((data: CreationModel) => data.ok))
       .subscribe((data) => {
         this.store.data.note.lastUpdatedId = data.objectId;
@@ -147,7 +147,7 @@ export class ActionService {
       switchMap(() => {
         this.store.data.note.files.splice(FileIndex, 1);
         const filesArr = this.store.data.note.files.map((el: NoteFileModel) => el.id);
-        return this.getData.updateNote({
+        return this.getData.updateElement({
           id: this.store.data.note.id,
           files: filesArr,
           type: 'note',

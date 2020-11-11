@@ -103,7 +103,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       delete value.hasAvatar;
       delete value.withUrl;
       url && (value.url = url);
-      this.crudService.addNote(value, filesIds)
+      this.crudService.addElement(value, filesIds)
         .pipe(
           switchMap((data: CreationModel) => {
             const newNoteId = data.sequence[data.sequence.length - 1].objectId;
@@ -112,7 +112,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
             value.hasAvatar && value.tags.push(AVATAR_TAG);
             return iif(
               () => !!files.length,
-              this.crudService.updateNote({...value, files: newFilesIds, id: newNoteId}),
+              this.crudService.updateElement({...value, files: newFilesIds, id: newNoteId}),
               of(data)
             )
           }),

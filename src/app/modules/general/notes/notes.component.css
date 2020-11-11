@@ -137,3 +137,27 @@ ul{
 .delete_note:hover{
   color: red;
 }
+
+.new-element-btn {
+  cursor: pointer;
+}
+
+.new-element-btn.disabled {
+  cursor: default;
+}
+
+.notes-list-header {
+  padding: 6px 7px 0;
+}
+
+.notes-search-group {
+  float: right; width: 13em;
+}
+
+.list-container {
+  height: 100%;
+}
+
+nz-radio-group {
+  padding-left: 10px;
+}
