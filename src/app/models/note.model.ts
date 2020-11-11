@@ -1,4 +1,4 @@
-import { Note } from '../../../in/Api';
+import {Note} from '../../../in/Api';
 
 export interface NoteModel extends Note {
   id: string;
@@ -14,4 +14,10 @@ export interface NoteFileModel {
   src: string;
   loaded: boolean;
   text?: string;
+}
+
+export enum ElementType {
+  note = 'note',
+  tag = 'tag',
+  file = 'file'
 }
