@@ -47,12 +47,14 @@
                 (click)="addNote()">
           Добавить
         </button>
-        <nz-radio-group nzButtonStyle="solid" [(ngModel)]="listType" (ngModelChange)="crudService.setElementType($event)">
+        <nz-radio-group nzButtonStyle="solid"
+                        [(ngModel)]="listType"
+                        (ngModelChange)="crudService.setElementType($event)">
           <label nz-radio-button nzValue="note">Заметки</label>
           <label nz-radio-button nzValue="tag">Теги</label>
           <label nz-radio-button nzValue="file">Файлы</label>
         </nz-radio-group>
-        <nz-input-group [nzSuffix]="suffixIconSearchNote" nzSize="small" class="notes-search-group">
+        <nz-input-group [nzSuffix]="suffixIconSearchNote" nzSize="small">
           <input nz-input
                  nzSize="small"
                  class="search_note_input"
