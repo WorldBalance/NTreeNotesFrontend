@@ -16,7 +16,7 @@ export interface NoteFileModel {
   text?: string;
 }
 
-export enum ElementType {
+export enum ItemType {
   note = 'note',
   tag = 'tag',
   file = 'file'

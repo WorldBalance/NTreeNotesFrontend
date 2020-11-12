@@ -11,7 +11,7 @@ import {
   PostNotesModel, RequestModel, ResponseModel, UploadFileModel
 } from '../models/crud-operations.model';
 import {TagModel} from '../models/tag.model';
-import {ElementType, NoteModel} from '../models/note.model';
+import {ItemType, NoteModel} from '../models/note.model';
 import {AuthorizationService} from './authorization.service';
 import {NzMessageService} from 'ng-zorro-antd';
 
@@ -21,7 +21,7 @@ const NAMESPACE = 'NTreeNotes';
 export class CrudService {
 
   public urlapi = 'https://ntree.online/proxy/NTreeNotesServer/api';
-  public elementType$ = new BehaviorSubject<ElementType>(ElementType.note);
+  public itemType$ = new BehaviorSubject<ItemType>(ItemType.note);
 
   constructor(private http: HttpClient, private authorizationService: AuthorizationService, private messageService: NzMessageService) {
     globalThis.jdCrudService = this; // DEBUG
@@ -34,19 +34,19 @@ export class CrudService {
     withCredentials: true,
   };
 
-  public setElementType(type: ElementType): void {
-    this.elementType$.next(type);
+  public setItemType(type: ItemType): void {
+    this.itemType$.next(type);
   }
 
-  public getElementType(): Observable<ElementType> {
-    return this.elementType$.asObservable();
+  public getItemType(): Observable<ItemType> {
+    return this.itemType$.asObservable();
   }
 
-  public getElements(text?: string, tags?: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
+  public getItems(text?: string, tags?: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
-      object: {type: this.elementType$.getValue(), text, tags},
+      object: {type: this.itemType$.getValue(), text, tags},
       options: {offset, countMax}
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
@@ -83,7 +83,7 @@ export class CrudService {
       .pipe(map((data: GetTagsModel) => data && data.object));
   }
 
-  public addElement(note: NoteModel, files: string[]): Observable<CreationModel> {
+  public addItem(note: NoteModel, files: string[]): Observable<CreationModel> {
     const body: RequestModel = {
       sequence: files.map((file: string) => {
         return {
@@ -102,7 +102,7 @@ export class CrudService {
       actionId: ActionIds.create,
       object: {
         ...note,
-        type: this.elementType$.getValue(),
+        type: this.itemType$.getValue(),
       }
     })
     return this.http.post(this.urlapi, body, this.httpOptions).pipe(
@@ -110,14 +110,14 @@ export class CrudService {
     )
   }
 
-  public updateElement(note: NoteModel): Observable<CreationModel> {
+  public updateItem(note: NoteModel): Observable<CreationModel> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.update,
       objectId: note.id,
       object: {
         ...note,
-        type: this.elementType$.getValue(),
+        type: this.itemType$.getValue(),
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;

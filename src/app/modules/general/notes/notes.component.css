@@ -43,10 +43,6 @@ ul{
  float: right;
 }
 
-.note_element:hover .del_note{
- color:rosybrown;
-}
-
 .del_note:hover{
  color:red;
 }
@@ -57,12 +53,6 @@ ul{
 
 .delete_tag:hover{
  color:red;
-}
-
-.note_element{
-  margin: 0.2em;
-  padding: 0.2em;
-  cursor: pointer;
 }
 
 .note-title-wrapper {
@@ -138,11 +128,11 @@ ul{
   color: red;
 }
 
-.new-element-btn {
+.new-item-btn {
   cursor: pointer;
 }
 
-.new-element-btn.disabled {
+.new-item-btn.disabled {
   cursor: default;
 }
 

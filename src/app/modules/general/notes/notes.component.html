@@ -41,7 +41,7 @@
     <div class="list-container">
       <div class="notes-list-header">
         <button type="button"
-                class="btn btn-primary btn-sm new-element-btn"
+                class="btn btn-primary btn-sm new-item-btn"
                 [ngClass]="{disabled: listType === 'file'}"
                 [disabled]="listType === 'file'"
                 (click)="addNote()">
@@ -49,7 +49,7 @@
         </button>
         <nz-radio-group nzButtonStyle="solid"
                         [(ngModel)]="listType"
-                        (ngModelChange)="crudService.setElementType($event)">
+                        (ngModelChange)="crudService.setItemType($event)">
           <label nz-radio-button nzValue="note">Заметки</label>
           <label nz-radio-button nzValue="tag">Теги</label>
           <label nz-radio-button nzValue="file">Файлы</label>
