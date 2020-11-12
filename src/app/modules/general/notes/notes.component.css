@@ -8,7 +8,6 @@ ul{
 
 [nz-icon] {
   font-size: 18px;
-  margin-right: -0.6em;
 }
 
 .tags-list__item{
@@ -69,6 +68,9 @@ ul{
   flex-direction: row-reverse;
 }
 
+.item-type {
+  margin: auto;
+}
 
 .note_title {
   white-space: nowrap;
@@ -90,20 +92,23 @@ ul{
   margin-left:0.3em ;
 }
 
-.search_note_input{
-  float: right;
-}
-
 .note_in_list{
   margin: 0.65em;
   background-color:gainsboro;
   cursor: pointer;
 }
 
-.note_in_list{
+
+.note_in_list {
+  /* like .border1 */
   border: 0.2em solid;
   border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
+}
+
+.border1 {
+  border: 0.2em solid;
+  border-color: grey;
 }
 
 .note_in_list:hover{
@@ -130,6 +135,7 @@ ul{
 
 .new-item-btn {
   cursor: pointer;
+  width: 10em;
 }
 
 .new-item-btn.disabled {
@@ -137,9 +143,9 @@ ul{
 }
 
 .notes-list-header {
-  padding: 6px 7px 0;
+  padding: 8px 7px 0;
   display: grid;
-  grid-template-columns: 85px auto 180px;
+  grid-template-columns: 15em auto 15em;
   align-items: center;
 }
 
