@@ -10,7 +10,7 @@ import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
-import {ElementType, NoteModel} from '../../../models/note.model';
+import {ItemType, NoteModel} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 
 @Component({
@@ -48,7 +48,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public searchTags: string[] = [];
   public notesSearchString: string;
   public notes: NoteModel[];
-  public listType: ElementType;
+  public listType: ItemType;
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -73,9 +73,9 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.getTags();
-    this.crudService.getElementType().pipe(
-      switchMap((elementType: ElementType) => {
-        this.listType = elementType;
+    this.crudService.getItemType().pipe(
+      switchMap((itemType: ItemType) => {
+        this.listType = itemType;
         return this.route.queryParams;
       }),
       switchMap((params: Params) => this.getNotes(params)),
