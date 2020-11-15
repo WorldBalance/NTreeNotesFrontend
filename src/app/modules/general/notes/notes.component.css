@@ -85,17 +85,12 @@ ul{
   cursor: pointer;
 }
 
-
 .note_in_list {
-  /* like .border1 */
-  border: 0.2em solid;
-  border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
 }
 
-.border1 {
-  border: 0.2em solid;
-  border-color: grey;
+.note_in_list,.border1{
+  border: 0.2em solid grey;
 }
 
 .note_in_list:hover{
