@@ -165,6 +165,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     const params = queryParamsUnpack(urlParams);
     this.notesSearchString = params.search || '';
     this.searchTags = params.tags || [];
+    this.excludedTags = params.exclude || [];
     return this.actionService.getNotes(params.tags, params.search, {refresh: true, excludeTags: params.exclude}).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
