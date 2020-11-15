@@ -114,7 +114,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
     this.router.navigate(['/note'], {queryParams});
   }
 

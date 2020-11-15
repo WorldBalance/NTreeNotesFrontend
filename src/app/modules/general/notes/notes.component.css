@@ -87,6 +87,7 @@ ul{
 
 
 .note_in_list {
+  /* like .border1 */
   border: 0.2em solid;
   border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
