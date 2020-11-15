@@ -7,6 +7,14 @@
 
 
 
+
+2020-11-13, v 0.8.5
+- Added the ability to view different types of items, {OneOf: note, tag, file}
+- Fixed loading and editing errors
+- Changed styles
+
+
+
 2020-10-28, v 0.8.4
 - Added URL field
 - Fixed deleting notes

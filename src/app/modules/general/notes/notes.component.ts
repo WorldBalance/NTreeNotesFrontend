@@ -10,7 +10,7 @@ import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
 import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
-import {NoteModel} from '../../../models/note.model';
+import {ItemType, NoteModel} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 
 @Component({
@@ -48,23 +48,24 @@ export class NotesComponent implements OnInit, OnDestroy {
   public searchTags: string[] = [];
   public notesSearchString: string;
   public notes: NoteModel[];
+  public listType: ItemType;
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
 
   constructor(
     public store: StoreService,
-    public action: ActionService,
+    public actionService: ActionService,
     private router: Router,
     private route: ActivatedRoute,
-    private crudService: CrudService,
+    public crudService: CrudService,
     private messageService: NzMessageService
   ) {
   }
 
   public GetMoreNotesData() {
     if (this.store.data.notes.downloadMore) {
-      this.action.GetNotes(this.searchTags, this.notesSearchString)
+      this.actionService.GetNotes(this.searchTags, this.notesSearchString)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe((notes: NoteModel[]) => this.notes = this.notes.concat(notes));
     }
@@ -72,7 +73,11 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.getTags();
-    this.route.queryParams.pipe(
+    this.crudService.getItemType().pipe(
+      switchMap((itemType: ItemType) => {
+        this.listType = itemType;
+        return this.route.queryParams;
+      }),
       switchMap((params: Params) => this.getNotes(params)),
       takeUntil(this.unsubscribe$)
     ).subscribe((notes: NoteModel[]) => this.notes = notes);
@@ -180,18 +185,17 @@ export class NotesComponent implements OnInit, OnDestroy {
     const params1 = queryParamsUnpack(params);
     this.notesSearchString = params1.search || '';
     this.searchTags = params1.tags || [];
-    return this.action.GetNotes(params1.tags, params1.search, {refresh: true})
-      .pipe(
-        map((notes: NoteModel[]) => {
-          return notes.map((note: NoteModel) => {
-            let urlHtml = '';
-            if (note.url) {
-              const s1 = toArray(note.url).map((url1) => `<a href=${url1}>${truncateForHtml(url1, 50)}</a>`).join(', ');
-              urlHtml = '  (' + s1 + ')';
-            }
-            return {...note, urlHtml};
-          })
+    return this.actionService.GetNotes(params1.tags, params1.search, {refresh: true}).pipe(
+      map((notes: NoteModel[]) => {
+        return notes.map((note: NoteModel) => {
+          let urlHtml = '';
+          if (note.url) {
+            const s1 = toArray(note.url).map((url1) => `<a href=${url1}>${truncateForHtml(url1, 50)}</a>`).join(', ');
+            urlHtml = '  (' + s1 + ')';
+          }
+          return {...note, urlHtml};
         })
-      );
+      })
+    );
   }
 }

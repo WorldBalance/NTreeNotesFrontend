@@ -45,28 +45,33 @@
               [infiniteScrollThrottle]="900"
               (scrolled)="GetMoreNotesData()"
               [scrollWindow]="false">
-    <div style="height: 100%;">
-      <div style="margin-top:0.4em; margin-left: 0.5em; margin-right: 0.5em;">
-        <button (click)="addNote()"
-                type="button"
-                class="btn btn-primary btn-sm"
-                style="cursor:pointer;">Добавить заметку
+    <div class="list-container">
+      <div class="notes-list-header">
+        <button nz-button nzType="default"
+                class="btn btn-default btn-sm new-item-btn border1"
+                [ngClass]="{disabled: listType === 'file'}"
+                [disabled]="listType === 'file'"
+                (click)="addNote()">
+          Добавить
         </button>
-        <nz-input-group [nzSuffix]="suffixIconSearchNote"
-                        nzSize="small"
-                        style="float: right; width: 13em;">
+        <nz-radio-group class="item-type"
+                        nzButtonStyle="solid"
+                        [(ngModel)]="listType"
+                        (ngModelChange)="crudService.setItemType($event)">
+          <label nz-radio-button nzValue="note">Заметки</label>
+          <label nz-radio-button nzValue="tag">Теги</label>
+          <label nz-radio-button nzValue="file">Файлы</label>
+        </nz-radio-group>
+        <nz-input-group [nzSuffix]="suffixIconSearch">
           <input nz-input
-                 nzSize="small"
-                 class="search_note_input"
-                 placeholder="поиск"
+                 type="text"
+                 class="search_note_input border1"
+                 placeholder="Поиск"
                  [(ngModel)]="notesSearchString"
                  (ngModelChange)="onSearchNoteInputChange($event)"/>
         </nz-input-group>
-        <ng-template #suffixIconSearchNote>
-          <i nz-icon
-             nzSize="small"
-             nzType="search"
-          ></i>
+        <ng-template #suffixIconSearch>
+          <i nz-icon nzType="search"></i>
         </ng-template>
       </div>
       <div *ngIf="store.data.notes.isDownloadNotes"
@@ -116,7 +121,7 @@
           <nz-tag *ngFor="let tag of note.tags"
                   nzColor="orange"
                   class="tag_in_note">
-            {{action.Get_Tag_from_Id(tag)}}
+            {{actionService.Get_Tag_from_Id(tag)}}
           </nz-tag>
         </div>
       </div>
@@ -129,9 +134,3 @@
     </div>
   </nz-content>
 </nz-layout>
-
-<ng-template #loader>
-  <div class="app-loader">
-    <i nz-icon nzType="loading"></i>
-  </div>
-</ng-template>

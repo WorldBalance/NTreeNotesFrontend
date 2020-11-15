@@ -8,7 +8,6 @@ ul{
 
 [nz-icon] {
   font-size: 18px;
-  margin-right: -0.6em;
 }
 
 .tags-list__item{
@@ -43,10 +42,6 @@ ul{
  float: right;
 }
 
-.note_element:hover .del_note{
- color:rosybrown;
-}
-
 .del_note:hover{
  color:red;
 }
@@ -57,12 +52,6 @@ ul{
 
 .delete_tag:hover{
  color:red;
-}
-
-.note_element{
-  margin: 0.2em;
-  padding: 0.2em;
-  cursor: pointer;
 }
 
 .note-title-wrapper {
@@ -79,6 +68,9 @@ ul{
   flex-direction: row-reverse;
 }
 
+.item-type {
+  margin: auto;
+}
 
 .note_title {
   white-space: nowrap;
@@ -100,20 +92,22 @@ ul{
   margin-left:0.3em ;
 }
 
-.search_note_input{
-  float: right;
-}
-
 .note_in_list{
   margin: 0.65em;
   background-color:gainsboro;
   cursor: pointer;
 }
 
-.note_in_list{
+
+.note_in_list {
   border: 0.2em solid;
   border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
+}
+
+.border1 {
+  border: 0.2em solid;
+  border-color: grey;
 }
 
 .note_in_list:hover{
@@ -136,6 +130,30 @@ ul{
 
 .delete_note:hover{
   color: red;
+}
+
+.new-item-btn {
+  cursor: pointer;
+  width: 10em;
+}
+
+.new-item-btn.disabled {
+  cursor: default;
+}
+
+.notes-list-header {
+  padding: 8px 7px 0;
+  display: grid;
+  grid-template-columns: 15em auto 15em;
+  align-items: center;
+}
+
+.list-container {
+  height: 100%;
+}
+
+nz-radio-group {
+  padding-left: 10px;
 }
 
 nz-sider {
