@@ -42,7 +42,7 @@ export class ActionService {
     }
   }
 
-  public GetNotes(tags: string[], searchString: string, opt?: { refresh?: boolean }): Observable<NoteModel[]> {
+  public getNotes(tags: string[], searchString: string, opt?: { refresh?: boolean, excludeTags: string[] }): Observable<NoteModel[]> {
     opt && opt.refresh && this.store.data.RefreshNotesList();
     if (!this.store.data.notes.notesArray.length) {
       this.store.data.notes.isDownloadNotes = true;
@@ -50,8 +50,11 @@ export class ActionService {
     const notes$ = this.getData.getItems(
       searchString,
       tags,
-      this.store.data.notes.notesArray.length,
-      this.store.data.notes.countMax).pipe(shareReplay(1));
+      {
+        offset: this.store.data.notes.notesArray.length,
+        countMax: this.store.data.notes.countMax,
+        excludeTags: opt.excludeTags
+      }).pipe(shareReplay(1));
     notes$.subscribe(data => {
       this.store.data.notes.isDownloadNotes = false;
       if (data.length > 0) {

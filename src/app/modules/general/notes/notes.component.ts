@@ -46,8 +46,9 @@ export class NotesComponent implements OnInit, OnDestroy {
   public tagsLoading: boolean;
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
+  public excludedTags: string[] = [];
   public notesSearchString: string;
-  public notes: NoteModel[];
+  public items: NoteModel[];
   public listType: ItemType;
 
   private unsubscribe$ = new Subject<void>();
@@ -63,11 +64,11 @@ export class NotesComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  public GetMoreNotesData() {
+  public getMoreNotesData() {
     if (this.store.data.notes.downloadMore) {
-      this.actionService.GetNotes(this.searchTags, this.notesSearchString)
+      this.actionService.getNotes(this.searchTags, this.notesSearchString, {excludeTags: this.excludedTags})
         .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((notes: NoteModel[]) => this.notes = this.notes.concat(notes));
+        .subscribe((notes: NoteModel[]) => this.items = this.items.concat(notes));
     }
   }
 
@@ -80,7 +81,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       }),
       switchMap((params: Params) => this.getNotes(params)),
       takeUntil(this.unsubscribe$)
-    ).subscribe((notes: NoteModel[]) => this.notes = notes);
+    ).subscribe((notes: NoteModel[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
   }
 
@@ -108,23 +109,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       this.messageService.error('Название нового тега не может быть пустым!', {nzDuration: 3500});
     } else {
       this.tagsLoading = true;
-      this.crudService.AddTag(text).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-        this.getTags();
-        // this.store.data.tags.createText = '';
-      });
-    }
-  }
-
-  public deleteTag(id, event): void {
-    const r = confirm('Данный тег будет удалён! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
-    if (r === true) {
-      event.stopPropagation();
-      this.crudService.DeleteTag(id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-        this.getTags();
-        const removedTag = this.searchTags.findIndex((tag: string) => tag === id);
-        this.searchTags.splice(removedTag, 1);
-        this.refresh_url_search();
-      });
+      this.crudService.addTag(text).pipe(takeUntil(this.unsubscribe$)).subscribe(() => this.getTags());
     }
   }
 
@@ -133,17 +118,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note'], {queryParams});
   }
 
-  async FilterNotesTag(tagId) {
-    if (this.searchTags.includes(tagId)) {
-      const removedTag = this.searchTags.findIndex((tag: string) => tag === tagId);
-      this.searchTags.splice(removedTag, 1);
-    } else {
-      this.searchTags.push(tagId);
-    }
+  async filterNotesTag(tags: string[], include: boolean) {
+    include ? this.searchTags = tags : this.excludedTags = tags;
     await this.refresh_url_search();
-
-    // this.crudService.FilterNotes(this.Search).subscribe(data => {this.Notes=data;});
-    // this.action.GetNotes();
   }
 
   NoteSelect(id) {
@@ -151,23 +128,26 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note/' + id]);
   }
 
-  public deleteNote(id, event) {
+  public deleteItem(id, event) {
     event.stopPropagation();
-    const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
+    const r = confirm('Данный элемент будет удален! Вы уверены?');
     if (r) {
-      this.crudService.deleteNote(id).pipe(
+      this.crudService.deleteItem(id).pipe(
         switchMap(() => this.route.queryParams),
         takeUntil(this.unsubscribe$)
       ).subscribe(() => {
-        const deletedNote = this.notes.findIndex((note: NoteModel) => note.id === id);
-        this.notes.splice(deletedNote, 1);
+        const deletedNote = this.items.findIndex((note: NoteModel) => note.id === id);
+        this.items.splice(deletedNote, 1);
+        if (this.listType === ItemType.tag) {
+          this.getTags();
+        }
       });
     }
   }
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
     return this.router.navigate(['/notes'], {queryParams});
   }
 
@@ -181,11 +161,11 @@ export class NotesComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getNotes(params: Params): Observable<NoteModel[]> {
-    const params1 = queryParamsUnpack(params);
-    this.notesSearchString = params1.search || '';
-    this.searchTags = params1.tags || [];
-    return this.actionService.GetNotes(params1.tags, params1.search, {refresh: true}).pipe(
+  private getNotes(urlParams: Params): Observable<NoteModel[]> {
+    const params = queryParamsUnpack(urlParams);
+    this.notesSearchString = params.search || '';
+    this.searchTags = params.tags || [];
+    return this.actionService.getNotes(params.tags, params.search, {refresh: true, excludeTags: params.exclude}).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
           let urlHtml = '';

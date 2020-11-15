@@ -5,7 +5,7 @@ import {
   OnDestroy,
   ViewChild,
   Input,
-  ChangeDetectorRef, forwardRef
+  ChangeDetectorRef, forwardRef, Output, EventEmitter
 } from '@angular/core';
 import {TagModel} from '../../../models/tag.model';
 import {finalize, takeUntil, tap} from 'rxjs/operators';
@@ -33,6 +33,7 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
   @Input() value: string[] = [];
   @Input() placeholder: string;
   @Input() tags$: Observable<TagModel[]>;
+  @Output() private valueChanged = new EventEmitter<string[]>();
 
   @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
   private tags: TagModel[] = [];
@@ -75,7 +76,7 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
 
   public createTag(): void {
     this.loading = true;
-    this.crudService.AddTag(this.newTagName).pipe(
+    this.crudService.addTag(this.newTagName).pipe(
       finalize(() => this.confirmPopupVisibility = this.loading = false),
       takeUntil(this.unsubscribe$)
     ).subscribe((id: string) => {
@@ -88,7 +89,9 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
     });
   }
 
-  private onChange: any = () => {}
+  private onChange: any = (tags: string[]) => {
+    this.valueChanged.emit(tags);
+  }
 
   private onTouched: any = () => {}
 

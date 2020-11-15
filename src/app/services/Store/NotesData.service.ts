@@ -3,7 +3,6 @@ import {TagModel} from '../../models/tag.model';
 import {NoteFileModel} from '../../models/note.model';
 
 class Tags {
-  // public createText = '';
   public tagsArray: Array<TagModel> = [];
 }
 
