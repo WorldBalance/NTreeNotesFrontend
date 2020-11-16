@@ -4,14 +4,14 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
-import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
 import {ItemType, NoteModel} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
+import {TagsService} from '../../../services/tags.service';
 
 @Component({
   selector: 'app-notes',
@@ -43,11 +43,11 @@ import {toArray, truncateForHtml} from '../../../../utils/utils1';
 })
 export class NotesComponent implements OnInit, OnDestroy {
 
-  public tagsLoading: boolean;
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
+  public excludedTags: string[] = [];
   public notesSearchString: string;
-  public notes: NoteModel[];
+  public items: NoteModel[];
   public listType: ItemType;
 
   private unsubscribe$ = new Subject<void>();
@@ -59,28 +59,28 @@ export class NotesComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public crudService: CrudService,
-    private messageService: NzMessageService
+    private messageService: NzMessageService,
+    private tagsService: TagsService,
   ) {
   }
 
-  public GetMoreNotesData() {
+  public getMoreNotesData() {
     if (this.store.data.notes.downloadMore) {
-      this.actionService.GetNotes(this.searchTags, this.notesSearchString)
+      this.actionService.getNotes(this.searchTags, this.notesSearchString, {excludeTags: this.excludedTags})
         .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((notes: NoteModel[]) => this.notes = this.notes.concat(notes));
+        .subscribe((notes: NoteModel[]) => this.items = this.items.concat(notes));
     }
   }
 
   public ngOnInit(): void {
-    this.getTags();
     this.crudService.getItemType().pipe(
       switchMap((itemType: ItemType) => {
         this.listType = itemType;
         return this.route.queryParams;
       }),
-      switchMap((params: Params) => this.getNotes(params)),
+      switchMap((params: Params) => this.getItems(params)),
       takeUntil(this.unsubscribe$)
-    ).subscribe((notes: NoteModel[]) => this.notes = notes);
+    ).subscribe((notes: NoteModel[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
   }
 
@@ -103,47 +103,14 @@ export class NotesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public addTag(text: string): void {
-    if (!text) {
-      this.messageService.error('Название нового тега не может быть пустым!', {nzDuration: 3500});
-    } else {
-      this.tagsLoading = true;
-      this.crudService.AddTag(text).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-        this.getTags();
-        this.store.data.tags.createText = '';
-      });
-    }
-  }
-
-  public deleteTag(id, event): void {
-    const r = confirm('Данный тег будет удалён! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
-    if (r === true) {
-      event.stopPropagation();
-      this.crudService.DeleteTag(id).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-        this.getTags();
-        const removedTag = this.searchTags.findIndex((tag: string) => tag === id);
-        this.searchTags.splice(removedTag, 1);
-        this.refresh_url_search();
-      });
-    }
-  }
-
   public addNote(): void {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
     this.router.navigate(['/note'], {queryParams});
   }
 
-  async FilterNotesTag(tagId) {
-    if (this.searchTags.includes(tagId)) {
-      const removedTag = this.searchTags.findIndex((tag: string) => tag === tagId);
-      this.searchTags.splice(removedTag, 1);
-    } else {
-      this.searchTags.push(tagId);
-    }
+  async filterNotesTag(tags: string[], include: boolean) {
+    include ? this.searchTags = tags : this.excludedTags = tags;
     await this.refresh_url_search();
-
-    // this.crudService.FilterNotes(this.Search).subscribe(data => {this.Notes=data;});
-    // this.action.GetNotes();
   }
 
   NoteSelect(id) {
@@ -151,40 +118,35 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note/' + id]);
   }
 
-  public deleteNote(id, event) {
+  public deleteItem(id: string, event) {
     event.stopPropagation();
-    const r = confirm('Данная заметка будет удалёна! Вы уверены? (тут конечно будет позже что-то по-красивее :))) )');
+    const r = confirm('Данный элемент будет удален! Вы уверены?');
     if (r) {
-      this.crudService.deleteNote(id).pipe(
+      this.crudService.deleteItem(id).pipe(
         switchMap(() => this.route.queryParams),
         takeUntil(this.unsubscribe$)
       ).subscribe(() => {
-        const deletedNote = this.notes.findIndex((note: NoteModel) => note.id === id);
-        this.notes.splice(deletedNote, 1);
+        const deletedItem = this.items.findIndex((note: NoteModel) => note.id === id);
+        this.items.splice(deletedItem, 1);
+        if (this.listType === ItemType.tag) {
+          this.tagsService.deleteTag(id);
+        }
       });
     }
   }
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
     return this.router.navigate(['/notes'], {queryParams});
   }
 
-  private getTags(): void {
-    this.tagsLoading = true;
-    this.tags$ = this.crudService.getTags().pipe(
-      tap((tags: TagModel[]) => {
-        this.store.data.tags.tagsArray = tags;
-      })
-    );
-  }
-
-  private getNotes(params: Params): Observable<NoteModel[]> {
-    const params1 = queryParamsUnpack(params);
-    this.notesSearchString = params1.search || '';
-    this.searchTags = params1.tags || [];
-    return this.actionService.GetNotes(params1.tags, params1.search, {refresh: true}).pipe(
+  private getItems(urlParams: Params): Observable<NoteModel[]> {
+    const params = queryParamsUnpack(urlParams);
+    this.notesSearchString = params.search || '';
+    this.searchTags = params.tags || [];
+    this.excludedTags = params.exclude || [];
+    return this.actionService.getNotes(params.tags, params.search, {refresh: true, excludeTags: params.exclude}).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
           let urlHtml = '';

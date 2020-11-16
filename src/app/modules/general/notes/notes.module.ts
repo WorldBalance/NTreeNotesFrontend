@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { NotesComponent } from './notes.component';
-import { SearchTagPipe } from './search-tag.pipe';
 import { TextContentTruncate } from './TextTruncate.pipe';
 import { NgxInfiniteScrollerModule } from 'ngx-infinite-scroller';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -22,7 +21,6 @@ const routes: Routes = [
   ],
   declarations: [
     NotesComponent,
-    SearchTagPipe,
     TextContentTruncate
   ],
 })

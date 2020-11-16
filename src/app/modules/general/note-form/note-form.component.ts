@@ -31,7 +31,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
-    protected formBuilder: FormBuilder
+    protected formBuilder: FormBuilder,
   ) {
   }
 

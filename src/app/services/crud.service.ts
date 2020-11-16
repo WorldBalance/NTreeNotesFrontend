@@ -8,12 +8,16 @@ import {
   DeletionModel,
   GetNotesModel,
   GetTagsModel,
-  PostNotesModel, RequestModel, ResponseModel, UploadFileModel
+  PostNotesModel,
+  RequestModel,
+  ResponseModel,
+  UploadFileModel
 } from '../models/crud-operations.model';
 import {TagModel} from '../models/tag.model';
 import {ItemType, NoteModel} from '../models/note.model';
 import {AuthorizationService} from './authorization.service';
 import {NzMessageService} from 'ng-zorro-antd';
+import {ActionFindOptions} from '../../../in/Api';
 
 const NAMESPACE = 'NTreeNotes';
 
@@ -42,12 +46,12 @@ export class CrudService {
     return this.itemType$.asObservable();
   }
 
-  public getItems(text?: string, tags?: string[], offset = 0, countMax = 20): Observable<NoteModel[]> {
+  public getItems(text?: string, tags?: string[], options: ActionFindOptions = {offset: 0, countMax: 20}): Observable<NoteModel[]> {
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
       object: {type: this.itemType$.getValue(), text, tags},
-      options: {offset, countMax}
+      options
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
       map((data: GetNotesModel) => {
@@ -76,7 +80,7 @@ export class CrudService {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
       object: {
-        type: 'tag'
+        type: ItemType.tag
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
@@ -91,7 +95,7 @@ export class CrudService {
           actionId: ActionIds.create,
           object: {
             id: file,
-            type: 'file',
+            type: ItemType.file,
             title: file
           }
         }
@@ -123,7 +127,7 @@ export class CrudService {
     return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<CreationModel>;
   }
 
-  public deleteNote(id): Observable<DeletionModel> {
+  public deleteItem(id): Observable<DeletionModel> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.delete,
@@ -132,21 +136,12 @@ export class CrudService {
     return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(filter((data: DeletionModel) => data.ok));
   }
 
-  public DeleteTag(id): Observable<DeletionModel> {
-    const postBody = {
-      namespace: NAMESPACE,
-      actionId: ActionIds.delete,
-      objectId: id
-    };
-    return this.http.post(this.urlapi, postBody, this.httpOptions) as Observable<DeletionModel>;
-  }
-
-  public AddTag(text): Observable<string> {
+  public addTag(text): Observable<string> {
     const postBody = {
       namespace: NAMESPACE,
       actionId: ActionIds.create,
       object: {
-        type: 'tag',
+        type: ItemType.tag,
         title: text
       }
     };
@@ -176,7 +171,7 @@ export class CrudService {
       actionId: ActionIds.create,
       object: {
         id: fileId,
-        type: 'file',
+        type: ItemType.file,
         title: fileId
       }
     };

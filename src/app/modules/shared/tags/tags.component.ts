@@ -1,11 +1,14 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  OnDestroy,
-  ViewChild,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  forwardRef,
   Input,
-  ChangeDetectorRef, forwardRef
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
 } from '@angular/core';
 import {TagModel} from '../../../models/tag.model';
 import {finalize, takeUntil, tap} from 'rxjs/operators';
@@ -13,6 +16,7 @@ import {Observable, Subject} from 'rxjs';
 import {NzSelectComponent} from 'ng-zorro-antd';
 import {CrudService} from '../../../services/crud.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {TagsService} from '../../../services/tags.service';
 
 @Component({
   selector: 'app-tags',
@@ -32,17 +36,19 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
   public newTagName: string;
   public tags$: Observable<TagModel[]>;
   @Input() value: string[] = [];
+  @Input() placeholder: string;
+  @Output() private valueChanged = new EventEmitter<string[]>();
 
   @ViewChild('nzSelectComponent', {static: false}) private selectComponent: NzSelectComponent;
   private tags: TagModel[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private crudService: CrudService, private cdr: ChangeDetectorRef) {
+  constructor(private crudService: CrudService, private cdr: ChangeDetectorRef, private tagsService: TagsService) {
   }
 
   public ngOnInit() {
-    this.tags$ = this.crudService.getTags().pipe(
+    this.tags$ = this.tagsService.getTags().pipe(
       tap((tags: TagModel[]) => this.tags = tags)
     );
   }
@@ -74,11 +80,10 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
 
   public createTag(): void {
     this.loading = true;
-    this.crudService.AddTag(this.newTagName).pipe(
+    this.tagsService.addTag(this.newTagName).pipe(
       finalize(() => this.confirmPopupVisibility = this.loading = false),
       takeUntil(this.unsubscribe$)
     ).subscribe((id: string) => {
-      this.tags.push({id, title: this.newTagName, type: 'tag'});
       this.newTagName = '';
       this.selectComponent.value.push(id);
       this.selectComponent.toggleDropDown();
@@ -87,7 +92,9 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
     });
   }
 
-  private onChange: any = () => {}
+  private onChange: any = (tags: string[]) => {
+    this.valueChanged.emit(tags);
+  }
 
   private onTouched: any = () => {}
 

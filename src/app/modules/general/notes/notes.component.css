@@ -10,19 +10,6 @@ ul{
   font-size: 18px;
 }
 
-.tags-list__item{
-  padding: 5px 5px 0 5px;
-  cursor: pointer;
-}
-
-.tags-list:last-child {
-  padding-bottom: 5px;
-}
-
-.tag_in_list{
-  cursor: pointer;
-}
-
 .note_img{
   max-width:150px;
   max-height: 200px;
@@ -98,17 +85,12 @@ ul{
   cursor: pointer;
 }
 
-
 .note_in_list {
-  /* like .border1 */
-  border: 0.2em solid;
-  border-color: grey;
   border-radius: 0 0 0.4em 0.4em;
 }
 
-.border1 {
-  border: 0.2em solid;
-  border-color: grey;
+.note_in_list,.border1{
+  border: 0.2em solid grey;
 }
 
 .note_in_list:hover{
@@ -123,10 +105,6 @@ ul{
   text-align: right;
   float: right;
   margin-right: 0;
-}
-
-.tag_in_list i:hover{
-  color:red;
 }
 
 .delete_note:hover{
@@ -155,4 +133,15 @@ ul{
 
 nz-radio-group {
   padding-left: 10px;
+}
+
+nz-sider {
+  overflow-y: scroll;
+  overflow-x:hidden;
+  background-color:rgb(27, 23, 49);
+  color: white;
+}
+
+.white-text {
+  color: white;
 }
