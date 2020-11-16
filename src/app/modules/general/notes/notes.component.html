@@ -2,10 +2,10 @@
   <nz-sider class="scrollbar my_scroll">
     <h3 class="white-text">Фильтр</h3>
     <span>Включает:</span>
-    <app-tags [tags$]="tags$" [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
+    <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
     <br><br>
     <span>Исключает:</span>
-    <app-tags [tags$]="tags$" [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
+    <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
   </nz-sider>
   <nz-content style="height:calc(100vh - 3.1em)" class="scrollbar my_scroll" infiniteScroll
               [infiniteScrollDistance]="1.9"

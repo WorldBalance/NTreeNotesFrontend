@@ -1,7 +1,8 @@
-import { Item } from "../../../in/Api";
+import { Item } from '../../../in/Api';
+import {ItemType} from './note.model';
 
 export interface TagModel extends Item {
   id: string;
   title: string;
-  type: 'tag';
+  type: ItemType.tag;
 }

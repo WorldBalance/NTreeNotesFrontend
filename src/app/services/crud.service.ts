@@ -8,7 +8,10 @@ import {
   DeletionModel,
   GetNotesModel,
   GetTagsModel,
-  PostNotesModel, RequestModel, ResponseModel, UploadFileModel
+  PostNotesModel,
+  RequestModel,
+  ResponseModel,
+  UploadFileModel
 } from '../models/crud-operations.model';
 import {TagModel} from '../models/tag.model';
 import {ItemType, NoteModel} from '../models/note.model';
@@ -77,7 +80,7 @@ export class CrudService {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
       object: {
-        type: 'tag'
+        type: ItemType.tag
       }
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions)
@@ -92,7 +95,7 @@ export class CrudService {
           actionId: ActionIds.create,
           object: {
             id: file,
-            type: 'file',
+            type: ItemType.file,
             title: file
           }
         }
@@ -138,7 +141,7 @@ export class CrudService {
       namespace: NAMESPACE,
       actionId: ActionIds.create,
       object: {
-        type: 'tag',
+        type: ItemType.tag,
         title: text
       }
     };
@@ -168,7 +171,7 @@ export class CrudService {
       actionId: ActionIds.create,
       object: {
         id: fileId,
-        type: 'file',
+        type: ItemType.file,
         title: fileId
       }
     };

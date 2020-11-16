@@ -4,14 +4,14 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzMessageService} from 'ng-zorro-antd';
-import {TagModel} from '../../../models/tag.model';
 import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
 import {ItemType, NoteModel} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
+import {TagsService} from '../../../services/tags.service';
 
 @Component({
   selector: 'app-notes',
@@ -43,7 +43,6 @@ import {toArray, truncateForHtml} from '../../../../utils/utils1';
 })
 export class NotesComponent implements OnInit, OnDestroy {
 
-  public tagsLoading: boolean;
   public tags$: Observable<object[]>;
   public searchTags: string[] = [];
   public excludedTags: string[] = [];
@@ -60,7 +59,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public crudService: CrudService,
-    private messageService: NzMessageService
+    private messageService: NzMessageService,
+    private tagsService: TagsService,
   ) {
   }
 
@@ -73,13 +73,12 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getTags();
     this.crudService.getItemType().pipe(
       switchMap((itemType: ItemType) => {
         this.listType = itemType;
         return this.route.queryParams;
       }),
-      switchMap((params: Params) => this.getNotes(params)),
+      switchMap((params: Params) => this.getItems(params)),
       takeUntil(this.unsubscribe$)
     ).subscribe((notes: NoteModel[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
@@ -104,15 +103,6 @@ export class NotesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public addTag(text: string): void {
-    if (!text) {
-      this.messageService.error('Название нового тега не может быть пустым!', {nzDuration: 3500});
-    } else {
-      this.tagsLoading = true;
-      this.crudService.addTag(text).pipe(takeUntil(this.unsubscribe$)).subscribe(() => this.getTags());
-    }
-  }
-
   public addNote(): void {
     const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
     this.router.navigate(['/note'], {queryParams});
@@ -128,7 +118,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note/' + id]);
   }
 
-  public deleteItem(id, event) {
+  public deleteItem(id: string, event) {
     event.stopPropagation();
     const r = confirm('Данный элемент будет удален! Вы уверены?');
     if (r) {
@@ -136,10 +126,10 @@ export class NotesComponent implements OnInit, OnDestroy {
         switchMap(() => this.route.queryParams),
         takeUntil(this.unsubscribe$)
       ).subscribe(() => {
-        const deletedNote = this.items.findIndex((note: NoteModel) => note.id === id);
-        this.items.splice(deletedNote, 1);
+        const deletedItem = this.items.findIndex((note: NoteModel) => note.id === id);
+        this.items.splice(deletedItem, 1);
         if (this.listType === ItemType.tag) {
-          this.getTags();
+          this.tagsService.deleteTag(id);
         }
       });
     }
@@ -151,17 +141,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     return this.router.navigate(['/notes'], {queryParams});
   }
 
-  private getTags(): void {
-    this.tagsLoading = true;
-    this.tags$ = this.crudService.getTags().pipe(
-      tap((tags: TagModel[]) => {
-        this.store.data.tags.tagsArray = tags;
-      }),
-      shareReplay(1),
-    );
-  }
-
-  private getNotes(urlParams: Params): Observable<NoteModel[]> {
+  private getItems(urlParams: Params): Observable<NoteModel[]> {
     const params = queryParamsUnpack(urlParams);
     this.notesSearchString = params.search || '';
     this.searchTags = params.tags || [];
