@@ -48,24 +48,31 @@
            style="font-size: 38px; color:orange;"
         ></i>
       </div>
-      <div *ngFor="let note of items"
-           class="note_in_list">
-        <div (click)="NoteSelect(note.id)"
-             [ngClass]="{'animated flash updatedNote delay-1s': store.data.note.lastUpdatedId === note.id}">
+      <div *ngFor="let note of items" class="note_in_list">
+        <div
+          (click)="NoteSelect(note.id)"
+          [ngClass]="{
+            'animated flash updatedNote delay-1s':
+              store.data.note.lastUpdatedId === note.id
+          }"
+          (contextmenu)="contextMenu($event, menu)"
+        >
           <div class="note-title-wrapper">
             <div class="note_title">
               <b>{{note.title}}</b>
               <span *ngIf="note.urlHtml" [innerHTML]="note.urlHtml"></span>
             </div>
             <div>
-              <i nz-icon
-                 nzType="delete"
-                 nzTheme="outline"
-                 class="delete_note"
-                 nzTooltipTitle="Удалить заметку"
-                 nzTooltipPlacement="left"
-                 nz-tooltip
-                 (click)="deleteItem(note.id,$event)"
+              <i
+                nz-dropdown
+                nzTrigger="click"
+                [nzDropdownMenu]="menu"
+                nz-icon
+                nzType="more"
+                nzTheme="outline"
+                nz-tooltip
+                class="more_note"
+                nzTooltipPlacement="left"
               ></i>
               <div class="note_time"
                    nzTooltipTitle="Время последнего редактирования"
@@ -91,6 +98,47 @@
             {{actionService.Get_Tag_from_Id(tag)}}
           </nz-tag>
         </div>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="copyURL(note.id)">Копировать URL</li>
+            <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
+            <li nz-submenu nzTitle="Теги">
+              <ul>
+                <li nz-submenu nzTitle="Включить">
+                  <ul>
+                    <nz-tag
+                      *ngFor="let tag of note.tags"
+                      nzColor="orange"
+                      class="tag_in_note"
+                      (change)="changeCheckbox(tag, true)"
+                      nz-row
+                    >
+                      <li nz-menu-item>
+                        <label nz-checkbox [(ngModel)]="allTags[tag]">
+                          {{ actionService.Get_Tag_from_Id(tag) }}
+                        </label>
+                      </li>
+                    </nz-tag>
+                  </ul>
+                </li>
+                <li nz-submenu nzTitle="Исключить">
+                  <ul>
+                    <nz-tag
+                      *ngFor="let tag of note.tags"
+                      nzColor="red"
+                      class="tag_in_note"
+                      nz-row
+                    >
+                      <li nz-menu-item (click)="changeCheckbox(tag, false)">
+                        {{ actionService.Get_Tag_from_Id(tag) }}
+                      </li>
+                    </nz-tag>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </div>
       <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
         <i nz-icon

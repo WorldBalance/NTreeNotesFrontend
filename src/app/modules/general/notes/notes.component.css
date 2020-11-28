@@ -99,15 +99,24 @@ ul{
 
 .tag_in_note{
   margin:0.16em;
-}
 
-.delete_note{
+.delete_note {
   text-align: right;
   float: right;
   margin-right: 0;
 }
 
-.delete_note:hover{
+.delete_note:hover {
+  color: red;
+}
+
+.more_note {
+  text-align: right;
+  float: right;
+  margin-right: 0;
+}
+
+.more_note:hover {
   color: red;
 }
 

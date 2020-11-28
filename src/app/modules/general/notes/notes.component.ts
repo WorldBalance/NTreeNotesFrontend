@@ -1,17 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {fromTopAnimation} from '../../../animations';
-import {StoreService} from '../../../services/store.service';
-import {ActionService} from '../../../services/action.service';
-import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
-import {Observable, Subject} from 'rxjs';
-import {CrudService} from '../../../services/crud.service';
-import {NzMessageService} from 'ng-zorro-antd';
-import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
-import {ItemType, NoteModel} from '../../../models/note.model';
-import {toArray, truncateForHtml} from '../../../../utils/utils1';
-import {TagsService} from '../../../services/tags.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { fromTopAnimation } from '../../../animations';
+import { StoreService } from '../../../services/store.service';
+import { ActionService } from '../../../services/action.service';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { from, Observable, Subject } from 'rxjs';
+import { CrudService } from '../../../services/crud.service';
+import { NzContextMenuService, NzDropdownMenuComponent, NzMessageService } from 'ng-zorro-antd';
+import { queryParamsPack, queryParamsUnpack } from 'src/utils/params'
+import { ItemType, NoteModel } from '../../../models/note.model';
+import { toArray, truncateForHtml } from '../../../../utils/utils1';
+import { TagsService } from '../../../services/tags.service';
 
 @Component({
   selector: 'app-notes',
@@ -21,20 +21,20 @@ import {TagsService} from '../../../services/tags.service';
   animations: [fromTopAnimation,
     trigger('tagAnimation', [
       transition('void => *', [
-        query('div', style({transform: 'translatex(-100%)'})),
+        query('div', style({ transform: 'translatex(-100%)' })),
         query('div',
           stagger('15ms', [
-            animate('220ms', style({transform: 'translateX(0)'}))
+            animate('220ms', style({ transform: 'translateX(0)' }))
           ])
         )
       ])
     ]),
     trigger('noteAnimation', [
       transition('void => *', [
-        query('div', style({transform: 'translatex(-100%)'})),
+        query('div', style({ transform: 'translatex(-100%)' })),
         query('div',
           stagger('10ms', [
-            animate('250ms ease-in', style({transform: 'translateX(0)'}))
+            animate('250ms ease-in', style({ transform: 'translateX(0)' }))
           ])
         )
       ])
@@ -49,6 +49,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   public notesSearchString: string;
   public items: NoteModel[];
   public listType: ItemType;
+  public allTags: Object = {};
+
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -61,12 +63,54 @@ export class NotesComponent implements OnInit, OnDestroy {
     public crudService: CrudService,
     private messageService: NzMessageService,
     private tagsService: TagsService,
+    private nzContextMenuService: NzContextMenuService
   ) {
+  }
+
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create($event, menu);
+  }
+
+  closeMenu(): void {
+    this.nzContextMenuService.close();
+  }
+
+  async changeCheckbox(tag, push): Promise<void> {
+
+    if (!this.searchTags.includes(tag) && push) {
+      this.searchTags.push(tag);
+
+    } else {
+      let index = this.searchTags.indexOf(tag);
+      if (index !== -1) {
+        this.searchTags.splice(index, 1)
+        this.checkboxConditions(this.searchTags);
+      }
+    }
+
+    await this.refresh_url_search();
+
+  }
+
+  checkboxConditions(tags) {
+    for (let tag in this.allTags) {
+      if (tags.includes(tag)) {
+        this.allTags[tag] = true;
+      } else {
+        this.allTags[tag] = false;
+      }
+    }
+  }
+
+  copyURL(id) {
+    let inputValue = window.location.href;
+    inputValue = inputValue.substring(0, inputValue.length - 1) + '/' + id;
+    navigator.clipboard.writeText(inputValue)
   }
 
   public getMoreNotesData() {
     if (this.store.data.notes.downloadMore) {
-      this.actionService.getNotes(this.searchTags, this.notesSearchString, {excludeTags: this.excludedTags})
+      this.actionService.getNotes(this.searchTags, this.notesSearchString, { excludeTags: this.excludedTags })
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe((notes: NoteModel[]) => this.items = this.items.concat(notes));
     }
@@ -82,6 +126,16 @@ export class NotesComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$)
     ).subscribe((notes: NoteModel[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
+
+    this.tagsService.getTags().subscribe(tags => {
+      tags.map(tag => {
+        if (this.searchTags.includes(tag.id)) {
+          this.allTags[tag.id] = true;
+        } else {
+          this.allTags[tag.id] = false;
+        }
+      })
+    });
   }
 
   public ngOnDestroy(): void {
@@ -104,12 +158,15 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
-    this.router.navigate(['/note'], {queryParams});
+    const queryParams = queryParamsPack({ tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags });
+    this.router.navigate(['/note'], { queryParams });
   }
 
   async filterNotesTag(tags: string[], include: boolean) {
     include ? this.searchTags = tags : this.excludedTags = tags;
+
+    this.checkboxConditions(tags)
+
     await this.refresh_url_search();
   }
 
@@ -137,8 +194,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
-    return this.router.navigate(['/notes'], {queryParams});
+    const queryParams = queryParamsPack({ tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags });
+    return this.router.navigate(['/notes'], { queryParams });
   }
 
   private getItems(urlParams: Params): Observable<NoteModel[]> {
@@ -146,7 +203,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.notesSearchString = params.search || '';
     this.searchTags = params.tags || [];
     this.excludedTags = params.exclude || [];
-    return this.actionService.getNotes(params.tags, params.search, {refresh: true, excludeTags: params.exclude}).pipe(
+    return this.actionService.getNotes(params.tags, params.search, { refresh: true, excludeTags: params.exclude }).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
           let urlHtml = '';
@@ -154,7 +211,7 @@ export class NotesComponent implements OnInit, OnDestroy {
             const s1 = toArray(note.url).map((url1) => `<a href=${url1}>${truncateForHtml(url1, 50)}</a>`).join(', ');
             urlHtml = '  (' + s1 + ')';
           }
-          return {...note, urlHtml};
+          return { ...note, urlHtml };
         })
       })
     );
