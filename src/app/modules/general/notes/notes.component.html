@@ -54,7 +54,7 @@
           [ngClass]="{
             'animated flash updatedNote delay-1s':
               store.data.note.lastUpdatedId === note.id
-          }"
+          }" 
           (contextmenu)="contextMenu($event, menu)"
         >
           <div class="note-title-wrapper">
@@ -102,13 +102,13 @@
             {{ actionService.Get_Tag_from_Id(tag) }}
           </nz-tag>
         </div>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
+        <nz-dropdown-menu #menu="nzDropdownMenu" >
           <ul nz-menu>
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
             </li>
             <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
-            <li nz-submenu nzTitle="Теги">
+            <li nz-submenu nzTitle="Теги" *ngIf='allTags[note.tags[note.tags.length-1]]'>
               <ul>
                 <li nz-submenu nzTitle="Включить">
                   <ul>
@@ -120,7 +120,7 @@
                       (change)="changeCheckbox(tag, true)"
                       nz-row
                     >
-                      <label nz-checkbox [(ngModel)]="allTags[tag].checked">
+                      <label nz-checkbox  [(ngModel)]="allTags[tag].checked">
                         {{ allTags[tag].title }}
                       </label>
                     </li>
