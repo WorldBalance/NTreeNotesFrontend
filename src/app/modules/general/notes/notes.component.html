@@ -92,50 +92,58 @@
               </td>
             </tr>
           </table>
-          <nz-tag *ngFor="let tag of note.tags"
-                  nzColor="orange"
-                  class="tag_in_note">
-            {{actionService.Get_Tag_from_Id(tag)}}
+
+          <nz-tag
+            *ngFor="let tag of note.tags"
+            nzColor="orange"
+            class="tag_in_note"
+            [title]="tag.text || ''"
+          >
+            {{ actionService.Get_Tag_from_Id(tag) }}
           </nz-tag>
         </div>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="copyURL(note.id)">Копировать URL</li>
+            <li nz-menu-item (click)="copyURL(note.id, note.title)">
+              Копировать URL
+            </li>
             <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
             <li nz-submenu nzTitle="Теги">
               <ul>
                 <li nz-submenu nzTitle="Включить">
                   <ul>
-                    <nz-tag
+                    <li
+                      nz-menu-item
                       *ngFor="let tag of note.tags"
                       nzColor="orange"
                       class="tag_in_note"
                       (change)="changeCheckbox(tag, true)"
                       nz-row
                     >
-                      <li nz-menu-item>
-                        <label nz-checkbox [(ngModel)]="allTags[tag]">
-                          {{ actionService.Get_Tag_from_Id(tag) }}
-                        </label>
-                      </li>
-                    </nz-tag>
+                      <label nz-checkbox [(ngModel)]="allTags[tag].checked">
+                        {{ allTags[tag].title }}
+                      </label>
+                    </li>
                   </ul>
                 </li>
                 <li nz-submenu nzTitle="Исключить">
                   <ul>
-                    <nz-tag
+                    <li
+                      nz-menu-item
                       *ngFor="let tag of note.tags"
                       nzColor="red"
                       class="tag_in_note"
                       nz-row
+                      (click)="changeCheckbox(tag, false)"
                     >
-                      <li nz-menu-item (click)="changeCheckbox(tag, false)">
-                        {{ actionService.Get_Tag_from_Id(tag) }}
-                      </li>
-                    </nz-tag>
+                      {{ allTags[tag].title }}
+                    </li>
                   </ul>
                 </li>
               </ul>
+            </li>
+            <li nz-menu-item (click)="deleteItem(note.id, $event)">
+              Удалить
             </li>
           </ul>
         </nz-dropdown-menu>

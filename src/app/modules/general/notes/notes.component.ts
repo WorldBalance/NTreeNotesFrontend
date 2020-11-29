@@ -95,16 +95,16 @@ export class NotesComponent implements OnInit, OnDestroy {
   checkboxConditions(tags) {
     for (let tag in this.allTags) {
       if (tags.includes(tag)) {
-        this.allTags[tag] = true;
+        this.allTags[tag].checked = true;
       } else {
-        this.allTags[tag] = false;
+        this.allTags[tag].checked = false;
       }
     }
   }
 
-  copyURL(id) {
+  copyURL(id, title) {
     let inputValue = window.location.href;
-    inputValue = inputValue.substring(0, inputValue.length - 1) + '/' + id;
+    inputValue = inputValue.substring(0, inputValue.length - 1) + '/' + id + `?titlev=${title}`;
     navigator.clipboard.writeText(inputValue)
   }
 
@@ -129,11 +129,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     this.tagsService.getTags().subscribe(tags => {
       tags.map(tag => {
-        if (this.searchTags.includes(tag.id)) {
-          this.allTags[tag.id] = true;
-        } else {
-          this.allTags[tag.id] = false;
-        }
+        let cond = this.searchTags.includes(tag.id) ? true : false;
+        this.allTags[tag.id] = { ...tag, checked: cond }
       })
     });
   }
