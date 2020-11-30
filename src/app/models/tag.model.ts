@@ -5,4 +5,5 @@ export interface TagModel extends Item {
   id: string;
   title: string;
   type: ItemType.tag;
+  checked?: boolean
 }

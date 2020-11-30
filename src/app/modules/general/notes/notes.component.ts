@@ -12,6 +12,7 @@ import { queryParamsPack, queryParamsUnpack } from 'src/utils/params'
 import { ItemType, NoteModel } from '../../../models/note.model';
 import { toArray, truncateForHtml } from '../../../../utils/utils1';
 import { TagsService } from '../../../services/tags.service';
+import { TagModel } from '../../../models/tag.model'
 
 @Component({
   selector: 'app-notes',
@@ -49,7 +50,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public notesSearchString: string;
   public items: NoteModel[];
   public listType: ItemType;
-  public allTags: Object = {};
+  public allTags: TagModel[] = [];
 
 
   private unsubscribe$ = new Subject<void>();
@@ -75,13 +76,13 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.nzContextMenuService.close();
   }
 
-  async changeCheckbox(tag, push): Promise<void> {
+  async changeCheckbox(tag: string, push: boolean): Promise<void> {
 
     if (!this.searchTags.includes(tag) && push) {
       this.searchTags.push(tag);
 
     } else {
-      let index = this.searchTags.indexOf(tag);
+      let index: number = this.searchTags.indexOf(tag);
       if (index !== -1) {
         this.searchTags.splice(index, 1)
         this.checkboxConditions(this.searchTags);
@@ -92,19 +93,14 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   }
 
-  checkboxConditions(tags) {
+  checkboxConditions(tags: string[]): void {
     for (let tag in this.allTags) {
-      if (tags.includes(tag)) {
-        this.allTags[tag].checked = true;
-      } else {
-        this.allTags[tag].checked = false;
-      }
+      this.allTags[tag].checked = tags.includes(tag);
     }
   }
 
-  copyURL(id, title) {
-    let inputValue = window.location.href;
-    inputValue = inputValue.substring(0, inputValue.length - 1) + '/' + id + `?titlev=${title}`;
+  copyURL(id: string, title: string): void {
+    const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
     navigator.clipboard.writeText(inputValue)
   }
 
@@ -127,10 +123,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     ).subscribe((notes: NoteModel[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
 
-    this.tagsService.getTags().subscribe(tags => {
-      tags.map(tag => {
-        let cond = this.searchTags.includes(tag.id) ? true : false;
-        this.allTags[tag.id] = { ...tag, checked: cond }
+    this.tagsService.getTags().subscribe((tags: TagModel[]) => {
+      tags.map((tag: TagModel) => {
+        this.allTags[tag.id] = { ...tag, checked: this.searchTags.includes(tag.id) }
       })
     });
   }
