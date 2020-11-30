@@ -68,38 +68,38 @@ export class NotesComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+  public contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
     this.nzContextMenuService.create($event, menu);
   }
 
-  closeMenu(): void {
+  public closeMenu(): void {
     this.nzContextMenuService.close();
   }
 
-  async changeCheckbox(tag: string, push: boolean): Promise<void> {
+  public changeCheckbox(tag: string, push: boolean): void {
 
     if (!this.searchTags.includes(tag) && push) {
       this.searchTags.push(tag);
 
     } else {
-      let index: number = this.searchTags.indexOf(tag);
+      const index: number = this.searchTags.indexOf(tag);
       if (index !== -1) {
         this.searchTags.splice(index, 1)
         this.checkboxConditions(this.searchTags);
       }
     }
 
-    await this.refresh_url_search();
+    this.refresh_url_search();
 
   }
 
-  checkboxConditions(tags: string[]): void {
-    for (let tag in this.allTags) {
+  private checkboxConditions(tags: string[]): void {
+    for (const tag in this.allTags) {
       this.allTags[tag].checked = tags.includes(tag);
     }
   }
 
-  copyURL(id: string, title: string): void {
+  public copyURL(id: string, title: string): void {
     const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
     navigator.clipboard.writeText(inputValue)
   }
