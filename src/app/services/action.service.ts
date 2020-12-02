@@ -27,21 +27,6 @@ export class ActionService {
     await this.store.StoreRefresh();
   }
 
-  Get_Tag_from_Id(id: string) {
-    if (this.store.data.tags.tagsArray === [] || id === '' || id === undefined) {
-      return null;
-    }
-    if (id === AVATAR_TAG) {
-      return null;
-    }
-    try {
-      const data = this.store.data.tags.tagsArray.find((x: any) => x.id === id);
-      return data.title;
-    } catch {
-      return 'ошибка системы! Тег был удалён! ';
-    }
-  }
-
   public getNotes(tags: string[], searchString: string, opt?: { refresh?: boolean, excludeTags: string[] }): Observable<NoteModel[]> {
     opt && opt.refresh && this.store.data.RefreshNotesList();
     if (!this.store.data.notes.notesArray.length) {

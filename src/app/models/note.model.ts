@@ -1,4 +1,5 @@
 import {Note} from '../../../in/Api';
+import {TagModel} from './tag.model';
 
 export interface NoteModel extends Note {
   id: string;
@@ -21,3 +22,5 @@ export enum ItemType {
   tag = 'tag',
   file = 'file'
 }
+
+export type NoteWithTags = (Omit<NoteModel, 'tags'> & {tags: TagModel[]});
