@@ -54,7 +54,7 @@
           [ngClass]="{
             'animated flash updatedNote delay-1s':
               store.data.note.lastUpdatedId === note.id
-          }" 
+          }"
           (contextmenu)="contextMenu($event, menu)"
         >
           <div class="note-title-wrapper">
@@ -99,16 +99,16 @@
             class="tag_in_note"
             [title]="tag.text || ''"
           >
-            {{ actionService.Get_Tag_from_Id(tag) }}
+            {{tag.title}}
           </nz-tag>
         </div>
-        <nz-dropdown-menu #menu="nzDropdownMenu" >
+        <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
             </li>
             <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
-            <li nz-submenu nzTitle="Теги" *ngIf='allTags[note.tags[note.tags.length-1]]'>
+            <li nz-submenu nzTitle="Теги" *ngIf='note.tags.length'>
               <ul>
                 <li nz-submenu nzTitle="Включить">
                   <ul>
@@ -117,11 +117,11 @@
                       *ngFor="let tag of note.tags"
                       nzColor="orange"
                       class="tag_in_note"
-                      (change)="changeCheckbox(tag, true)"
+                      (change)="changeCheckbox(tag.id, true)"
                       nz-row
                     >
-                      <label nz-checkbox  [(ngModel)]="allTags[tag].checked">
-                        {{ allTags[tag].title }}
+                      <label nz-checkbox [(ngModel)]="tag.checked">
+                        {{ tag.title }}
                       </label>
                     </li>
                   </ul>
@@ -134,9 +134,9 @@
                       nzColor="red"
                       class="tag_in_note"
                       nz-row
-                      (click)="changeCheckbox(tag, false)"
+                      (click)="changeCheckbox(tag.id, false)"
                     >
-                      {{ allTags[tag].title }}
+                      {{ tag.title }}
                     </li>
                   </ul>
                 </li>
