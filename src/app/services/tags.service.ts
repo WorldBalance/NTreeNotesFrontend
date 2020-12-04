@@ -18,6 +18,7 @@ export class TagsService {
   public downloadData(): void {
     this.crudService.getTags().pipe().subscribe((tags: TagModel[]) => {
       this.store.data.tags.tagsArray = tags;
+      this.tags$.next(tags);
     });
   }
 
