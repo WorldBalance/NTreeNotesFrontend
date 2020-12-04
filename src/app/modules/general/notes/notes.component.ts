@@ -71,6 +71,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.nzContextMenuService.create($event, menu);
   }
 
+  closeMenu(): void {
+    this.nzContextMenuService.close();
+  }
+
   public changeCheckbox(tag: string, push: boolean): void {
 
     if (!this.searchTags.includes(tag) && push) {
@@ -110,7 +114,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.tagsService.getTags().pipe(
-      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
+      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({ ...tag, checked: this.searchTags.includes(tag.id) }))),
       switchMap(() => this.crudService.getItemType()),
       switchMap((itemType: ItemType) => {
         this.listType = itemType;

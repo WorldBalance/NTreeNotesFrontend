@@ -7,9 +7,12 @@
            [nzLoading]="loading">
   <ng-container *ngIf="tags$ | async as tags">
     <nz-option *ngFor="let tag of tags"
-               [nzLabel]="tag.title"
-               [nzValue]="tag.id"
-    ></nz-option>
+    [nzValue]="tag.id"
+    [nzLabel]="tag.title"
+    nzCustomContent
+    >
+    <span nz-tooltip [nzTitle]='tag.text || ""'>{{tag.title}}</span>
+  </nz-option>
   </ng-container>
 </nz-select>
 

@@ -66,13 +66,14 @@
               <i
                 nz-dropdown
                 nzTrigger="click"
-                [nzDropdownMenu]="menu"
+                [nzDropdownMenu]="menu2"
                 nz-icon
                 nzType="more"
                 nzTheme="outline"
                 nz-tooltip
                 class="more_note"
                 nzTooltipPlacement="left"
+                (click)='closeMenu()'
               ></i>
               <div class="note_time"
                    nzTooltipTitle="Время последнего редактирования"
@@ -103,6 +104,51 @@
           </nz-tag>
         </div>
         <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="copyURL(note.id, note.title)">
+              Копировать URL
+            </li>
+            <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
+            <li nz-submenu nzTitle="Теги" *ngIf='note.tags.length'>
+              <ul>
+                <li nz-submenu nzTitle="Включить">
+                  <ul>
+                    <li
+                      nz-menu-item
+                      *ngFor="let tag of note.tags"
+                      nzColor="orange"
+                      class="tag_in_note"
+                      (change)="changeCheckbox(tag.id, true)"
+                      nz-row
+                    >
+                      <label nz-checkbox [(ngModel)]="tag.checked">
+                        {{ tag.title }}
+                      </label>
+                    </li>
+                  </ul>
+                </li>
+                <li nz-submenu nzTitle="Исключить">
+                  <ul>
+                    <li
+                      nz-menu-item
+                      *ngFor="let tag of note.tags"
+                      nzColor="red"
+                      class="tag_in_note"
+                      nz-row
+                      (click)="changeCheckbox(tag.id, false)"
+                    >
+                      {{ tag.title }}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li nz-menu-item (click)="deleteItem(note.id, $event)">
+              Удалить
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #menu2="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
