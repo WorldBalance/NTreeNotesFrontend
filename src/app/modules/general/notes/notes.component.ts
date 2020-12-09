@@ -4,7 +4,7 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, skip, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject, OperatorFunction} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzContextMenuService, NzDropdownMenuComponent, NzMessageService} from 'ng-zorro-antd';
@@ -114,6 +114,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.tagsService.getTags().pipe(
+      skip(1),
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({ ...tag, checked: this.searchTags.includes(tag.id) }))),
       switchMap(() => this.crudService.getItemType()),
       switchMap((itemType: ItemType) => {
