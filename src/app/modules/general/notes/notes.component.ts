@@ -80,7 +80,15 @@ export class NotesComponent implements OnInit, OnDestroy {
     if (!this.searchTags.includes(tag) && push) {
       this.searchTags.push(tag);
 
+      const index: number = this.excludedTags.indexOf(tag);
+      if (index !== -1) {
+        this.excludedTags.splice(index, 1);
+      }
     } else {
+      if (!push) {
+        this.excludedTags.push(tag);
+      }
+
       const index: number = this.searchTags.indexOf(tag);
       if (index !== -1) {
         this.searchTags.splice(index, 1)
