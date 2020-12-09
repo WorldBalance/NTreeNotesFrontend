@@ -9,16 +9,22 @@ import {StoreService} from './store.service';
 @Injectable({providedIn: 'root'})
 export class TagsService {
 
+  private dataIsLoaded: boolean;
   private tags$ = new BehaviorSubject<TagModel[]>([]);
 
   constructor(private crudService: CrudService, private store: StoreService,) {
     this.downloadData();
   }
 
+  public getDataState(): boolean {
+    return this.dataIsLoaded;
+  }
+
   public downloadData(): void {
     this.crudService.getTags().pipe().subscribe((tags: TagModel[]) => {
       this.store.data.tags.tagsArray = tags;
       this.tags$.next(tags);
+      this.dataIsLoaded = true;
     });
   }
 
