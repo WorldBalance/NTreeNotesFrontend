@@ -113,16 +113,18 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    if (this.tagsService.getDataState()) {
-      this.crudService.getItemType().pipe(this.getNotesObservable()).subscribe((notes: NoteWithTags[]) => this.items = notes);
-    } else {
-      this.tagsService.getTags().pipe(
-        skip(1),
-        tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
-        switchMap(() => this.crudService.getItemType()),
-        this.getNotesObservable(),
-      ).subscribe((notes: NoteWithTags[]) => this.items = notes);
-    }
+    this.tagsService.getTags().pipe(
+      skip(this.tagsService.getDataState() ? 0 : 1),
+      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
+      switchMap(() => this.crudService.getItemType()),
+      switchMap((itemType: ItemType) => {
+        this.listType = itemType;
+        return this.route.queryParams;
+      }),
+      switchMap((params: Params) => this.getItems(params)),
+      this.mapTagsToNote(),
+      takeUntil(this.unsubscribe$),
+    ).subscribe((notes: NoteWithTags[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
   }
 
@@ -215,17 +217,5 @@ export class NotesComponent implements OnInit, OnDestroy {
           })
         } : {...item, tags: []}))
     );
-  }
-
-  private getNotesObservable(): OperatorFunction<ItemType, NoteWithTags[]> {
-    return source => source.pipe(
-      switchMap((itemType: ItemType) => {
-        this.listType = itemType;
-        return this.route.queryParams;
-      }),
-      switchMap((params: Params) => this.getItems(params)),
-      this.mapTagsToNote(),
-      takeUntil(this.unsubscribe$),
-    )
   }
 }
