@@ -71,29 +71,29 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.nzContextMenuService.create($event, menu);
   }
 
-  closeMenu(): void {
+  public closeMenu(): void {
     this.nzContextMenuService.close();
   }
 
   public changeCheckbox(tag: string, push: boolean): void {
 
+    const removeFromFilter = (array, tag) => {
+      const index: number = array.indexOf(tag);
+      if (index !== -1) {
+        array.splice(index, 1);
+      }
+    };
+
     if (!this.searchTags.includes(tag) && push) {
       this.searchTags.push(tag);
-
-      const index: number = this.excludedTags.indexOf(tag);
-      if (index !== -1) {
-        this.excludedTags.splice(index, 1);
-      }
+      
+      removeFromFilter(this.excludedTags, tag);
     } else {
       if (!push) {
         this.excludedTags.push(tag);
       }
 
-      const index: number = this.searchTags.indexOf(tag);
-      if (index !== -1) {
-        this.searchTags.splice(index, 1)
-        this.checkboxConditions(this.searchTags);
-      }
+      removeFromFilter(this.searchTags, tag);
     }
 
     this.refresh_url_search();
@@ -168,7 +168,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     await this.refresh_url_search();
   }
 
-  NoteSelect(id) {
+  noteSelect(id) {
     this.store.data.note.lastUpdatedId = '';
     this.router.navigate(['/note/' + id]);
   }

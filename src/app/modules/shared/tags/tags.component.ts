@@ -17,7 +17,6 @@ import {NzSelectComponent} from 'ng-zorro-antd';
 import {CrudService} from '../../../services/crud.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {TagsService} from '../../../services/tags.service';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'app-tags',

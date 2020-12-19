@@ -50,7 +50,7 @@
       </div>
       <div *ngFor="let note of items" class="note_in_list">
         <div
-          (click)="NoteSelect(note.id)"
+          (click)="noteSelect(note.id)"
           [ngClass]="{
             'animated flash updatedNote delay-1s':
               store.data.note.lastUpdatedId === note.id
@@ -66,7 +66,7 @@
               <i
                 nz-dropdown
                 nzTrigger="click"
-                [nzDropdownMenu]="menu2"
+                [nzDropdownMenu]="more_dropdown"
                 nz-icon
                 nzType="more"
                 nzTheme="outline"
@@ -108,7 +108,7 @@
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
             </li>
-            <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
+            <li nz-menu-item (click)="noteSelect(note.id)">Редактировать</li>
             <li nz-submenu nzTitle="Теги" *ngIf='note.tags.length'>
               <ul>
                 <li nz-submenu nzTitle="Включить">
@@ -148,12 +148,12 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-        <nz-dropdown-menu #menu2="nzDropdownMenu">
+        <nz-dropdown-menu #more_dropdown="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
             </li>
-            <li nz-menu-item (click)="NoteSelect(note.id)">Редактировать</li>
+            <li nz-menu-item (click)="noteSelect(note.id)">Редактировать</li>
             <li nz-submenu nzTitle="Теги" *ngIf='note.tags.length'>
               <ul>
                 <li nz-submenu nzTitle="Включить">
@@ -193,6 +193,9 @@
             </li>
           </ul>
         </nz-dropdown-menu>
+        
+
+
       </div>
       <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
         <i nz-icon
