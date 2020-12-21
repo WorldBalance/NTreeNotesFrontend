@@ -4,7 +4,7 @@ import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, skip, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, shareReplay, skip, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject, OperatorFunction} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
 import {NzContextMenuService, NzDropdownMenuComponent, NzMessageService} from 'ng-zorro-antd';
@@ -77,8 +77,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public changeCheckbox(tag: string, push: boolean): void {
 
-    const removeFromFilter = (array, tag) => {
-      const index: number = array.indexOf(tag);
+    const removeFromFilter = (array, removedTag) => {
+      const index: number = array.indexOf(removedTag);
       if (index !== -1) {
         array.splice(index, 1);
       }
@@ -86,7 +86,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
     if (!this.searchTags.includes(tag) && push) {
       this.searchTags.push(tag);
-      
+
       removeFromFilter(this.excludedTags, tag);
     } else {
       if (!push) {
@@ -101,9 +101,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   private checkboxConditions(tags: string[]): void {
-    for (const tag in this.allTags) {
-      this.allTags[tag].checked = tags.includes(tag);
-    }
+    this.allTags.map((tag: TagModel) => ({...tag, checked: tags.includes(tag.id)}));
   }
 
   public copyURL(id: string, title: string): void {
@@ -121,7 +119,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.tagsService.getTags().pipe(
+    const tags$ = this.tagsService.getTags().pipe(
       skip(this.tagsService.getDataState() ? 0 : 1),
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
       switchMap(() => this.crudService.getItemType()),
@@ -131,8 +129,11 @@ export class NotesComponent implements OnInit, OnDestroy {
       }),
       switchMap((params: Params) => this.getItems(params)),
       this.mapTagsToNote(),
+      shareReplay(1),
       takeUntil(this.unsubscribe$),
-    ).subscribe((notes: NoteWithTags[]) => this.items = notes);
+    );
+    tags$.pipe(take(1)).subscribe(() => this.tagsService.changeDataState());
+    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
   }
 
@@ -160,12 +161,12 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.router.navigate(['/note'], {queryParams});
   }
 
-  async filterNotesTag(tags: string[], include: boolean) {
+  public filterNotesTag(tags: string[], include: boolean): void {
     include ? this.searchTags = tags : this.excludedTags = tags;
 
     this.checkboxConditions(tags)
 
-    await this.refresh_url_search();
+    this.refresh_url_search();
   }
 
   noteSelect(id) {

@@ -20,11 +20,14 @@ export class TagsService {
     return this.dataIsLoaded;
   }
 
+  public changeDataState(): void {
+    this.dataIsLoaded = true;
+  }
+
   public downloadData(): void {
     this.crudService.getTags().pipe().subscribe((tags: TagModel[]) => {
       this.store.data.tags.tagsArray = tags;
       this.tags$.next(tags);
-      this.dataIsLoaded = true;
     });
   }
 
