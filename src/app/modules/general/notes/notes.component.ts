@@ -100,10 +100,6 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   }
 
-  private checkboxConditions(tags: string[]): void {
-    this.allTags.map((tag: TagModel) => ({...tag, checked: tags.includes(tag.id)}));
-  }
-
   public copyURL(id: string, title: string): void {
     const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
     navigator.clipboard.writeText(inputValue)
@@ -164,7 +160,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   public filterNotesTag(tags: string[], include: boolean): void {
     include ? this.searchTags = tags : this.excludedTags = tags;
 
-    this.checkboxConditions(tags)
+    this.allTags = this.allTags.map((tag: TagModel) => ({...tag, checked: tags.includes(tag.id)}));
 
     this.refresh_url_search();
   }
