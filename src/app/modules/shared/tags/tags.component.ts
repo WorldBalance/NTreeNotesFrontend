@@ -108,6 +108,7 @@ export class TagsComponent implements OnDestroy, OnInit, ControlValueAccessor {
 
   writeValue(value: string[]): void {
     this.value = value;
+    this.cdr.markForCheck();
   }
 
   public onCancel() {
