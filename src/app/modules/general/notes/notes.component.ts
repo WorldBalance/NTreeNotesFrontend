@@ -67,8 +67,10 @@ export class NotesComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  public contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+  public contextMenu($event, menu: NzDropdownMenuComponent): void {
+    if($event.target.tagName !== 'A'){
     this.nzContextMenuService.create($event, menu);
+    }
   }
 
   public closeMenu(): void {
@@ -165,9 +167,11 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.refresh_url_search();
   }
 
-  noteSelect(id) {
-    this.store.data.note.lastUpdatedId = '';
-    this.router.navigate(['/note/' + id]);
+  noteSelect(id, event?) {
+    if(event.target.tagName !== 'A'){
+      this.store.data.note.lastUpdatedId = '';
+      this.router.navigate(['/note/' + id]);
+    }
   }
 
   public deleteItem(id: string, event) {
