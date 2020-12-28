@@ -50,7 +50,7 @@
       </div>
       <div *ngFor="let note of items" class="note_in_list">
         <div
-          (click)="noteSelect(note.id)"
+          (click)="noteSelect(note.id, $event)"
           [ngClass]="{
             'animated flash updatedNote delay-1s':
               store.data.note.lastUpdatedId === note.id
@@ -60,7 +60,7 @@
           <div class="note-title-wrapper">
             <div class="note_title">
               <b>{{note.title}}</b>
-              <span *ngIf="note.urlHtml" [innerHTML]="note.urlHtml"></span>
+              <span *ngIf="note.urlHtml" [innerHTML]="note.urlHtml" id="note_url"></span>
             </div>
             <div>
               <i
