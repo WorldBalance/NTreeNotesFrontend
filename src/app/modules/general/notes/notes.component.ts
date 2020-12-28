@@ -165,8 +165,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.refresh_url_search();
   }
 
-  noteSelect(id, event?) {
-    if(event.target.tagName !== 'A'){
+  public noteSelect(id, event?):void {
+    if(!event || event.target.tagName !== 'A'){
       this.store.data.note.lastUpdatedId = '';
       this.router.navigate(['/note/' + id]);
     }
