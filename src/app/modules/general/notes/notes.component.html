@@ -66,7 +66,7 @@
               <i
                 nz-dropdown
                 nzTrigger="click"
-                [nzDropdownMenu]="more_dropdown"
+                [nzDropdownMenu]="dropdown_for_button"
                 nz-icon
                 nzType="more"
                 nzTheme="outline"
@@ -148,7 +148,7 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-        <nz-dropdown-menu #more_dropdown="nzDropdownMenu">
+        <nz-dropdown-menu #dropdown_for_button="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item (click)="copyURL(note.id, note.title)">
               Копировать URL
