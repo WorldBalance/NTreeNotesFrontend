@@ -101,6 +101,15 @@ ul{
   margin:0.16em;
 }
 
+.tag_exclude{
+  margin: 0.16rem 1rem;
+  cursor: pointer;
+}
+
+.tag_exclude:hover{
+  color: blue;
+}
+
 .delete_note, .more_note {
   text-align: right;
   float: right;

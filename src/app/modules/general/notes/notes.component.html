@@ -118,10 +118,13 @@
                       *ngFor="let tag of note.tags"
                       nzColor="orange"
                       class="tag_in_note"
-                      (change)="changeCheckbox(tag.id, true)"
                       nz-row
                     >
-                      <label nz-checkbox [(ngModel)]="tag.checked">
+                      <label
+                        nz-checkbox
+                        [(ngModel)]="tag.checked"
+                        (ngModelChange)="changeCheckbox(tag.id, true)"
+                      >
                         {{ tag.title }}
                       </label>
                     </li>
@@ -133,7 +136,7 @@
                       nz-menu-item
                       *ngFor="let tag of note.tags"
                       nzColor="red"
-                      class="tag_in_note"
+                      class="tag_in_note tag_exclude"
                       nz-row
                       (click)="changeCheckbox(tag.id, false)"
                     >
