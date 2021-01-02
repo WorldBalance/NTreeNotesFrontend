@@ -68,8 +68,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public contextMenu($event, menu: NzDropdownMenuComponent): void {
-    if($event.target.tagName !== 'A'){
-    this.nzContextMenuService.create($event, menu);
+    if ($event.target.tagName !== 'A') {
+      this.nzContextMenuService.create($event, menu);
     }
   }
 
@@ -104,7 +104,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public copyURL(id: string, title: string): void {
     const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
-    navigator.clipboard.writeText(inputValue)
+    navigator.clipboard.writeText(inputValue);
   }
 
   public getMoreNotesData() {
@@ -165,8 +165,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.refresh_url_search();
   }
 
-  public noteSelect(id, event?):void {
-    if(event === undefined || event.target.tagName !== 'A'){
+  public noteSelect(id, event?): void {
+    if (event === undefined || event.target.tagName !== 'A') {
       this.store.data.note.lastUpdatedId = '';
       this.router.navigate(['/note/' + id]);
     }

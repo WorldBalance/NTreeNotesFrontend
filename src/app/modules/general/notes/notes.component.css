@@ -2,7 +2,7 @@
   text-align: left;
 }
 
-ul{
+ul {
   list-style-type: none;
 }
 
@@ -10,8 +10,8 @@ ul{
   font-size: 18px;
 }
 
-.note_img{
-  max-width:150px;
+.note_img {
+  max-width: 150px;
   max-height: 200px;
   height: auto;
   width: auto;
@@ -20,29 +20,29 @@ ul{
   padding-bottom: 0.2em;
 }
 
-.note_small tr td{
- vertical-align: top;
+.note_small tr td {
+  vertical-align: top;
   padding: 5px;
 }
 
-.del_note{
- float: right;
+.del_note {
+  float: right;
 }
 
-.del_note:hover{
- color:red;
+.del_note:hover {
+  color: red;
 }
 
-.delete_tag{
- color:transparent;
+.delete_tag {
+  color: transparent;
 }
 
-.delete_tag:hover{
- color:red;
+.delete_tag:hover {
+  color: red;
 }
 
 .note-title-wrapper {
-  background-color:#C4C4C4;
+  background-color: #C4C4C4;
   color: black;
   display: flex;
   border-bottom: 0.1em solid gray;
@@ -50,7 +50,8 @@ ul{
   padding: 5px;
   align-items: center;
 }
-.note-title-wrapper div:last-child{
+
+.note-title-wrapper div:last-child {
   display: flex;
   flex-direction: row-reverse;
 }
@@ -67,21 +68,21 @@ ul{
 
 .note_time {
   margin-right: 1em;
-  float:right;
+  float: right;
   white-space: nowrap;
 }
 
-.tag_element{
+.tag_element {
   cursor: pointer;
 }
 
-.note_tag{
-  margin-left:0.3em ;
+.note_tag {
+  margin-left: 0.3em;
 }
 
-.note_in_list{
+.note_in_list {
   margin: 0.65em;
-  background-color:gainsboro;
+  background-color: gainsboro;
   cursor: pointer;
 }
 
@@ -89,24 +90,24 @@ ul{
   border-radius: 0 0 0.4em 0.4em;
 }
 
-.note_in_list,.border1{
+.note_in_list, .border1 {
   border: 0.2em solid grey;
 }
 
-.note_in_list:hover{
+.note_in_list:hover {
   border-color: darkblue;
 }
 
-.tag_in_note{
-  margin:0.16em;
+.tag_in_note {
+  margin: 0.16em;
 }
 
-.tag_exclude{
+.tag_exclude {
   margin: 0.16rem 1rem;
   cursor: pointer;
 }
 
-.tag_exclude:hover{
+.tag_exclude:hover {
   color: blue;
 }
 
@@ -118,7 +119,7 @@ ul{
 
 .delete_note:hover, .more_note:hover {
   color: red;
-} 
+}
 
 .new-item-btn {
   cursor: pointer;
@@ -146,8 +147,8 @@ nz-radio-group {
 
 nz-sider {
   overflow-y: scroll;
-  overflow-x:hidden;
-  background-color:rgb(27, 23, 49);
+  overflow-x: hidden;
+  background-color: rgb(27, 23, 49);
   color: white;
 }
 
