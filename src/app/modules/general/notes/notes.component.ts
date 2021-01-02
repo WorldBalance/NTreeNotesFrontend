@@ -99,6 +99,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     }
 
     this.refresh_url_search();
+    this.closeMenu();
 
   }
 
