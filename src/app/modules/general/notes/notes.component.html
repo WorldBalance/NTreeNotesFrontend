@@ -66,15 +66,17 @@
               <i
                 nz-dropdown
                 nzTrigger="click"
-                [nzDropdownMenu]="dropdown_for_button"
                 nz-icon
                 nzType="more"
                 nzTheme="outline"
                 nz-tooltip
                 class="more_note"
                 nzTooltipPlacement="left"
+                [nzDropdownMenu]="menu"
                 (click)='closeMenu()'
-              ></i>
+              >
+
+              </i>
               <div class="note_time"
                    nzTooltipTitle="Время последнего редактирования"
                    nzTooltipPlacement="left"
@@ -151,53 +153,6 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-        <nz-dropdown-menu #dropdown_for_button="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item (click)="copyURL(note.id, note.title)">
-              Копировать URL
-            </li>
-            <li nz-menu-item (click)="noteSelect(note.id)">Редактировать</li>
-            <li nz-submenu nzTitle="Теги" *ngIf='note.tags.length'>
-              <ul>
-                <li nz-submenu nzTitle="Включить">
-                  <ul>
-                    <li
-                      nz-menu-item
-                      *ngFor="let tag of note.tags"
-                      nzColor="orange"
-                      class="tag_in_note"
-                      (change)="changeCheckbox(tag.id, true)"
-                      nz-row
-                    >
-                      <label nz-checkbox [(ngModel)]="tag.checked">
-                        {{ tag.title }}
-                      </label>
-                    </li>
-                  </ul>
-                </li>
-                <li nz-submenu nzTitle="Исключить">
-                  <ul>
-                    <li
-                      nz-menu-item
-                      *ngFor="let tag of note.tags"
-                      nzColor="red"
-                      class="tag_in_note"
-                      nz-row
-                      (click)="changeCheckbox(tag.id, false)"
-                    >
-                      {{ tag.title }}
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li nz-menu-item (click)="deleteItem(note.id, $event)">
-              Удалить
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-        
-
 
       </div>
       <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
