@@ -102,6 +102,11 @@ ul {
   margin: 0.16em;
 }
 
+.tag_include {
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+}
+
 .tag_exclude {
   margin: 0.16rem 1rem;
   cursor: pointer;
