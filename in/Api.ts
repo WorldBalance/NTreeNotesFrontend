@@ -30,24 +30,26 @@ export interface Item {
     type?: Type;
 
     title?: TitleUTF8;
-    url?: URL | URL[];
-    text?: TitleUTF8;
-    user_info?: object;
-    image_url?: URL; // out
+    url?: URL | URL[] | null;
+    text?: TitleUTF8 | null;
+    user_info?: object | null;
+
+    tags?: ObjectId[] | null;
+    files?: ObjectId[] | null;
 
     // Read Only (RO) properties
+    image_url?: URL;
+
     ts_created_ms?: number;
     ts_updated_ms?: number;
 }
 
 export interface Note extends Item {
-    tags?: ObjectId[];
-    files?: ObjectId[];
 }
 
 export interface Tag extends Item {
-    linksL?: ObjectId[]; // children
     linksH?: ObjectId[]; // parents
+    linksL?: ObjectId[]; // children
 }
 
 
@@ -59,13 +61,17 @@ export interface ActionFindOptions {
     countMax?: number;
 
     excludeTags?: ObjectId | ObjectId[];
-    includeTagsL?: ObjectId | ObjectId[]; // TagsL = subtags        includes any SubTags of every ObjectId
+    includeTagsL?: ObjectId | ObjectId[]; // TagsL = subtags, includes any SubTags of every ObjectId
 }
 
 
 export const sNTreeNotes: RequestNTreeNotes = "NTreeNotes";
+export const keyId = "id";
+export const keyType = "type";
+export const keyTitle = "title";
 export const keyUrl = "url";
 export const keyTags = "tags";
+export const keyText = "text";
 export const keyFiles = "files";
 export const keyUserInfo = "user_info";
 export const keyImageUrl = "image_url";
