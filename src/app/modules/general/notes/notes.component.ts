@@ -223,7 +223,8 @@ export class NotesComponent implements OnInit, OnDestroy {
           tags: item.tags.map((tagId: string) => {
             return this.allTags.find((tag: TagModel) => tag.id === tagId) || {title: 'ошибка системы! Тег был удалён! '} as TagModel;
           })
-        } : {...item, tags: []}))
+        } : {...item, tags: []})),
+      takeUntil(this.unsubscribe$)
     );
   }
 }
