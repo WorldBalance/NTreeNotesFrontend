@@ -1,12 +1,12 @@
 {
-  "name": "note-tree-v2",
+  "name": "NTreeNotesFrontend",
   "version": "0.8.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start2": "ng serve --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
-    "build2": "ng build --prod",
+    "build2": "ng build --prod --base-href=\"/notes2/\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
