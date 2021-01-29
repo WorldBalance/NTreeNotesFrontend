@@ -3,6 +3,10 @@
     <h3 class="white-text">Фильтр</h3>
     <span>Включает:</span>
     <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
+    <br>
+    <label nz-checkbox
+           [ngModel]="useTagsL"
+           (ngModelChange)="useTagsLCheckbox()" class="white-text">Косвенное включение</label>
     <br><br>
     <span>Исключает:</span>
     <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>

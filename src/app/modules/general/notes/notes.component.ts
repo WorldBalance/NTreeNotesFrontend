@@ -46,6 +46,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public searchTags: string[] = [];
   public excludedTags: string[] = [];
+  public useTagsL = false;
   public notesSearchString: string;
   public items: NoteWithTags[];
   public listType: ItemType;
@@ -103,6 +104,11 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   }
 
+  public useTagsLCheckbox(): void{
+    this.useTagsL = !this.useTagsL;
+    this.refresh_url_search();
+  }
+
   public copyURL(id: string, title: string): void {
     const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
     navigator.clipboard.writeText(inputValue);
@@ -154,7 +160,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags, useTagsL: this.useTagsL});
     this.router.navigate(['/note'], {queryParams});
   }
 
@@ -192,7 +198,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags});
+    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags, useTagsL: this.useTagsL});
     return this.router.navigate(['/notes'], {queryParams});
   }
 
@@ -201,7 +207,10 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.notesSearchString = params.search || '';
     this.searchTags = params.tags || [];
     this.excludedTags = params.exclude || [];
-    return this.actionService.getNotes(params.tags, params.search, {refresh: true, excludeTags: params.exclude}).pipe(
+    this.useTagsL = params.useTagsL || false;
+    return this.actionService.getNotes(
+      params.tags, params.search, {refresh: true, excludeTags: params.exclude, includeTagsL: this.useTagsL ? params.tags : null}
+      ).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
           let urlHtml = '';
