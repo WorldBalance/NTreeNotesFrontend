@@ -187,7 +187,7 @@ export class NotesComponent implements OnInit, OnDestroy {
         switchMap(() => this.route.queryParams),
         takeUntil(this.unsubscribe$)
       ).subscribe(() => {
-        const deletedItem = this.items.findIndex((note: NoteModel) => note.id === id);
+        const deletedItem = this.items.findIndex((note: NoteWithTags) => note.id === id);
         this.items.splice(deletedItem, 1);
         if (this.listType === ItemType.tag) {
           this.tagsService.deleteTag(id);
@@ -208,10 +208,17 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.searchTags = params.tags || [];
     this.excludedTags = params.exclude || [];
     this.useTagsL = params.useTagsL || false;
+    const tags = this.useTagsL ? null : params.tags;
+    const includeTagsL = this.useTagsL ? params.tags : null;
+    const opt = {
+      refresh: true,
+      excludeTags: params.exclude,
+      includeTagsL
+    };
     return this.actionService.getNotes(
-      this.useTagsL ? null : params.tags,
+      tags,
       params.search,
-      {refresh: true, excludeTags: params.exclude, includeTagsL: this.useTagsL ? params.tags : null}
+      opt
       ).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {

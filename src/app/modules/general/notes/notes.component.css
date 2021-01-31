@@ -107,6 +107,10 @@ ul {
   margin-right: 0.8em;
 }
 
+.use_tags_l {
+  margin: 0.35em;
+}
+
 .tag_exclude {
   margin: 0.16rem 1rem;
   cursor: pointer;

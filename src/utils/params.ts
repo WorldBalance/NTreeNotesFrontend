@@ -1,3 +1,7 @@
+
+import { stringToBoolean } from './utils1';
+
+
 export interface QueryParamsPacked {
   search?: string;
   tags?: string;
@@ -45,7 +49,7 @@ export function queryParamsUnpack(params: QueryParamsPacked): QueryParamsUnpacke
   if (params.exclude?.length) {
     res.exclude = params.exclude.split('-');
   }
-  if (params.useTagsL) {
+  if (params.useTagsL && stringToBoolean(params.useTagsL)) {
     res.useTagsL = true;
   }
   return res;

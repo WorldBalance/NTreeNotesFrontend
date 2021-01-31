@@ -6,7 +6,7 @@
     <br>
     <label nz-checkbox
            [ngModel]="useTagsL"
-           (ngModelChange)="useTagsLCheckbox()" class="white-text">Косвенное включение</label>
+           (ngModelChange)="useTagsLCheckbox()" class="white-text use_tags_l">Косвенное включение</label>
     <br><br>
     <span>Исключает:</span>
     <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
