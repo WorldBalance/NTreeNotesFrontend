@@ -109,9 +109,17 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.refresh_url_search();
   }
 
-  public copyURL(id: string, title: string): void {
-    const inputValue: string = window.location.origin + '/note/' + id + `?titlev=${title}`;
-    navigator.clipboard.writeText(inputValue);
+  public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
+    const res = [window.location.origin, '/note/', item.id];
+    if (opt && opt.titlev && item.title) {
+      res.push("?titlev=", item.title);
+    }
+    return res.join('');
+  }
+
+  public copyURL(item: NoteWithTags): void {
+    const res: string = this.getURL(item, { titlev: true });
+    navigator.clipboard.writeText(res);
   }
 
   public getMoreNotesData() {

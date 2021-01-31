@@ -54,6 +54,7 @@
       </div>
       <div *ngFor="let note of items" class="note_in_list">
         <div
+          [title]="note.id"
           (click)="noteSelect(note.id, $event)"
           [ngClass]="{
             'animated flash updatedNote delay-1s':
@@ -111,7 +112,7 @@
         </div>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="copyURL(note.id, note.title)">
+            <li nz-menu-item (click)="copyURL(note)">
               Копировать URL
             </li>
             <li nz-menu-item (click)="noteSelect(note.id)">Редактировать</li>
