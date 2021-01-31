@@ -209,7 +209,9 @@ export class NotesComponent implements OnInit, OnDestroy {
     this.excludedTags = params.exclude || [];
     this.useTagsL = params.useTagsL || false;
     return this.actionService.getNotes(
-      params.tags, params.search, {refresh: true, excludeTags: params.exclude, includeTagsL: this.useTagsL ? params.tags : null}
+      this.useTagsL ? null : params.tags,
+      params.search,
+      {refresh: true, excludeTags: params.exclude, includeTagsL: this.useTagsL ? params.tags : null}
       ).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
