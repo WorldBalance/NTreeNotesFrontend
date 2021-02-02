@@ -9,7 +9,7 @@ import {NoteFileModel, NoteModel} from '../models/note.model';
 import {Observable} from 'rxjs';
 import {Note} from './Store/NotesData.service';
 import {isEqual} from 'lodash';
-import {StaticTag} from '../../../in/StaticTag';
+import {StaticTag} from '../modules/shared/staticTags.module';
 
 @Injectable({providedIn: 'root'})
 export class ActionService {
