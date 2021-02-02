@@ -123,7 +123,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public copyURL(item: NoteWithTags): void {
     const res: string = this.getURL(item, { titlev: true });
-    navigator.clipboard.writeText(res);
+    window.isSecureContext ? navigator.clipboard.writeText(res) : alert(res);
   }
 
   public getMoreNotesData() {
