@@ -114,8 +114,12 @@ export class ActionService {
   public async SaveFiles() {
     return new Promise((resolve) => {
       const AddArray = this.store.data.note.files
-        .filter((val: NoteFileModel) => !val.loaded)
-        .map((val: NoteFileModel, index: number) => index);
+        .map((val: NoteFileModel, index: number) => {
+          if(!val.loaded){
+            return index;
+          }
+        })
+        .filter(value => value !== undefined);
       if (!AddArray.length) {
         resolve();
         return;
