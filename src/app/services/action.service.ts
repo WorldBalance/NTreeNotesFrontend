@@ -112,27 +112,30 @@ export class ActionService {
   }
 
   public async SaveFiles() {
-    return new Promise((resolve) => {
-      const AddArray = this.store.data.note.files
-        .map((val: NoteFileModel, index: number) => {
-          if(!val.loaded){
-            return index;
-          }
-        })
-        .filter(value => value !== undefined);
-      if (!AddArray.length) {
-        resolve();
-        return;
-      }
-      AddArray.forEach((val) => {
-        if (!val['loaded']) {
-          this.getData.SaveFile(this.store.data.note.files[val].id).subscribe((returningData: ResponseModel) => {
-            if (!returningData.ok) {
-              alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
+    const forUpload = [];
+    const files = this.store.data.note.files;
+    files.forEach((val: NoteFileModel, index: number) => !val.loaded && forUpload.push(index));
+    if (!forUpload.length) {
+      return;
+    }
+    // have files for upload!
+
+    return new Promise((resolve, reject) => {
+      let count = 0, countOk = 0;
+      forUpload.forEach((index: number) => {
+        this.getData.SaveFile(files[index].id).subscribe((returningData: ResponseModel) => {
+          count++;
+          returningData.ok && countOk++;
+          if (count === forUpload.length) { // is the last uploaded file?
+            if (countOk === count) { // are all files uploaded ok?
+              resolve();
             }
-            resolve();
-          });
-        }
+            else {
+              alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
+              reject();
+            }
+          }
+        });
       });
     });
   }
