@@ -11,7 +11,7 @@ import {NoteFileModel, NoteModel} from '../../../models/note.model';
 import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {cloneDeep, isEqual} from 'lodash';
-import {StaticTag} from "../../../../../in/StaticTag";
+import {StaticTag} from '../../shared/staticTags.module';
 
 @Component({
   selector: 'app-note-form',
