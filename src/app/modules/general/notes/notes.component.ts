@@ -14,8 +14,7 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {mapStaticTagReversed} from "../../../../../in/StaticTag";
-import {isStaticTag} from "../../shared/staticTags.module";
+import {isStaticTag} from '../../shared/staticTags.module';
 
 @Component({
   selector: 'app-notes',
