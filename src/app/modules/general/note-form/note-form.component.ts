@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
-import {ActionService, AVATAR_TAG} from '../../../services/action.service';
+import {ActionService} from '../../../services/action.service';
 import {iif, Observable, Observer, of, Subject} from 'rxjs';
 import {switchMap, takeUntil, pluck, tap} from 'rxjs/operators';
 import {CrudService} from '../../../services/crud.service';
@@ -11,6 +11,7 @@ import {NoteFileModel, NoteModel} from '../../../models/note.model';
 import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {cloneDeep, isEqual} from 'lodash';
+import {StaticTag} from "../../../../../in/StaticTag";
 
 @Component({
   selector: 'app-note-form',
@@ -109,7 +110,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
             const newNoteId = data.sequence[data.sequence.length - 1].objectId;
             data.sequence.pop();
             const newFilesIds = data.sequence.map((response: CreationModel) => response.objectId);
-            value.hasAvatar && value.tags.push(AVATAR_TAG);
+            value.hasAvatar && value.tags.push(StaticTag.hasImage0);
             return iif(
               () => !!files.length,
               this.crudService.updateItem({...value, files: newFilesIds, id: newNoteId}),
@@ -170,7 +171,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {
-      updatedNote.tags.push(AVATAR_TAG);
+      updatedNote.tags.push(StaticTag.hasImage0);
     } else if(!updatedNote.tags.length) {
       updatedNote.tags = null;
     }

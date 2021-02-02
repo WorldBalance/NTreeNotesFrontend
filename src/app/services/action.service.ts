@@ -9,8 +9,7 @@ import {NoteFileModel, NoteModel} from '../models/note.model';
 import {Observable} from 'rxjs';
 import {Note} from './Store/NotesData.service';
 import {isEqual} from 'lodash';
-
-export const AVATAR_TAG = 'st_hsIm';
+import {StaticTag} from '../../../in/StaticTag';
 
 @Injectable({providedIn: 'root'})
 export class ActionService {
@@ -73,8 +72,8 @@ export class ActionService {
             }
           }) : [],
           lastUpdatedId: '',
-          hasAvatar: note.tags && note.tags.includes('st_hsIm'),
-          tags: note.tags && note.tags.filter((tag: string) => tag !== 'st_hsIm')
+          hasAvatar: note.tags && note.tags.includes(StaticTag.hasImage0),
+          tags: note.tags && note.tags.filter((tag: string) => tag !== StaticTag.hasImage0)
         };
       }),
       tap((note: Note) => this.store.data.note = note)
