@@ -14,7 +14,7 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {systemTagChecker} from '../../shared/systemTags.module';
+import {mapStaticTagReversed} from "../../../../../in/StaticTag";
 
 @Component({
   selector: 'app-notes',
@@ -250,7 +250,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       map((items: NoteModel[]) => items.map((item: NoteModel) => item.tags ?
         {
           ...item,
-          tags: item.tags.filter((tag)=>!systemTagChecker(tag)).map((tagId: string) => {
+          tags: item.tags.filter((tag)=>!mapStaticTagReversed[tag]).map((tagId: string) => {
             return this.allTags.find((tag: TagModel) => tag.id === tagId) || {title: 'ошибка системы! Тег был удалён! '} as TagModel;
           })
         } : {...item, tags: []})),
