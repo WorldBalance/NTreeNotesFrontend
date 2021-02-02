@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {fromTopAnimation} from '../../../animations';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
@@ -64,7 +65,8 @@ export class NotesComponent implements OnInit, OnDestroy {
     public crudService: CrudService,
     private messageService: NzMessageService,
     private tagsService: TagsService,
-    private nzContextMenuService: NzContextMenuService
+    private nzContextMenuService: NzContextMenuService,
+    private location: Location,
   ) {
   }
 
@@ -110,7 +112,8 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
-    const res = [window.location.origin, '/note/', item.id];
+    const prefix = this.location.prepareExternalUrl("");
+    const res = [window.location.origin, prefix, 'note/', item.id];
     if (opt && opt.titlev && item.title) {
       res.push("?titlev=", item.title);
     }
