@@ -96,6 +96,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     } else {
       const files = this.store.data.note.files;
       const filesIds = files.map((file: NoteFileModel) => file.id);
+      value.hasAvatar && value.tags.push(StaticTag.hasImage0);
       Object.entries(value).forEach(([key, object]: [string, unknown]) => {
         if ((typeof object !== 'boolean' && !object) || (Array.isArray(object) && !object.length)) {
           delete value[key];
@@ -110,7 +111,6 @@ export class NoteFormComponent implements OnInit, OnDestroy {
             const newNoteId = data.sequence[data.sequence.length - 1].objectId;
             data.sequence.pop();
             const newFilesIds = data.sequence.map((response: CreationModel) => response.objectId);
-            value.hasAvatar && value.tags.push(StaticTag.hasImage0);
             return iif(
               () => !!files.length,
               this.crudService.updateItem({...value, files: newFilesIds, id: newNoteId}),
