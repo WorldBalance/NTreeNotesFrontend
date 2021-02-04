@@ -12,6 +12,7 @@ import {QueryParamsPacked, queryParamsUnpack} from 'src/utils/params';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {cloneDeep, isEqual} from 'lodash';
 import {StaticTag} from '../../shared/staticTags.module';
+import {pushUniqueValue} from '../../../../utils/utils1';
 
 @Component({
   selector: 'app-note-form',
@@ -96,7 +97,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     } else {
       const files = this.store.data.note.files;
       const filesIds = files.map((file: NoteFileModel) => file.id);
-      value.hasAvatar && value.tags.push(StaticTag.hasImage0);
+      value.hasAvatar && pushUniqueValue(value.tags, StaticTag.hasImage0);
       Object.entries(value).forEach(([key, object]: [string, unknown]) => {
         if ((typeof object !== 'boolean' && !object) || (Array.isArray(object) && !object.length)) {
           delete value[key];
@@ -171,7 +172,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {
-      updatedNote.tags.push(StaticTag.hasImage0);
+      pushUniqueValue(updatedNote.tags, StaticTag.hasImage0);
     } else if(!updatedNote.tags.length) {
       updatedNote.tags = null;
     }
@@ -194,7 +195,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
   */
   public textRowsCountGet() {
-    const text = this.form.controls["text"].value;
-    return (text.match(/\n/g) || []).length;
+    const text = this.form.controls["text"]?.value;
+    return text && (text.match(/\n/g) || []).length || 2;
   }
 }

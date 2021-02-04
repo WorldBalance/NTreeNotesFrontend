@@ -48,3 +48,10 @@ export function toArray<T = any>(values: OneOrArray<T>): T[] {
 export function truncateForHtml(str: string, n: number){
     return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
 };
+
+
+// Array, append
+export function pushUniqueValue<T = any>(array: T[], value: T) {
+    if (array.indexOf(value) < 0)
+        array.push(value);
+}
