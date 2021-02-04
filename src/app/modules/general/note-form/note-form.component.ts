@@ -188,4 +188,13 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       observer.complete();
     });
   }
+
+  /* context: <textarea formControlName="text">
+  want: ([nzAutosize]="{minRows: 2}")
+  have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
+  */
+  public textRowsCountGet() {
+    const text = this.form.controls["text"].value;
+    return (text.match(/\n/g) || []).length;
+  }
 }

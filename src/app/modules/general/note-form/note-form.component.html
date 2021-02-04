@@ -15,7 +15,7 @@
         ></textarea>
       </ng-container>
       <span>Описание:</span>
-      <textarea nz-input formControlName="text" class="node-text-field" [nzAutosize]="{minRows: 2}"></textarea>
+      <textarea nz-input formControlName="text" class="node-text-field" rows="{{textRowsCountGet()}}"></textarea>
     </div>
     <span class="additional-info-block">
       <nz-tabset>
