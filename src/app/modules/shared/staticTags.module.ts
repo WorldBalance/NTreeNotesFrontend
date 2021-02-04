@@ -5,4 +5,4 @@ export function isStaticTag(tag) {
 }
 
 
-export { StaticTag } from '../../../../in/StaticTag';
+export { StaticTag, mapStaticTagReversed } from '../../../../in/StaticTag';

@@ -14,7 +14,7 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {isStaticTag} from '../../shared/staticTags.module';
+import {mapStaticTagReversed} from '../../shared/staticTags.module';
 
 @Component({
   selector: 'app-notes',
@@ -250,8 +250,12 @@ export class NotesComponent implements OnInit, OnDestroy {
       map((items: NoteModel[]) => items.map((item: NoteModel) => item.tags ?
         {
           ...item,
-          tags: item.tags.filter((tag)=>!isStaticTag(tag)).map((tagId: string) => {
-            return this.allTags.find((tag: TagModel) => tag.id === tagId) || {title: 'ошибка системы! Тег был удалён! '} as TagModel;
+          tags: item.tags.map((tagId: string) => {
+            const staticName = mapStaticTagReversed[tagId];
+            if (staticName) {
+              return {title: staticName} as TagModel;
+            }
+            return this.allTags.find((tag: TagModel) => tag.id === tagId) || {title: '<неизвестный тег>'} as TagModel;
           })
         } : {...item, tags: []})),
       takeUntil(this.unsubscribe$)
