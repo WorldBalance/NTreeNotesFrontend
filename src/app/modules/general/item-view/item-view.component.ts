@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {Note} from '../../../services/Store/NotesData.service';
-import {iif, Observable, Subject} from 'rxjs';
+import {iif, Subject} from 'rxjs';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {CrudService} from '../../../services/crud.service';
-import {map, pluck, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {QueryParamsPacked} from '../../../../utils/params';
+import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash';
 import {TagsService} from '../../../services/tags.service';
+import {NoteWithTags} from "../../../models/note.model";
 
 
 @Component({
@@ -19,11 +19,8 @@ import {TagsService} from '../../../services/tags.service';
 
 
 export class ItemViewComponent implements OnInit {
-  public initialNote: Note;
   public noteId: string;
-  public title: string;
-  public note: any;
-  public allTags: any;
+  public note;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -33,7 +30,7 @@ export class ItemViewComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
-    private tagsService: TagsService
+    private tagsService: TagsService,
   ) {
   }
 
@@ -51,22 +48,27 @@ export class ItemViewComponent implements OnInit {
         }
       ),
       takeUntil(this.unsubscribe$)
-    ).subscribe((note: (Note | QueryParamsPacked)) => {
+    ).subscribe((note: Note) => {
       if(this.noteId){
-        this.initialNote = cloneDeep({...note as Note, tags: note.tags || []});
-        this.note = {
-          title: this.initialNote.title,
-          text: this.initialNote.text,
-          tags: this.initialNote.tags,
-          hasAvatar: this.initialNote.hasAvatar,
-          urls: this.initialNote.url,
-        }
-
-        this.note = this.tagsService.mapTagsToNote(this.note);
-        console.log(this.note);
+        this.tagsService.mapTagsToNote(note).subscribe(
+          noteWithTags => {
+            const initialNote = cloneDeep({...noteWithTags, tags: noteWithTags.tags || []});
+            this.note = {
+              title: initialNote.title,
+              text: initialNote.text,
+              tags: initialNote.tags,
+              hasAvatar: initialNote.hasAvatar,
+              urls: initialNote.url,
+              id: initialNote.id,
+            };
+          }
+        );
       }
     });
   }
 
 
+  public editNote(id: string): void{
+    this.router.navigate(['/note/' + id]);
+  }
 }

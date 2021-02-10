@@ -1,14 +1,19 @@
 <nz-layout *ngIf="note">
   <nz-content class="content">
+    <div class="edit">
+      <span nz-typography (click)="editNote(note.id)">
+        <kbd>Редактировать</kbd>
+        </span>
+    </div>
     <h2 nz-typography>{{note.title}}</h2>
     <nz-tag
       *ngFor="let tag of note.tags"
       nzColor="orange"
       [title]="tag.text || ''"
     >
-      {{tag}}
+      {{tag.title}}
     </nz-tag>
-    <p nz-typography>{{note.text}}</p>
+    <p nz-typography>Here will be text block</p>
     <p nz-typography>URL(s):
       <span nz-typography *ngFor="let url of note.urls">
         <a href="{{url}}" target="_blank">
