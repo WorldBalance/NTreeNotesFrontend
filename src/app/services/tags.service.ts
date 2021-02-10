@@ -1,16 +1,20 @@
 import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TagModel} from '../models/tag.model';
 import {CrudService} from './crud.service';
-import {shareReplay, tap} from 'rxjs/operators';
-import {ItemType} from '../models/note.model';
+import {find, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {ItemType, NoteModel} from '../models/note.model';
 import {StoreService} from './store.service';
+import {Params} from "@angular/router";
+import {isStaticTag} from "../modules/shared/staticTags.module";
 
 @Injectable({providedIn: 'root'})
 export class TagsService {
 
   private tags$ = new ReplaySubject<TagModel[]>();
   private tags: TagModel[] = [];
+  // public allTags = [];
+  public subjectTag = new Subject();
 
   constructor(private crudService: CrudService, private store: StoreService) {
     this.downloadData();
@@ -44,5 +48,17 @@ export class TagsService {
     const deletedTag = tags.findIndex((tag: TagModel) => tag.id === id);
     tags.splice(deletedTag, 1);
     this.tags$.next(tags);
+  }
+
+  public mapTagsToNote(item: NoteModel){
+    return item.tags ?
+      {
+        ...item,
+        tags: item.tags.filter((tag)=>!isStaticTag(tag)).map((tagId: string) => {
+          return this.getTags().subscribe(
+            {next: value => value.find((tag: TagModel) => tag.id === tagId) || {title: 'ошибка системы! Тег был удалён! '} as TagModel}
+            )
+        })
+      } : {...item, tags: []};
   }
 }
