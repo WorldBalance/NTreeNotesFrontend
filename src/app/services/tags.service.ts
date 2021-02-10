@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TagModel} from '../models/tag.model';
 import {CrudService} from './crud.service';
-import {find, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {find, map, shareReplay, switchMap, take, takeUntil, tap, toArray} from 'rxjs/operators';
 import {ItemType, NoteModel} from '../models/note.model';
 import {StoreService} from './store.service';
 import {Params} from "@angular/router";
@@ -55,9 +55,7 @@ export class TagsService {
       {
         ...item,
         tags: item.tags.filter((tag)=>!isStaticTag(tag)).map((tagId: string) => {
-          return this.getTags().subscribe(
-            {next: value => value.find((tag: TagModel) => tag.id === tagId) || {title: 'ошибка системы! Тег был удалён! '} as TagModel}
-            )
+          return this.getTags().subscribe();
         })
       } : {...item, tags: []};
   }

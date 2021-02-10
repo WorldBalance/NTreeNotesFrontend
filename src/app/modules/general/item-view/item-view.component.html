@@ -1,0 +1,21 @@
+<nz-layout *ngIf="note">
+  <nz-content class="content">
+    <h2 nz-typography>{{note.title}}</h2>
+    <nz-tag
+      *ngFor="let tag of note.tags"
+      nzColor="orange"
+      [title]="tag.text || ''"
+    >
+      {{tag}}
+    </nz-tag>
+    <p nz-typography>{{note.text}}</p>
+    <p nz-typography>URL(s):
+      <span nz-typography *ngFor="let url of note.urls">
+        <a href="{{url}}" target="_blank">
+          {{url}}
+          <Link />
+        </a>{{note.urls.length > 1 && note.urls.indexOf(url) !== note.urls.length - 1 ? ', ' : ''}}
+      </span>
+    </p>
+  </nz-content>
+</nz-layout>
