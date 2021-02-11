@@ -5,19 +5,14 @@ import {CrudService} from './crud.service';
 import {find, map, shareReplay, switchMap, take, takeUntil, tap, toArray} from 'rxjs/operators';
 import {ItemType, NoteModel, NoteWithTags} from '../models/note.model';
 import {StoreService} from './store.service';
-import {Params} from "@angular/router";
-import {isStaticTag} from "../modules/shared/staticTags.module";
 import {Tag} from "../../../in/Api";
 import {Note} from "./Store/NotesData.service";
-import {QueryParamsPacked} from "../../utils/params";
 
 @Injectable({providedIn: 'root'})
 export class TagsService {
 
   private tags$ = new ReplaySubject<TagModel[]>();
   private tags: TagModel[] = [];
-  // public allTags = [];
-  public subjectTag = new Subject();
 
   constructor(private crudService: CrudService, private store: StoreService) {
     this.downloadData();
@@ -53,12 +48,15 @@ export class TagsService {
     this.tags$.next(tags);
   }
 
-  public mapTagsToNote(item: Note ){
+  public mapTagsToNote(item: NoteModel ): Observable<NoteWithTags>{
     return this.getTags().pipe(
       map((tags: TagModel[]) => {
-        const tagsData = item.tags.map((itemTagId: string) => {
-          return tags.find((tag: Tag) => tag.id === itemTagId) || {title: 'ошибка системы! Тег был удален!'} as TagModel;
-        });
+        let tagsData = [];
+        if(item.tags) {
+          tagsData = item.tags.map((itemTagId: string) => {
+            return tags.find((tag: Tag) => tag.id === itemTagId) || {title: 'ошибка системы! Тег был удален!'} as TagModel;
+          });
+        }
         return {...item, tags: tagsData};
       })
     )

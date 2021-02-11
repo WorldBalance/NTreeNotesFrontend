@@ -6,20 +6,22 @@
         </span>
     </div>
     <h2 nz-typography>{{note.title}}</h2>
-    <nz-tag
-      *ngFor="let tag of note.tags"
-      nzColor="orange"
-      [title]="tag.text || ''"
-    >
-      {{tag.title}}
-    </nz-tag>
+    <div *ngIf="note.tags">
+      <nz-tag
+        *ngFor="let tag of note.tags"
+        nzColor="orange"
+        [title]="tag.title || ''"
+      >
+        {{tag.title}}
+      </nz-tag>
+    </div>
     <p nz-typography>Here will be text block</p>
-    <p nz-typography>URL(s):
-      <span nz-typography *ngFor="let url of note.urls">
+    <p nz-typography *ngIf="note.url">URL(s):
+      <span nz-typography *ngFor="let url of note.url">
         <a href="{{url}}" target="_blank">
           {{url}}
           <Link />
-        </a>{{note.urls.length > 1 && note.urls.indexOf(url) !== note.urls.length - 1 ? ', ' : ''}}
+        </a>{{note.url.length > 1 && note.url.indexOf(url) !== note.url.length - 1 ? ', ' : ''}}
       </span>
     </p>
   </nz-content>

@@ -8,7 +8,8 @@ import {CrudService} from '../../../services/crud.service';
 import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash';
 import {TagsService} from '../../../services/tags.service';
-import {NoteWithTags} from "../../../models/note.model";
+import {toArray} from '../../../../utils/utils1';
+import {NoteModel, NoteWithTags} from "../../../models/note.model";
 
 
 @Component({
@@ -20,7 +21,7 @@ import {NoteWithTags} from "../../../models/note.model";
 
 export class ItemViewComponent implements OnInit {
   public noteId: string;
-  public note;
+  public note: Note;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -48,17 +49,21 @@ export class ItemViewComponent implements OnInit {
         }
       ),
       takeUntil(this.unsubscribe$)
-    ).subscribe((note: Note) => {
+    ).subscribe((note: NoteModel) => {
       if(this.noteId){
         this.tagsService.mapTagsToNote(note).subscribe(
-          noteWithTags => {
-            const initialNote = cloneDeep({...noteWithTags, tags: noteWithTags.tags || []});
+          (noteWithTags: NoteModel) => {
+            const initialNote: Note = cloneDeep({...noteWithTags, tags: noteWithTags.tags || []});
+            if(initialNote.url){
+              initialNote.url = toArray(initialNote.url);
+            }
+
             this.note = {
               title: initialNote.title,
               text: initialNote.text,
               tags: initialNote.tags,
               hasAvatar: initialNote.hasAvatar,
-              urls: initialNote.url,
+              url: initialNote.url,
               id: initialNote.id,
             };
           }
