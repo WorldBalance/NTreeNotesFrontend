@@ -34,7 +34,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
     protected formBuilder: FormBuilder,
-    private _location: Location,
+    private location: Location,
   ) {
   }
 
@@ -201,6 +201,6 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   }
 
   public returnPage(){
-    this._location.back();
+    this.location.back();
   }
 }
