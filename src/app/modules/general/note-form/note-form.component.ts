@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
@@ -23,7 +24,6 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public initialNote: Note;
   public form: FormGroup;
   public noteId: string;
-  public lastPage: string = undefined;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -34,6 +34,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
     protected formBuilder: FormBuilder,
+    private _location: Location,
   ) {
   }
 
@@ -82,10 +83,6 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    this.activatedRoute.queryParams.subscribe((val) => {
-      this.lastPage = val.last;
-    })
   }
 
   public addNote(): void {
@@ -201,5 +198,9 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public textRowsCountGet() {
     const text = this.form.controls["text"].value;
     return (text.match(/\n/g) || []).length;
+  }
+
+  public returnPage(){
+    this._location.back();
   }
 }

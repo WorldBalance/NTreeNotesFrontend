@@ -1,7 +1,5 @@
 <div class="note-form-container">
-  <a class="nav-link"
-     routerLink="{{lastPage === 'view' ? '/view/' + noteId : '/notes'}}"
-  >{{lastPage === 'view' ? 'Назад к заметке' : 'Назад к заметкам'}}</a>
+  <a class="nav-link" (click)="returnPage()">Назад</a>
   <form *ngIf="form" [formGroup]="form">
     <div class="main-section">
       <div>Название заметки:</div>

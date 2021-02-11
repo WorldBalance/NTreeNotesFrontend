@@ -74,6 +74,6 @@ export class ItemViewComponent implements OnInit {
 
 
   public editNote(id: string): void{
-    this.router.navigate(['/note/' + id], {queryParams: {last: 'view'}});
+    this.router.navigate(['/note/' + id]);
   }
 }
