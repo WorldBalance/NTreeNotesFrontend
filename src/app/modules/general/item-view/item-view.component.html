@@ -15,7 +15,6 @@
         {{tag.title}}
       </nz-tag>
     </div>
-    <p nz-typography>Here will be text block</p>
     <p nz-typography *ngIf="note.url">URL(s):
       <span nz-typography *ngFor="let url of note.url">
         <a href="{{url}}" target="_blank">
@@ -24,5 +23,6 @@
         </a>{{note.url.length > 1 && note.url.indexOf(url) !== note.url.length - 1 ? ', ' : ''}}
       </span>
     </p>
+    <p nz-typography>Here will be text block</p>
   </nz-content>
 </nz-layout>
