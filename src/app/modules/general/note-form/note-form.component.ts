@@ -196,8 +196,8 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
   */
   public textRowsCountGet() {
-    const text = this.form.controls["text"].value;
-    return (text.match(/\n/g) || []).length;
+    const text = this.form.controls.text.value;
+    return text ? (text.match(/\n/g) || []).length : 3;
   }
 
   public returnPage(){
