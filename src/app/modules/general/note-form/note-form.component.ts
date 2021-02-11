@@ -23,6 +23,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public initialNote: Note;
   public form: FormGroup;
   public noteId: string;
+  public lastPage: string = undefined;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -81,6 +82,10 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.activatedRoute.queryParams.subscribe((val) => {
+      this.lastPage = val.last;
+    })
   }
 
   public addNote(): void {

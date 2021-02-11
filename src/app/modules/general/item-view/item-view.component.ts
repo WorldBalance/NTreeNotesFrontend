@@ -9,7 +9,7 @@ import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash';
 import {TagsService} from '../../../services/tags.service';
 import {toArray} from '../../../../utils/utils1';
-import {NoteModel, NoteWithTags} from "../../../models/note.model";
+import {NoteModel} from '../../../models/note.model';
 
 
 @Component({
@@ -74,6 +74,6 @@ export class ItemViewComponent implements OnInit {
 
 
   public editNote(id: string): void{
-    this.router.navigate(['/note/' + id]);
+    this.router.navigate(['/note/' + id], {queryParams: {last: 'view'}});
   }
 }
