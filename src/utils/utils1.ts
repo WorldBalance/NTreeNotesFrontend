@@ -55,3 +55,43 @@ export function pushUniqueValue<T = any>(array: T[], value: T) {
     if (array.indexOf(value) < 0)
         array.push(value);
 }
+
+
+
+export type PlainText = string;
+export type Html = string;
+export type HtmlEncoded = string;
+
+
+export function escapeHtml(str: Html) : HtmlEncoded {
+    return encodeHtml(str);
+}
+
+
+export function encodeHtml(str: Html) : HtmlEncoded {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return str.replace(/[&<>"']/g, (m) => map[m]);
+}
+
+
+export function decodeHtml(str: HtmlEncoded) : Html {
+    var map = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#039;': "'"
+    };
+    return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, (m) => map[m]);
+}
+
+
+export function plainTextToHtmlWithBr(str: PlainText) : Html {
+    return str.split("\n").map(encodeHtml).join("<br>");
+}
