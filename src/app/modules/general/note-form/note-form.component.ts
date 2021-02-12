@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
@@ -34,6 +35,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
     protected formBuilder: FormBuilder,
+    private location: Location,
   ) {
   }
 
@@ -129,7 +131,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
 
   public cancel(): void {
     this.store.data.note.lastUpdatedId = '';
-    this.router.navigate(['/notes']);
+    this.returnPage();
   }
 
   public ngOnDestroy() {
@@ -194,8 +196,12 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   want: ([nzAutosize]="{minRows: 2}")
   have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
   */
-  public textRowsCountGet() {
+  public textRowsCountGet(): number {
     const text = this.form.controls["text"]?.value;
     return text && (text.match(/\n/g) || []).length || 2;
+  }
+
+  public returnPage(){
+    this.location.back();
   }
 }

@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TagModel} from '../models/tag.model';
 import {CrudService} from './crud.service';
-import {shareReplay, tap} from 'rxjs/operators';
-import {ItemType} from '../models/note.model';
+import {find, map, shareReplay, switchMap, take, takeUntil, tap, toArray} from 'rxjs/operators';
+import {ItemType, NoteModel, NoteWithTags} from '../models/note.model';
 import {StoreService} from './store.service';
+import {Tag} from "../../../in/Api";
+import {Note} from "./Store/NotesData.service";
 
 @Injectable({providedIn: 'root'})
 export class TagsService {
@@ -44,5 +46,19 @@ export class TagsService {
     const deletedTag = tags.findIndex((tag: TagModel) => tag.id === id);
     tags.splice(deletedTag, 1);
     this.tags$.next(tags);
+  }
+
+  public mapTagsToNote(item: NoteModel ): Observable<NoteWithTags>{
+    return this.getTags().pipe(
+      map((tags: TagModel[]) => {
+        let tagsData = [];
+        if(item.tags) {
+          tagsData = item.tags.map((itemTagId: string) => {
+            return tags.find((tag: Tag) => tag.id === itemTagId) || {title: 'ошибка системы! Тег был удален!'} as TagModel;
+          });
+        }
+        return {...item, tags: tagsData};
+      })
+    )
   }
 }

@@ -14,14 +14,18 @@
   width: 100%;
 }
 
+.node-text-field {
+  overflow-y: hidden;
+}
+
 .note-form-button {
   cursor: pointer;
 }
 
 .additional-info-block {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  min-height: 210px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .note-photo-badge {
@@ -52,11 +56,6 @@ nz-upload {
 form {
   height: 100%;
   display: grid;
-  grid-template-rows: 50% 41% auto;
-  overflow: hidden;
-}
-
-.main-section {
   overflow-y: scroll;
 }
 
@@ -64,4 +63,9 @@ form {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 50px;
+}
+
+nz-tabset {
+  width: 100%;
 }

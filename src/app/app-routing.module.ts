@@ -31,6 +31,12 @@ const routes: Routes = [
       .then(mod => mod.NoteFormModule)
   },
   {
+    path: 'view/:id',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./modules/general/item-view/item-view.module')
+      .then(mod => mod.ItemViewModule)
+  },
+  {
     path: 'about',
     loadChildren: () => import('./modules/general/about/about.module')
       .then(mod => mod.AboutModule)

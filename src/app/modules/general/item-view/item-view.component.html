@@ -1,0 +1,28 @@
+<nz-layout *ngIf="note">
+  <nz-content class="content">
+    <div class="edit">
+      <span nz-typography (click)="editNote(noteId)">
+        <kbd>Редактировать</kbd>
+        </span>
+    </div>
+    <h2 nz-typography>{{note.title}}</h2>
+    <div *ngIf="note.tags">
+      <nz-tag
+        *ngFor="let tag of note.tags"
+        nzColor="orange"
+        [title]="tag.title || ''"
+      >
+        {{tag.title}}
+      </nz-tag>
+    </div>
+    <p nz-typography *ngIf="note.url">URL(s):
+      <span nz-typography *ngFor="let url of note.url">
+        <a href="{{url}}" target="_blank">
+          {{url}}
+          <Link />
+        </a>{{note.url.length > 1 && note.url.indexOf(url) !== note.url.length - 1 ? ', ' : ''}}
+      </span>
+    </p>
+    <p nz-typography>Here will be text block</p>
+  </nz-content>
+</nz-layout>

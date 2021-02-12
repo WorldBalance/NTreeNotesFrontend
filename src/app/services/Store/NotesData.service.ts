@@ -11,10 +11,10 @@ export class Note {
   public title? = '';
   public text? = '';
   public tags?: Array<string> = [];
-  public isDownloadNote = true;
-  public lastUpdatedId = '';
-  public files: Array<NoteFileModel> = [];
-  public hasAvatar = false;
+  public isDownloadNote? = true;
+  public lastUpdatedId? = '';
+  public files?: Array<NoteFileModel> = [];
+  public hasAvatar? = false;
   public url?: string[] | string = [];
 }
 
