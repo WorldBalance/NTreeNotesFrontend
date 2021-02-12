@@ -130,7 +130,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
 
   public cancel(): void {
     this.store.data.note.lastUpdatedId = '';
-    this.router.navigate(['/notes']);
+    this.returnPage();
   }
 
   public ngOnDestroy() {
