@@ -14,7 +14,7 @@
   width: 100%;
 }
 
-.node-text-field{
+.node-text-field {
   overflow-y: hidden;
 }
 
@@ -24,7 +24,7 @@
 
 .additional-info-block {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   justify-content: center;
 }
 
@@ -59,9 +59,6 @@ form {
   overflow-y: scroll;
 }
 
-.main-section {
-}
-
 .footer {
   display: flex;
   align-items: center;
@@ -69,6 +66,6 @@ form {
   min-height: 50px;
 }
 
-nz-tabset{
+nz-tabset {
   width: 100%;
 }
