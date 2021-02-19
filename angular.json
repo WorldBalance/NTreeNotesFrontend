@@ -26,7 +26,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/assets/styles/magnific-popup.css",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
@@ -36,6 +35,7 @@
             "styles": [
               "src/theme.less",
               "src/styles.scss",
+              "src/assets/styles/magnific-popup.css",
               "node_modules/animate.css/animate.css"
             ],
             "scripts": []
@@ -101,6 +101,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "src/assets/styles/magnific-popup.css",
               "node_modules/animate.css/animate.css"
             ],
             "scripts": [

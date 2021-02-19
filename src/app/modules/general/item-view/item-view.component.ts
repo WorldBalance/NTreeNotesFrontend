@@ -94,9 +94,6 @@ export class ItemViewComponent implements OnInit, AfterViewChecked {
           },
           image: {
             tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-            titleSrc: (item) => {
-              return item.el.attr('title') + '<small>by Marsel Van Oosten</small>';
-            }
           }
         });
     }, 1000)
