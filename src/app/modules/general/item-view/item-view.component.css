@@ -1,5 +1,6 @@
 nz-layout{
   height: 100%;
+  overflow-y: auto;
 }
 
 nz-content{
@@ -8,6 +9,8 @@ nz-content{
   padding: 2rem;
   background: #fff;
   border-radius: 25px;
+  min-height: auto;
+  position: relative;
 }
 
 nz-tag{
@@ -16,6 +19,6 @@ nz-tag{
 
 .edit{
   position: absolute;
-  right: 5rem;
+  right: 2rem;
   cursor: pointer;
 }

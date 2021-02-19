@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {Note} from '../../../services/Store/NotesData.service';
 import {iif, Subject} from 'rxjs';
 import {StoreService} from '../../../services/store.service';
@@ -8,8 +8,13 @@ import {CrudService} from '../../../services/crud.service';
 import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash';
 import {TagsService} from '../../../services/tags.service';
-import {toArray} from '../../../../utils/utils1';
+import {toArray, plainTextToHtmlWithBr} from '../../../../utils/utils1';
 import {NoteModel} from '../../../models/note.model';
+import {Autolinker} from 'autolinker';
+
+
+import * as $ from 'jquery';
+import 'magnific-popup';
 
 
 @Component({
@@ -19,7 +24,9 @@ import {NoteModel} from '../../../models/note.model';
 })
 
 
-export class ItemViewComponent implements OnInit {
+export class ItemViewComponent implements OnInit, AfterViewChecked {
+  @ViewChild('img') imgElement: ElementRef;
+
   public noteId: string;
   public note: Note;
 
@@ -72,8 +79,34 @@ export class ItemViewComponent implements OnInit {
     });
   }
 
+  ngAfterViewChecked(): void {
+    setTimeout(()=>{
+      // @ts-ignore
+        $('.popup-gallery').magnificPopup({
+          delegate: 'a',
+          type: 'image',
+          tLoading: 'Loading image #%curr%...',
+          mainClass: 'mfp-img-mobile',
+          gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+          },
+          image: {
+            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+            titleSrc: (item) => {
+              return item.el.attr('title') + '<small>by Marsel Van Oosten</small>';
+            }
+          }
+        });
+    }, 1000)
+  }
 
   public editNote(id: string): void{
     this.router.navigate(['/note/' + id]);
+  }
+
+  public displayText(text: string){
+    return Autolinker.link(plainTextToHtmlWithBr(text));
   }
 }
