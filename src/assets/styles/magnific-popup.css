@@ -1,11 +1,5 @@
 /* Magnific Popup CSS */
 
-.popup-gallery{
-  position: absolute;
-  opacity: 0.2;
-  background-color: #002140;
-}
-
 .popup-gallery a{
   margin: 2rem;
 }
