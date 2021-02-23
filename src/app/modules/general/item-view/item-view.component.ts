@@ -1,9 +1,9 @@
-import {AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Note} from '../../../services/Store/NotesData.service';
 import {iif, Subject} from 'rxjs';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CrudService} from '../../../services/crud.service';
 import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {cloneDeep} from 'lodash';
@@ -11,10 +11,7 @@ import {TagsService} from '../../../services/tags.service';
 import {toArray, plainTextToHtmlWithBr} from '../../../../utils/utils1';
 import {NoteModel} from '../../../models/note.model';
 import {Autolinker} from 'autolinker';
-
-
-import * as $ from 'jquery';
-import 'magnific-popup';
+declare const $: any;
 
 
 @Component({
@@ -24,11 +21,13 @@ import 'magnific-popup';
 })
 
 
-export class ItemViewComponent implements OnInit, AfterViewChecked {
-  @ViewChild('img') imgElement: ElementRef;
+export class ItemViewComponent implements OnInit {
 
   public noteId: string;
   public note: Note;
+  public importUrls: Array<string> = ['https://ntree.online/s/libs/jquery/3.5.1/min.js',
+    'https://ntree.online/s/libs/magnific-popup/1.1.0/jquery.magnific-popup.min.js'
+  ];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -77,26 +76,49 @@ export class ItemViewComponent implements OnInit, AfterViewChecked {
         );
       }
     });
+    // external import
+      this.importUrls.forEach(url => {
+        const node = document.createElement('script');
+        node.src = url;
+        node.type = 'text/javascript';
+        node.async = false;
+        document.getElementsByTagName('head')[0].appendChild(node);
+      });
+
+      this.createGallery()
   }
 
-  ngAfterViewChecked(): void {
-    setTimeout(()=>{
-      // @ts-ignore
-        $('.popup-gallery').magnificPopup({
-          delegate: 'a',
-          type: 'image',
-          tLoading: 'Loading image #%curr%...',
-          mainClass: 'mfp-img-mobile',
-          gallery: {
-            enabled: true,
-            navigateByImgClick: true,
-            preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-          },
-          image: {
-            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-          }
-        });
-    }, 1000)
+  private createGallery(){
+    // checking import JQuery and Magnific-Popup libs
+    // if everything ok -> use Magnific for creating Gallery
+    let countTrying = 0;
+
+    const timer = setInterval(async () => {
+      countTrying++;
+      if(typeof $ === 'function') {
+        if (typeof $.magnificPopup !== 'undefined') {
+            await $('.popup-gallery').magnificPopup({
+            delegate: 'a',
+            type: 'image',
+            tLoading: 'Loading image #%curr%...',
+            mainClass: 'mfp-img-mobile',
+            gallery: {
+              enabled: true,
+              navigateByImgClick: true,
+              preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
+            },
+            image: {
+              tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+            }
+          });
+          clearInterval(timer);
+        }
+      }
+      if(countTrying > 20){
+        clearInterval(timer);
+        alert('You have trouble with Gallery or uploading data from server, restart page, please.')
+      };
+    }, 200);
   }
 
   public editNote(id: string): void{
