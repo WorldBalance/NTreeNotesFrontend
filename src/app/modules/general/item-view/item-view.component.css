@@ -22,3 +22,9 @@ nz-tag{
   right: 2rem;
   cursor: pointer;
 }
+
+@media (max-width: 767px) {
+  .edit{
+    position: initial;
+  }
+}

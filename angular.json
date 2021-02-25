@@ -101,7 +101,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "https://ntree.online/s/libs/magnific-popup/1.1.0/magnific-popup.css",
+              "src/assets/styles/magnific-popup.css",
               "node_modules/animate.css/animate.css"
             ],
             "scripts": [
