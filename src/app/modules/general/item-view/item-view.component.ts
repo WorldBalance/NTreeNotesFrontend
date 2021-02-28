@@ -24,7 +24,6 @@ import {domLoadUrls} from '../../../../utils/utils1';
 
 
 export class ItemViewComponent implements OnInit {
-
   public noteId: string;
   public note: Note;
 
