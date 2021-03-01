@@ -1,21 +1,37 @@
-nz-layout{
+nz-layout {
   height: 100%;
+  overflow-y: auto;
 }
 
-nz-content{
+nz-content {
   text-align: left;
   margin: 1rem 2rem;
   padding: 2rem;
   background: #fff;
   border-radius: 25px;
+  min-height: auto;
+  position: relative;
 }
 
-nz-tag{
+h2 {
+  display: inline-block;
+  max-width: 82%;
+}
+
+.edit {
+  position: absolute;
+  right: 0.5rem;
+  cursor: pointer;
+  max-width: 18%;
+}
+
+nz-tag {
   margin-bottom: 1rem;
 }
 
-.edit{
-  position: absolute;
-  right: 5rem;
-  cursor: pointer;
+.popup-gallery img {
+  margin-right: 0.5rem;
+  border: 0.2em solid lightgray;
+  max-height: 210px;
+  max-width: 350px;
 }

@@ -1,11 +1,6 @@
-<nz-layout *ngIf="note">
-  <nz-content class="content">
-    <div class="edit">
-      <span nz-typography (click)="editNote(noteId)">
-        <kbd>Редактировать</kbd>
-        </span>
-    </div>
-    <h2 nz-typography>{{note.title}}</h2>
+<nz-layout>
+  <nz-content *ngIf="note">
+    <h2 nz-typography *ngIf="note.title">{{note.title}}</h2><span nz-typography class="edit" (click)="editNote(noteId)"><kbd>Редактировать</kbd></span>
     <div *ngIf="note.tags">
       <nz-tag
         *ngFor="let tag of note.tags"
@@ -23,6 +18,10 @@
         </a>{{note.url.length > 1 && note.url.indexOf(url) !== note.url.length - 1 ? ', ' : ''}}
       </span>
     </p>
-    <p nz-typography>Here will be text block</p>
+    <div nz-typography *ngIf="note.text" [innerHTML]="displayText(note.text)"></div>
+
+    <div class="popup-gallery">
+      <a *ngFor="let photo of store.data.note.files; let i = index" [href]='photo.src'><img [src]="photo.src"></a>
+    </div>
   </nz-content>
 </nz-layout>
