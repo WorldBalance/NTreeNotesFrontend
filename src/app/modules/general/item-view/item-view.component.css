@@ -27,6 +27,7 @@ h2 {
 
 nz-tag {
   margin-bottom: 1rem;
+  cursor: pointer;
 }
 
 .popup-gallery img {

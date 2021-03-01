@@ -2,13 +2,14 @@
   <nz-content *ngIf="note">
     <h2 nz-typography *ngIf="note.title">{{note.title}}</h2><span nz-typography class="edit" (click)="editNote(noteId)"><kbd>Редактировать</kbd></span>
     <div *ngIf="note.tags">
-      <nz-tag
-        *ngFor="let tag of note.tags"
-        nzColor="orange"
-        [title]="tag.title || ''"
-      >
-        {{tag.title}}
-      </nz-tag>
+      <a *ngFor="let tag of note.tags" href="view/{{tag.id}}">
+        <nz-tag
+          nzColor="orange"
+          [title]="tag.title || ''"
+        >
+          {{tag.title}}
+        </nz-tag>
+      </a>
     </div>
     <p nz-typography *ngIf="note.url">URL(s):
       <span nz-typography *ngFor="let url of note.url">
