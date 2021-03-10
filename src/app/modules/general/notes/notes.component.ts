@@ -14,7 +14,7 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {mapStaticTagReversed} from '../../shared/staticTags.module';
+import {isStaticTag, mapStaticTagReversed} from '../../shared/staticTags.module';
 
 @Component({
   selector: 'app-notes',
@@ -148,7 +148,12 @@ export class NotesComponent implements OnInit, OnDestroy {
       shareReplay(1),
       takeUntil(this.unsubscribe$),
     );
-    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
+    tags$.subscribe((notes: NoteWithTags[]) => {
+      this.items = notes.map((note) => {
+        note.tags = note.tags.filter((tag) => !isStaticTag(tag.title));
+        return note;
+      });
+    });
     this.setupSearchNotesDebouncer();
   }
 

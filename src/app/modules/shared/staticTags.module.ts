@@ -1,7 +1,7 @@
 import { StaticTag, mapStaticTagReversed } from '../../../../in/StaticTag';
 
 export function isStaticTag(tag) {
-  return mapStaticTagReversed[tag] ? true : false
+  return StaticTag[tag] ? true : false
 }
 
 
