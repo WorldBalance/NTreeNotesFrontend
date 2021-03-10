@@ -38,12 +38,17 @@ h2 {
   cursor: pointer;
 }
 
+.disable-link{
+  text-decoration: none;
+  color: black;
+}
+
 nz-breadcrumb{
   margin-bottom: 0.5em;
 }
 
-nz-breadcrumb-item:last-child{
-  cursor: auto;
+nz-breadcrumb-item:last-child a{
+  cursor: default;
 }
 
 nz-tag {
