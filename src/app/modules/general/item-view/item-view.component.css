@@ -17,8 +17,7 @@ h2 {
   display: inline-block;
 }
 
-.underTitle{
-  cursor: pointer;
+.header{
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -27,8 +26,24 @@ h2 {
   align-items: center;
 }
 
-.back {
+.header h2{
   margin-right: 1rem;
+}
+
+.header span{
+  margin-bottom: 0.5em;
+}
+
+.link{
+  cursor: pointer;
+}
+
+nz-breadcrumb{
+  margin-bottom: 0.5em;
+}
+
+nz-breadcrumb-item:last-child{
+  cursor: auto;
 }
 
 nz-tag {

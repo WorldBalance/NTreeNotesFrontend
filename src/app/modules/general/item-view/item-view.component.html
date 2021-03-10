@@ -1,15 +1,15 @@
 <nz-layout>
   <nz-content *ngIf="note">
-    <div class="underTitle">
-      <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs">
-        <nz-breadcrumb-item [routerLink]="bread.url" *ngFor="let bread of breadcrumbs | slice: -5">
-          {{bread.title}}
-        </nz-breadcrumb-item>
-      </nz-breadcrumb>
-      <ng-template #iconTemplate><i nz-icon nzType="arrow-right"></i></ng-template>
-      <span nz-typography routerLink="/note/{{noteId}}"><kbd>Редактировать</kbd></span>
+    <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs">
+      <nz-breadcrumb-item class="link" [routerLink]="bread.url" *ngFor="let bread of breadcrumbs | slice: -5">
+        {{bread.title}}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <ng-template #iconTemplate><i nz-icon nzType="arrow-right"></i></ng-template>
+    <div class="header">
+      <h2 nz-typography *ngIf="note.title">{{note.title}}</h2>
+      <span nz-typography routerLink="/note/{{noteId}}" class="link"><kbd>Редактировать</kbd></span>
     </div>
-    <h2 nz-typography *ngIf="note.title">{{note.title}}</h2>
     <div *ngIf="note.tags">
       <nz-tag
         *ngFor="let tag of note.tags"
