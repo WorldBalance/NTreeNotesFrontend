@@ -5,6 +5,7 @@ import {Note} from '../../../services/Store/NotesData.service';
 import {iif, Subject} from 'rxjs';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
+import BreadcrumbsService, {Breadcrumb} from '../../../services/breadcrumbs.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CrudService} from '../../../services/crud.service';
 import {pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
@@ -19,7 +20,8 @@ import {domLoadUrls} from '../../../../utils/utils1';
 @Component({
   selector: 'app-item-view',
   templateUrl: './item-view.component.html',
-  styleUrls: ['./item-view.component.css']
+  styleUrls: ['./item-view.component.css'],
+  providers: [BreadcrumbsService]
 })
 
 
@@ -28,6 +30,8 @@ export class ItemViewComponent implements OnInit {
   public note: Note;
 
   private unsubscribe$ = new Subject<void>();
+  public breadcrumbs: ReadonlyArray<Breadcrumb>;
+
 
   constructor(
     public store: StoreService,
@@ -36,6 +40,7 @@ export class ItemViewComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private crudService: CrudService,
     private tagsService: TagsService,
+    private breadcrumbsService: BreadcrumbsService
   ) {
   }
 
@@ -70,6 +75,7 @@ export class ItemViewComponent implements OnInit {
               url: initialNote.url,
               id: initialNote.id,
             };
+            this.breadcrumbs = this.breadcrumbsService.work(initialNote.title, `/view/${initialNote.id}`);
           }
         );
       }
@@ -79,17 +85,13 @@ export class ItemViewComponent implements OnInit {
         await domLoadUrls(importUrls, { parentId: "bodyBegin" }).then(() => createGallery());
       }
     });
-  }
 
-  public editNote(id: string): void{
-    this.router.navigate(['/note/' + id]);
   }
 
   public displayText(text: string){
     return Autolinker.link(plainTextToHtmlWithBr(text));
   }
 }
-
 
 const importUrls: Array<string> = [
   'https://ntree.online/s/libs/jquery/3.5.1/min.js',
