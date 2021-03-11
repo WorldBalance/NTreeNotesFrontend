@@ -124,7 +124,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         )
         .subscribe((data: CreationModel) => {
           this.store.data.note.lastUpdatedId = data.objectId;
-          this.router.navigate(['/notes']);
+          this.returnPage();
         })
     }
   }
