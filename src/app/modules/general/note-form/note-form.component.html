@@ -2,7 +2,7 @@
   <a class="nav-link" (click)="returnPage()">Назад</a>
   <form *ngIf="form" [formGroup]="form">
     <div class="main-section">
-      <div>Название заметки:</div>
+      <div>Название:</div>
       <input formControlName="title" class="note-title-field ant-input"/>
       <div>Теги:</div>
       <app-tags formControlName="tags" placeholder="Можете прикрепить теги здесь"></app-tags>
@@ -74,7 +74,7 @@
         <button (click)="addNote()"
                 class="note-form-button"
                 [disabled]="form.invalid">
-          <b>{{form.value.id ? "Сохранить изменения" : "Создать заметку"}}</b>
+          <b>{{form.value.id ? "Сохранить изменения" : "Создать"}}</b>
         </button>
         <button (click)="cancel()" class="note-form-button"><b>Отмена</b></button>
       </div>
