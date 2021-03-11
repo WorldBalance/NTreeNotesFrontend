@@ -107,7 +107,7 @@ function createGallery(){
   let countTrying = 0;
 
   const timer = setInterval(async () => {
-    if (jQuery && jQuery('.popup-gallery').length && (jQuery as any).magnificPopup) {
+    if ((window as any).jQuery && jQuery('.popup-gallery').length && (jQuery as any).magnificPopup) {
       clearInterval(timer);
       (jQuery as any)('.popup-gallery').magnificPopup({
         delegate: 'a',
