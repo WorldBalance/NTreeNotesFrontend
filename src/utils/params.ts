@@ -7,6 +7,7 @@ export interface QueryParamsPacked {
   tags?: string;
   exclude?: string;
   useTagsL?: string;
+  listType?: string;
 }
 
 export interface QueryParamsUnpacked {
@@ -14,6 +15,7 @@ export interface QueryParamsUnpacked {
   tags?: string[];
   exclude?: string[];
   useTagsL?: boolean;
+  listType?: string;
 }
 
 export const keySearch = 'search';
@@ -34,6 +36,11 @@ export function queryParamsPack(params: QueryParamsUnpacked): QueryParamsPacked 
   if (params.useTagsL) {
     res.useTagsL = 'true';
   }
+  if(params.listType){
+    res.listType = params.listType;
+    if(params.listType === 'note') delete res.listType
+  }
+
   return res;
 }
 

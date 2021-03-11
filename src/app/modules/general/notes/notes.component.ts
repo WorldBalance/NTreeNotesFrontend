@@ -138,9 +138,15 @@ export class NotesComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     const tags$ = this.tagsService.getTags().pipe(
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
-      switchMap(() => this.crudService.getItemType()),
+      tap(() => this.route.queryParams.subscribe(params => {
+        if(params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
+      })),
+      switchMap(() => {
+        return this.crudService.getItemType();
+      }),
       switchMap((itemType: ItemType) => {
         this.listType = itemType;
+        this.refresh_url_search();
         return this.route.queryParams;
       }),
       switchMap((params: Params) => this.getItems(params)),
@@ -210,7 +216,13 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   // Обновить роут при фильтрации и запросах
   async refresh_url_search() {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags, useTagsL: this.useTagsL});
+    const queryParams = queryParamsPack({
+      tags: this.searchTags,
+      search: this.notesSearchString,
+      exclude: this.excludedTags,
+      useTagsL: this.useTagsL,
+      listType: this.listType
+    });
     return this.router.navigate(['/notes'], {queryParams});
   }
 
