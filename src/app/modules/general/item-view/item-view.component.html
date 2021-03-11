@@ -1,20 +1,18 @@
 <nz-layout>
   <nz-content *ngIf="note">
-    <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs">
-      <nz-breadcrumb-item [routerLink]="bread.url" *ngFor="let bread of breadcrumbs | slice: -5">
-        <a href="{{bread.url}}" onclick="return false">{{bread.title}}</a>
+    <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs" id="item_history">
+      <nz-breadcrumb-item *ngFor="let bread of breadcrumbs | slice: -5">
+        <a routerLink="../{{bread.id}}" onclick="return false">{{bread.title}}</a>
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <ng-template #iconTemplate><i nz-icon nzType="arrow-right"></i></ng-template>
     <div class="header">
-      <h2 nz-typography *ngIf="note.title">{{note.title}}</h2>
-      <span nz-typography routerLink="/note/{{noteId}}" class="link">
-        <kbd><a href="/note/{{noteId}}" onclick="return false" class="disable-link">Редактировать</a></kbd>
-      </span>
+      <h2 nz-typography *ngIf="note.title" class="title">{{note.title}}</h2>
+      <kbd><a routerLink="/note/{{noteId}}" onclick="return false" class="disable-link">Редактировать</a></kbd>
     </div>
     <div *ngIf="note.tags">
-      <a href="/view/{{tag.id}}" *ngFor="let tag of note.tags" onclick="return false">
-        <nz-tag nzColor="orange" [title]="tag.title || ''" routerLink="/view/{{tag.id}}">
+      <a *ngFor="let tag of note.tags" onclick="return false" routerLink="../{{tag.id}}">
+        <nz-tag nzColor="orange" [title]="tag.title || ''">
           {{tag.title}}
         </nz-tag>
       </a>

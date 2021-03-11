@@ -13,11 +13,12 @@ nz-content {
   position: relative;
 }
 
-h2 {
-  display: inline-block;
+/* hide the last breadcrumb-title, but leave its breadcrumb-separator */
+nz-breadcrumb-item:last-child a {
+  display: none;
 }
 
-.header{
+.header {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -26,29 +27,14 @@ h2 {
   align-items: center;
 }
 
-.header h2{
+.header .title {
+  display: inline-block;
   margin-right: 1rem;
 }
 
-.header span{
-  margin-bottom: 0.5em;
-}
-
-.link{
-  cursor: pointer;
-}
-
-.disable-link{
+.disable-link {
   text-decoration: none;
   color: black;
-}
-
-nz-breadcrumb{
-  margin-bottom: 0.5em;
-}
-
-nz-breadcrumb-item:last-child a{
-  cursor: default;
 }
 
 nz-tag {
