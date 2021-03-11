@@ -165,13 +165,16 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         }
         return acc;
       }, {} as NoteModel);
-    if ((Array.isArray(this.initialNote.url) && Array.isArray(url) && isEqual(this.initialNote.url.sort(), url.sort()))
+
+    const copyUrls = Array.isArray(url) && url.concat();
+    if ((Array.isArray(this.initialNote.url) && copyUrls && isEqual(this.initialNote.url.sort(), copyUrls.sort()))
       || (this.initialNote.url || null) === url) {
       delete updatedNote.url;
     } else {
       updatedNote.url = url;
     }
-    if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
+
+    if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.concat().sort())) {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {
       pushUniqueValue(updatedNote.tags, StaticTag.hasImage0);
