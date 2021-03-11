@@ -27,11 +27,11 @@
                       [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
             ></nz-badge>
           </ng-template>
-            <label nz-checkbox
+          <label nz-checkbox
                    formControlName="hasAvatar"
                    ngDefaultControl>C аватаркой</label>
-             <div *ngFor="let photo of store.data.note.files; let i = index"
-                  style="max-height: 1em; margin:0.1em">
+          <div class="picture-container--wrapper">
+             <div *ngFor="let photo of store.data.note.files; let i = index">
                 <div class="picture-container">
                   <img src="{{photo.src}}"
                        [ngClass]="{'not_loaded': !photo.loaded}"
@@ -49,6 +49,7 @@
                   </div>
                 </div>
             </div>
+            <div class="upload-wrapper">
               <nz-upload
                 nzListType="picture-card"
                 nzType="drag"
@@ -60,6 +61,8 @@
                 <i nz-icon nzType="plus"></i>
                 <div class="ant-upload-text">Перетяните файлы в эту область для загрузки</div>
               </nz-upload>
+            </div>
+          </div>
         </nz-tab>
         <nz-tab nzTitle="Аудио">
           тут будут аудиофайлы
