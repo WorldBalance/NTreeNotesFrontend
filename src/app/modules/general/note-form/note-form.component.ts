@@ -199,9 +199,14 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   want: ([nzAutosize]="{minRows: 2}")
   have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
   */
-  public textRowsCountGet(): number {
-    const text = this.form.controls["text"]?.value;
-    return text && (text.match(/\n/g) || []).length || 2;
+  public textRowsCountGet(controlId: string, minRows?: number): number {
+    const component = this.form.controls[controlId];
+    if (!component) {
+      return void console.error("textRowsCountGet, controlId not found:", controlId) || 0;
+    }
+    const text = component.value;
+    const length = text && (text.match(/\n/g) || []).length || 0;
+    return Math.max(length, minRows || 2);
   }
 
   public returnPage(){

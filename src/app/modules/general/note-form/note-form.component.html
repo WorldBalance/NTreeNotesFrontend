@@ -8,14 +8,10 @@
       <app-tags formControlName="tags" placeholder="Можете прикрепить теги здесь"></app-tags>
       <ng-container *ngIf="form.value.withUrl">
         <span class="url-title">URL(s):</span>
-        <textarea nz-input
-                  class="node-text-field"
-                  formControlName="url"
-                  [nzAutosize]="{minRows: 1,maxRows: 3}"
-        ></textarea>
+        <textarea nz-input formControlName="url" class="node-text-field" rows="{{textRowsCountGet('url', 1)}}"></textarea>
       </ng-container>
       <span>Описание:</span>
-      <textarea nz-input formControlName="text" class="node-text-field" rows="{{textRowsCountGet()}}"></textarea>
+      <textarea nz-input formControlName="text" class="node-text-field" rows="{{textRowsCountGet('text')}}"></textarea>
     </div>
     <span class="additional-info-block">
       <nz-tabset>
@@ -73,7 +69,7 @@
       </nz-tabset>
     </span>
     <div class="footer">
-      <div>
+      <div class="buttons">
         <button (click)="addNote()"
                 class="note-form-button"
                 [disabled]="form.invalid">
