@@ -59,6 +59,9 @@ export function queryParamsUnpack(params: QueryParamsPacked): QueryParamsUnpacke
   if (params.useTagsL && stringToBoolean(params.useTagsL)) {
     res.useTagsL = true;
   }
+  if(params.listType){
+    res.listType = params.listType;
+  }
   return res;
 }
 

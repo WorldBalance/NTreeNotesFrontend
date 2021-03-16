@@ -146,7 +146,6 @@ export class NotesComponent implements OnInit, OnDestroy {
       }),
       switchMap((itemType: ItemType) => {
         this.listType = itemType;
-        this.refresh_url_search();
         return this.route.queryParams;
       }),
       switchMap((params: Params) => this.getItems(params)),
@@ -178,7 +177,13 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public addNote(): void {
-    const queryParams = queryParamsPack({tags: this.searchTags, search: this.notesSearchString, exclude: this.excludedTags, useTagsL: this.useTagsL});
+    const queryParams = queryParamsPack({
+      tags: this.searchTags,
+      search: this.notesSearchString,
+      exclude: this.excludedTags,
+      useTagsL: this.useTagsL,
+      listType: this.listType}
+      );
     this.router.navigate(['/note'], {queryParams});
   }
 
@@ -272,5 +277,10 @@ export class NotesComponent implements OnInit, OnDestroy {
         } : {...item, tags: []})),
       takeUntil(this.unsubscribe$)
     );
+  }
+
+  public async changeListType($event: ItemType): Promise<void> {
+    await this.crudService.setItemType($event);
+    this.refresh_url_search()
   }
 }
