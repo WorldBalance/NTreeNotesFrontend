@@ -46,7 +46,10 @@ export class CrudService {
     return this.itemType$.asObservable();
   }
 
-  public getItems(text?: string, tags?: string[], options: ActionFindOptions = {offset: 0, countMax: 20}): Observable<NoteModel[]> {
+  public getItems(text?: string, tags?: string[], options: ActionFindOptions = {
+    offset: 0,
+    countMax: 20
+  }): Observable<NoteModel[]> {
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,

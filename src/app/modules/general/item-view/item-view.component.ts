@@ -28,7 +28,7 @@ export class ItemViewComponent implements OnInit {
   public note: Note;
 
   private unsubscribe$ = new Subject<void>();
-  public breadcrumbs: NoteWithTags[]= [];
+  public breadcrumbs: NoteWithTags[] = [];
 
 
   constructor(
@@ -56,7 +56,7 @@ export class ItemViewComponent implements OnInit {
       ),
       takeUntil(this.unsubscribe$)
     ).subscribe(async (note: NoteModel) => {
-      if(this.noteId){
+      if (this.noteId) {
         this.tagsService.mapTagsToNote(note).subscribe(
           (noteWithTags: NoteWithTags) => {
             this.breadcrumbs.push(noteWithTags);
@@ -65,7 +65,7 @@ export class ItemViewComponent implements OnInit {
             }
 
             const initialNote: Note = cloneDeep({...noteWithTags, tags: noteWithTags.tags || []});
-            if(initialNote.url){
+            if (initialNote.url) {
               initialNote.url = toArray(initialNote.url);
             }
 
@@ -83,13 +83,13 @@ export class ItemViewComponent implements OnInit {
 
       // dynamic loading libraries if we need it
       if (note.files && note.files.length > 0) {
-        await domLoadUrls(importUrls, { parentId: "bodyBegin" }).then(() => createGallery());
+        await domLoadUrls(importUrls, {parentId: "bodyBegin"}).then(() => createGallery());
       }
     });
 
   }
 
-  public displayText(text: string){
+  public displayText(text: string) {
     return Autolinker.link(plainTextToHtmlWithBr(text));
   }
 }
@@ -101,7 +101,7 @@ const importUrls: Array<string> = [
   'https://ntree.online/s/libs/magnific-popup/1.1.0/jquery.magnific-popup.min.js',
 ];
 
-function createGallery(){
+function createGallery() {
   // checking import JQuery and Magnific-Popup libs
   // if everything ok -> use Magnific for creating Gallery
   let countTrying = 0;

@@ -107,7 +107,7 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   }
 
-  public useTagsLCheckbox(): void{
+  public useTagsLCheckbox(): void {
     this.useTagsL = !this.useTagsL;
     this.refresh_url_search();
   }
@@ -122,7 +122,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public copyURL(item: NoteWithTags): void {
-    const res: string = this.getURL(item, { titlev: true });
+    const res: string = this.getURL(item, {titlev: true});
     window.isSecureContext ? navigator.clipboard.writeText(res) : alert(res);
   }
 
@@ -137,9 +137,12 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const tags$ = this.tagsService.getTags().pipe(
-      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({...tag, checked: this.searchTags.includes(tag.id)}))),
+      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
+        ...tag,
+        checked: this.searchTags.includes(tag.id)
+      }))),
       tap(() => this.route.queryParams.subscribe(params => {
-        if(params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
+        if (params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
       })),
       switchMap(() => {
         return this.crudService.getItemType();
@@ -178,12 +181,13 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public addNote(): void {
     const queryParams = queryParamsPack({
-      tags: this.searchTags,
-      search: this.notesSearchString,
-      exclude: this.excludedTags,
-      useTagsL: this.useTagsL,
-      listType: this.listType}
-      );
+        tags: this.searchTags,
+        search: this.notesSearchString,
+        exclude: this.excludedTags,
+        useTagsL: this.useTagsL,
+        listType: this.listType
+      }
+    );
     this.router.navigate(['/note'], {queryParams});
   }
 
@@ -248,7 +252,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       tags,
       params.search,
       opt
-      ).pipe(
+    ).pipe(
       map((notes: NoteModel[]) => {
         return notes.map((note: NoteModel) => {
           let urlHtml = '';

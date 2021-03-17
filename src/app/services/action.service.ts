@@ -30,7 +30,7 @@ export class ActionService {
 
   public getNotes(
     tags: string[], searchString: string, opt?: { refresh?: boolean, excludeTags: string[], includeTagsL?: string[] }
-    ): Observable<NoteModel[]> {
+  ): Observable<NoteModel[]> {
     opt && opt.refresh && this.store.data.RefreshNotesList();
     if (!this.store.data.notes.notesArray.length) {
       this.store.data.notes.isDownloadNotes = true;
@@ -130,8 +130,7 @@ export class ActionService {
           if (count === forUpload.length) { // is the last uploaded file?
             if (countOk === count) { // are all files uploaded ok?
               resolve();
-            }
-            else {
+            } else {
               alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
               reject();
             }

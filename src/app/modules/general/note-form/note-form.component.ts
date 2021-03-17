@@ -178,7 +178,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {
       pushUniqueValue(updatedNote.tags, StaticTag.hasImage0);
-    } else if(!updatedNote.tags.length) {
+    } else if (!updatedNote.tags.length) {
       updatedNote.tags = null;
     }
     updatedNote.files = this.initialNote.files.map((file: NoteFileModel) => file.id);
@@ -209,7 +209,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     return Math.max(length, minRows || 2);
   }
 
-  public returnPage(){
+  public returnPage() {
     this.location.back();
   }
 }

@@ -37,7 +37,7 @@
   max-height: 8em;
 }
 
-.picture-container--wrapper{
+.picture-container--wrapper {
   display: flex;
   flex-wrap: wrap
 }
@@ -49,21 +49,21 @@
   cursor: pointer
 }
 
-.delete_picture{
+.delete_picture {
   margin: 0 5px;
 }
 
-.image_not_loaded{
+.image_not_loaded {
   margin: 0 5px;
 }
 
-.upload-wrapper{
+.upload-wrapper {
   position: relative;
   min-width: 10em;
   margin: 0.5em 0.1em;
 }
 
-.upload-wrapper:before{
+.upload-wrapper:before {
   content: '';
   display: block;
   padding-top: 100%;
