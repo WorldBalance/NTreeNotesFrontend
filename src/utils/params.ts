@@ -36,9 +36,9 @@ export function queryParamsPack(params: QueryParamsUnpacked): QueryParamsPacked 
   if (params.useTagsL) {
     res.useTagsL = 'true';
   }
-  if(params.listType){
+  if (params.listType) {
     res.listType = params.listType;
-    if(params.listType === 'note') delete res.listType
+    if (params.listType === 'note') delete res.listType;
   }
 
   return res;
@@ -59,7 +59,7 @@ export function queryParamsUnpack(params: QueryParamsPacked): QueryParamsUnpacke
   if (params.useTagsL && stringToBoolean(params.useTagsL)) {
     res.useTagsL = true;
   }
-  if(params.listType){
+  if (params.listType) {
     res.listType = params.listType;
   }
   return res;

@@ -48,11 +48,11 @@ export class TagsService {
     this.tags$.next(tags);
   }
 
-  public mapTagsToNote(item: NoteModel ): Observable<NoteWithTags>{
+  public mapTagsToNote(item: NoteModel): Observable<NoteWithTags>{
     return this.getTags().pipe(
       map((tags: TagModel[]) => {
         let tagsData = [];
-        if(item.tags) {
+        if (item.tags) {
           tagsData = item.tags.map((itemTagId: string) => {
             return tags.find((tag: Tag) => tag.id === itemTagId) || {title: 'ошибка системы! Тег был удален!'} as TagModel;
           });
