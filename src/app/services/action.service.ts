@@ -10,6 +10,7 @@ import {Observable} from 'rxjs';
 import {Note} from './Store/NotesData.service';
 import {isEqual} from 'lodash';
 import {StaticTag} from '../modules/shared/staticTags.module';
+import {Location} from '@angular/common';
 
 @Injectable({providedIn: 'root'})
 export class ActionService {
@@ -18,7 +19,8 @@ export class ActionService {
     private getData: CrudService,
     private message: NzMessageService,
     private store: StoreService,
-    private router: Router
+    private router: Router,
+    private location: Location,
   ) {
   }
 
@@ -28,7 +30,7 @@ export class ActionService {
 
   public getNotes(
     tags: string[], searchString: string, opt?: { refresh?: boolean, excludeTags: string[], includeTagsL?: string[] }
-    ): Observable<NoteModel[]> {
+  ): Observable<NoteModel[]> {
     opt && opt.refresh && this.store.data.RefreshNotesList();
     if (!this.store.data.notes.notesArray.length) {
       this.store.data.notes.isDownloadNotes = true;
@@ -88,7 +90,7 @@ export class ActionService {
       .pipe(filter((data: CreationModel) => data.ok))
       .subscribe((data) => {
         this.store.data.note.lastUpdatedId = data.objectId;
-        this.router.navigate(['/notes']);
+        this.location.back();
         setInterval(() => {
           this.store.data.note.lastUpdatedId = '';
         }, 3000);
@@ -128,8 +130,7 @@ export class ActionService {
           if (count === forUpload.length) { // is the last uploaded file?
             if (countOk === count) { // are all files uploaded ok?
               resolve();
-            }
-            else {
+            } else {
               alert('Произошла ошибка! Данные не были записаны либо были записаны некорректно!');
               reject();
             }

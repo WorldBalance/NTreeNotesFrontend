@@ -2,20 +2,16 @@
   <a class="nav-link" (click)="returnPage()">Назад</a>
   <form *ngIf="form" [formGroup]="form">
     <div class="main-section">
-      <div>Название заметки:</div>
+      <div>Название:</div>
       <input formControlName="title" class="note-title-field ant-input"/>
       <div>Теги:</div>
       <app-tags formControlName="tags" placeholder="Можете прикрепить теги здесь"></app-tags>
       <ng-container *ngIf="form.value.withUrl">
         <span class="url-title">URL(s):</span>
-        <textarea nz-input
-                  class="node-text-field"
-                  formControlName="url"
-                  [nzAutosize]="{minRows: 1,maxRows: 3}"
-        ></textarea>
+        <textarea nz-input formControlName="url" class="node-text-field" rows="{{textRowsCountGet('url', 1)}}"></textarea>
       </ng-container>
       <span>Описание:</span>
-      <textarea nz-input formControlName="text" class="node-text-field" rows="{{textRowsCountGet()}}"></textarea>
+      <textarea nz-input formControlName="text" class="node-text-field" rows="{{textRowsCountGet('text')}}"></textarea>
     </div>
     <span class="additional-info-block">
       <nz-tabset>
@@ -27,11 +23,11 @@
                       [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
             ></nz-badge>
           </ng-template>
-            <label nz-checkbox
+          <label nz-checkbox
                    formControlName="hasAvatar"
                    ngDefaultControl>C аватаркой</label>
-             <div *ngFor="let photo of store.data.note.files; let i = index"
-                  style="max-height: 1em; margin:0.1em">
+          <div class="picture-container--wrapper">
+             <div *ngFor="let photo of store.data.note.files; let i = index">
                 <div class="picture-container">
                   <img src="{{photo.src}}"
                        [ngClass]="{'not_loaded': !photo.loaded}"
@@ -49,6 +45,7 @@
                   </div>
                 </div>
             </div>
+            <div class="upload-wrapper">
               <nz-upload
                 nzListType="picture-card"
                 nzType="drag"
@@ -60,6 +57,8 @@
                 <i nz-icon nzType="plus"></i>
                 <div class="ant-upload-text">Перетяните файлы в эту область для загрузки</div>
               </nz-upload>
+            </div>
+          </div>
         </nz-tab>
         <nz-tab nzTitle="Аудио">
           тут будут аудиофайлы
@@ -70,11 +69,11 @@
       </nz-tabset>
     </span>
     <div class="footer">
-      <div>
+      <div class="buttons">
         <button (click)="addNote()"
                 class="note-form-button"
                 [disabled]="form.invalid">
-          <b>{{form.value.id ? "Сохранить изменения" : "Создать заметку"}}</b>
+          <b>{{form.value.id ? "Сохранить изменения" : "Создать"}}</b>
         </button>
         <button (click)="cancel()" class="note-form-button"><b>Отмена</b></button>
       </div>

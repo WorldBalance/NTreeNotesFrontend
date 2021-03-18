@@ -20,6 +20,7 @@
 
 .note-form-button {
   cursor: pointer;
+  min-width: 12em;
 }
 
 .additional-info-block {
@@ -34,19 +35,46 @@
 
 .note-form-photo {
   max-height: 8em;
-  padding: 0.2em
+}
+
+.picture-container--wrapper {
+  display: flex;
+  flex-wrap: wrap
 }
 
 .picture-container {
   float: left;
   display: flex;
-  padding: 0.2em;
-  margin: 0.1em;
+  margin: 0.5em 0.1em;
   cursor: pointer
 }
 
+.delete_picture {
+  margin: 0 5px;
+}
+
+.image_not_loaded {
+  margin: 0 5px;
+}
+
+.upload-wrapper {
+  position: relative;
+  min-width: 10em;
+  margin: 0.5em 0.1em;
+}
+
+.upload-wrapper:before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
 nz-upload {
-  padding: 20px 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .url-title {
@@ -64,6 +92,10 @@ form {
   align-items: center;
   justify-content: space-between;
   min-height: 50px;
+}
+
+.footer .buttons {
+  min-width: 30%;
 }
 
 nz-tabset {

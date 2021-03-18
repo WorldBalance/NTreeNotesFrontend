@@ -124,7 +124,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         )
         .subscribe((data: CreationModel) => {
           this.store.data.note.lastUpdatedId = data.objectId;
-          this.router.navigate(['/notes']);
+          this.returnPage();
         })
     }
   }
@@ -165,17 +165,20 @@ export class NoteFormComponent implements OnInit, OnDestroy {
         }
         return acc;
       }, {} as NoteModel);
-    if ((Array.isArray(this.initialNote.url) && Array.isArray(url) && isEqual(this.initialNote.url.sort(), url.sort()))
+
+    const copyUrls = Array.isArray(url) && url.concat();
+    if ((Array.isArray(this.initialNote.url) && copyUrls && isEqual(this.initialNote.url.sort(), copyUrls.sort()))
       || (this.initialNote.url || null) === url) {
       delete updatedNote.url;
     } else {
       updatedNote.url = url;
     }
-    if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.sort())) {
+
+    if ((this.initialNote.hasAvatar === value.hasAvatar) && isEqual(this.initialNote.tags.sort(), updatedNote.tags.concat().sort())) {
       delete updatedNote.tags;
     } else if (value.hasAvatar) {
       pushUniqueValue(updatedNote.tags, StaticTag.hasImage0);
-    } else if(!updatedNote.tags.length) {
+    } else if (!updatedNote.tags.length) {
       updatedNote.tags = null;
     }
     updatedNote.files = this.initialNote.files.map((file: NoteFileModel) => file.id);
@@ -196,12 +199,17 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   want: ([nzAutosize]="{minRows: 2}")
   have: ((https://github.com/NG-ZORRO/ng-zorro-antd/issues/6403), (rows="{{textRowsCountGet()}}))
   */
-  public textRowsCountGet(): number {
-    const text = this.form.controls["text"]?.value;
-    return text && (text.match(/\n/g) || []).length || 2;
+  public textRowsCountGet(controlId: string, minRows?: number): number {
+    const component = this.form.controls[controlId];
+    if (!component) {
+      return void console.error("textRowsCountGet, controlId not found:", controlId) || 0;
+    }
+    const text = component.value;
+    const length = text && (text.match(/\n/g) || []).length || 0;
+    return Math.max(length, minRows || 2);
   }
 
-  public returnPage(){
+  public returnPage() {
     this.location.back();
   }
 }

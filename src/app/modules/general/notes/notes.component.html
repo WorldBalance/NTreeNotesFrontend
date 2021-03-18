@@ -28,7 +28,7 @@
         <nz-radio-group class="item-type"
                         nzButtonStyle="solid"
                         [(ngModel)]="listType"
-                        (ngModelChange)="crudService.setItemType($event)">
+                        (ngModelChange)="changeListType($event)">
           <label nz-radio-button nzValue="note">Заметки</label>
           <label nz-radio-button nzValue="tag">Теги</label>
           <label nz-radio-button nzValue="file">Файлы</label>
