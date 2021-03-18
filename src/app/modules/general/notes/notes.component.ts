@@ -116,7 +116,7 @@ export class NotesComponent implements OnInit, OnDestroy {
     const prefix = this.location.prepareExternalUrl("");
     const res = [window.location.origin, prefix, 'note/', item.id];
     if (opt && opt.titlev && item.title) {
-      res.push("?titlev=", item.title);
+      res.push('?titlev="', item.title, '"');
     }
     return res.join('');
   }
