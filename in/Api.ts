@@ -32,6 +32,7 @@ export interface Item {
     title?: TitleUTF8;
     url?: URL | URL[] | null;
     text?: TitleUTF8 | null;
+    location?: Location | Location[] | null;
     user_info?: object | null;
 
     tags?: ObjectId[] | null;
@@ -62,6 +63,11 @@ export interface ActionFindOptions {
 
     excludeTags?: ObjectId | ObjectId[];
     includeTagsL?: ObjectId | ObjectId[]; // TagsL = subtags, includes any SubTags of every ObjectId
+}
+
+export interface Location {
+    longitude: number;
+    latitude: number;
 }
 
 
