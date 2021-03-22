@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "NoteTreeV2": {
+    "NTreeNotes": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -73,18 +73,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "NoteTreeV2:build"
+            "browserTarget": "NTreeNotes:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "NoteTreeV2:build:production"
+              "browserTarget": "NTreeNotes:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "NoteTreeV2:build"
+            "browserTarget": "NTreeNotes:build"
           }
         },
         "test": {
@@ -122,18 +122,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "NoteTreeV2:serve"
+            "devServerTarget": "NTreeNotes:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "NoteTreeV2:serve:production"
+              "devServerTarget": "NTreeNotes:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "NoteTreeV2",
+  "defaultProject": "NTreeNotes",
   "cli": {
     "analytics": false
   }
