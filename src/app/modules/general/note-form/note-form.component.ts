@@ -14,6 +14,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {cloneDeep, isEqual} from 'lodash';
 import {StaticTag} from '../../shared/staticTags.module';
 import {pushUniqueValue} from '../../../../utils/utils1';
+import {NzModalService, OnClickCallback} from "ng-zorro-antd";
 
 @Component({
   selector: 'app-note-form',
@@ -25,6 +26,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
   public initialNote: Note;
   public form: FormGroup;
   public noteId: string;
+  public loaded = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -36,6 +38,7 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     private crudService: CrudService,
     protected formBuilder: FormBuilder,
     private location: Location,
+    private modal: NzModalService
   ) {
   }
 
@@ -139,8 +142,20 @@ export class NoteFormComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  public deleteFile(fileId, index): void {
-    this.action.deleteFile(fileId, index);
+  public confirmDelete(fileId, index): void{
+    this.modal.confirm({
+      nzTitle: 'Are you sure delete this?',
+      nzOkText: 'Yes',
+      nzOnOk: () => this.action.deleteFile(fileId, index),
+      nzCancelText: 'No',
+    });
+  }
+
+  public makeFirst(fileId){
+    const files = this.store.data.note.files;
+    const index = files.findIndex( (e) => e.id === fileId);
+    files.unshift(...files.splice(index,1));
+    this.loaded = true;
   }
 
   private initForm(): void {
@@ -192,6 +207,8 @@ export class NoteFormComponent implements OnInit, OnDestroy {
       formData.append('fileData', file);
       this.action.UploadFile(formData);
       observer.complete();
+
+      this.loaded = true;
     });
   }
 
