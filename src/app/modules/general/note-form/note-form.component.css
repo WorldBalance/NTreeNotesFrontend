@@ -46,15 +46,20 @@
   float: left;
   display: flex;
   margin: 0.5em 0.1em;
-  cursor: pointer
 }
 
-.delete_picture {
+.picture-button {
   margin: 0 5px;
+}
+
+.picture-button i {
+  cursor: pointer;
+  display: block;
+  margin-bottom: 3px;
 }
 
 .image_not_loaded {
-  margin: 0 5px;
+  width: max-content;
 }
 
 .upload-wrapper {

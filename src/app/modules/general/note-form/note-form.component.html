@@ -32,16 +32,16 @@
                   <img src="{{photo.src}}"
                        [ngClass]="{'not_loaded': !photo.loaded}"
                        class="note-form-photo"/>
-                  <div>
-                  <div class="delete_picture">
+                  <div class="picture-button">
                     <i nz-icon nzType="close-circle"
                        nzTheme="twotone"
-                       (click)="deleteFile(photo.id, i)"
+                       (click)="confirmDelete(photo.id, i)"
                     ></i>
-                  </div>
-                  <div *ngIf="!photo.loaded" class="image_not_loaded">
-                    <nz-tag nzColor="magenta">Нажмите сохранить!</nz-tag>
-                  </div>
+                    <i nz-icon nzType="left-circle"
+                       nzTheme="twotone"
+                       (click)="makeFirst(photo.id)"
+                       *ngIf="i"
+                    ></i>
                   </div>
                 </div>
             </div>
@@ -68,6 +68,9 @@
         </nz-tab>
       </nz-tabset>
     </span>
+    <div *ngIf="loaded" class="image_not_loaded">
+      <nz-alert nzType="warning" nzMessage="Нажмите сохранить!" nzShowIcon></nz-alert>
+    </div>
     <div class="footer">
       <div class="buttons">
         <button (click)="addNote()"
