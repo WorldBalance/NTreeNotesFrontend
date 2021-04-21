@@ -1,4 +1,4 @@
-<nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
+<nz-layout style="height:100%" nzTheme="dark">
   <nz-sider class="scrollbar my_scroll">
     <h3 class="white-text">Фильтр</h3>
     <span>Включает:</span>
@@ -33,7 +33,7 @@
           <label nz-radio-button nzValue="tag">Теги</label>
           <label nz-radio-button nzValue="file">Файлы</label>
         </nz-radio-group>
-        <nz-input-group [nzSuffix]="suffixIconSearch">
+        <nz-input-group class="search-bar" [nzSuffix]="suffixIconSearch">
           <input nz-input
                  type="text"
                  class="search_note_input border1"

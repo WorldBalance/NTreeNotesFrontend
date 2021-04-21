@@ -1,4 +1,4 @@
-<div style=" position: fixed; height: 100%; width: 100%;">
+<div style="height: 100%; width: 100%">
   <nz-layout *ngIf="userData$ | async as userData; else loader">
     <app-header [userData]="userData"></app-header>
     <nz-layout>
