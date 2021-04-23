@@ -14,37 +14,15 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {mapStaticTagReversed} from '../../shared/staticTags.module';
+import {mapStaticTagReversed} from '../../../../../in/StaticTag';
 
 @Component({
-  selector: 'app-notes',
-  templateUrl: './notes.component.html',
-  styleUrls: ['./notes.component.css'],
-  providers: [],
-  animations: [fromTopAnimation,
-    trigger('tagAnimation', [
-      transition('void => *', [
-        query('div', style({transform: 'translatex(-100%)'})),
-        query('div',
-          stagger('15ms', [
-            animate('220ms', style({transform: 'translateX(0)'}))
-          ])
-        )
-      ])
-    ]),
-    trigger('noteAnimation', [
-      transition('void => *', [
-        query('div', style({transform: 'translatex(-100%)'})),
-        query('div',
-          stagger('10ms', [
-            animate('250ms ease-in', style({transform: 'translateX(0)'}))
-          ])
-        )
-      ])
-    ])
-  ]
+  selector: 'app-notes-wrapper',
+  templateUrl: './notes-wrapper.component.html',
+  styleUrls: ['./notes-wrapper.component.scss']
 })
-export class NotesComponent implements OnInit, OnDestroy {
+
+export class NotesWrapperComponent implements OnInit, OnDestroy {
 
   public searchTags: string[] = [];
   public excludedTags: string[] = [];
@@ -71,41 +49,41 @@ export class NotesComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  public contextMenu($event, menu: NzDropdownMenuComponent): void {
-    if ($event.target.tagName !== 'A') {
-      this.nzContextMenuService.create($event, menu);
-    }
-  }
+  // public contextMenu($event, menu: NzDropdownMenuComponent): void {
+  //   if ($event.target.tagName !== 'A') {
+  //     this.nzContextMenuService.create($event, menu);
+  //   }
+  // }
 
-  public closeMenu(): void {
-    this.nzContextMenuService.close();
-  }
+  // public closeMenu(): void {
+  //   this.nzContextMenuService.close();
+  // }
 
-  public changeCheckbox(tag: string, push: boolean): void {
-
-    const removeFromFilter = (array, removedTag) => {
-      const index: number = array.indexOf(removedTag);
-      if (index !== -1) {
-        array.splice(index, 1);
-      }
-    };
-
-    if (!this.searchTags.includes(tag) && push) {
-      this.searchTags.push(tag);
-
-      removeFromFilter(this.excludedTags, tag);
-    } else {
-      if (!push) {
-        this.excludedTags.push(tag);
-      }
-
-      removeFromFilter(this.searchTags, tag);
-    }
-
-    this.refresh_url_search();
-    this.closeMenu();
-
-  }
+  // public changeCheckbox(tag: string, push: boolean): void {
+  //
+  //   const removeFromFilter = (array, removedTag) => {
+  //     const index: number = array.indexOf(removedTag);
+  //     if (index !== -1) {
+  //       array.splice(index, 1);
+  //     }
+  //   };
+  //
+  //   if (!this.searchTags.includes(tag) && push) {
+  //     this.searchTags.push(tag);
+  //
+  //     removeFromFilter(this.excludedTags, tag);
+  //   } else {
+  //     if (!push) {
+  //       this.excludedTags.push(tag);
+  //     }
+  //
+  //     removeFromFilter(this.searchTags, tag);
+  //   }
+  //
+  //   this.refresh_url_search();
+  //   this.closeMenu();
+  //
+  // }
 
   public useTagsLCheckbox(): void {
     this.useTagsL = !this.useTagsL;
@@ -113,7 +91,7 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
-    const prefix = this.location.prepareExternalUrl('');
+    const prefix = this.location.prepareExternalUrl("");
     const res = [window.location.origin, prefix, 'note/', item.id];
     if (opt && opt.titlev && item.title) {
       res.push('?titlev="', item.title, '"');
@@ -136,19 +114,28 @@ export class NotesComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    // Decoding!
+    // 1. Creating new Observable
+    // 2. Using getTags from tagsService and return Observable with tags
+    //  2.1. Mapping tags to local var with tags. Also adding field 'checked' (need for dropdown)
+    //  2.2. Taking params from URL using this.route.queryParams Observable. If there is another listType,
+    //       than we have in local var, set itemType, using crudService
+    //  2.3. Return type of page using getItemType and switchMap;
+    //  2.4. Set local var listType to pageType of our page and return new Observable with URL params
+    //  2.5. Call this.getItems -> unpack params and return all Notes
+
     const tags$ = this.tagsService.getTags().pipe(
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
-        ...tag,
-        checked: this.searchTags.includes(tag.id)
-      }))),
+          ...tag,
+          checked: this.searchTags.includes(tag.id)
+        }))),
       tap(() => this.route.queryParams.subscribe(params => {
         if (params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
       })),
-      switchMap(() => {
-        return this.crudService.getItemType();
-      }),
+      switchMap(() =>  this.crudService.getItemType()),
       switchMap((itemType: ItemType) => {
         this.listType = itemType;
+        console.log(this.listType);
         return this.route.queryParams;
       }),
       switchMap((params: Params) => this.getItems(params)),
@@ -156,6 +143,7 @@ export class NotesComponent implements OnInit, OnDestroy {
       shareReplay(1),
       takeUntil(this.unsubscribe$),
     );
+
     tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
     this.setupSearchNotesDebouncer();
   }
@@ -179,48 +167,12 @@ export class NotesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public addNote(): void {
-    const queryParams = queryParamsPack({
-        tags: this.searchTags,
-        search: this.notesSearchString,
-        exclude: this.excludedTags,
-        useTagsL: this.useTagsL,
-        listType: this.listType
-      }
-    );
-    this.router.navigate(['/note'], {queryParams});
-  }
-
   public filterNotesTag(tags: string[], include: boolean): void {
     include ? this.searchTags = tags : this.excludedTags = tags;
 
     this.allTags = this.allTags.map((tag: TagModel) => ({...tag, checked: tags.includes(tag.id)}));
 
     this.refresh_url_search();
-  }
-
-  public noteSelect(id, event?): void {
-    if (event === undefined || event.target.tagName !== 'A') {
-      this.store.data.note.lastUpdatedId = '';
-      this.router.navigate(['/note/' + id]);
-    }
-  }
-
-  public deleteItem(id: string, event) {
-    event.stopPropagation();
-    const r = confirm('Данный элемент будет удален! Вы уверены?');
-    if (r) {
-      this.crudService.deleteItem(id).pipe(
-        switchMap(() => this.route.queryParams),
-        takeUntil(this.unsubscribe$)
-      ).subscribe(() => {
-        const deletedItem = this.items.findIndex((note: NoteWithTags) => note.id === id);
-        this.items.splice(deletedItem, 1);
-        if (this.listType === ItemType.tag) {
-          this.tagsService.deleteTag(id);
-        }
-      });
-    }
   }
 
   // Обновить роут при фильтрации и запросах

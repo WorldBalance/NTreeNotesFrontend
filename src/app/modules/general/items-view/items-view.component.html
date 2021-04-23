@@ -1,64 +1,52 @@
-<nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
-  <nz-sider class="scrollbar my_scroll">
-    <h3 class="white-text">Фильтр</h3>
-    <span>Включает:</span>
-    <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
-    <br>
-    <label nz-checkbox
-           [ngModel]="useTagsL"
-           (ngModelChange)="useTagsLCheckbox()" class="white-text use_tags_l">Косвенное включение</label>
-    <br><br>
-    <span>Исключает:</span>
-    <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
-  </nz-sider>
-  <nz-content style="height:calc(100vh - 3.1em)" class="scrollbar my_scroll" infiniteScroll
-              [infiniteScrollDistance]="1.9"
-              [infiniteScrollThrottle]="900"
-              (scrolled)="getMoreNotesData()"
-              [scrollWindow]="false">
-    <div class="list-container">
-      <div class="notes-list-header">
-        <div style="visibility: hidden"></div>
-        <nz-radio-group class="item-type"
-                        nzButtonStyle="solid"
-                        [ngModel]="listType"
-        >
-          <label nz-radio-button nzValue="file">Файлы</label>
-        </nz-radio-group>
-        <nz-input-group [nzSuffix]="suffixIconSearch">
-          <input nz-input
-                 type="text"
-                 class="search_note_input border1"
-                 placeholder="Поиск"
-                 [(ngModel)]="notesSearchString"
-                 (ngModelChange)="onSearchNoteInputChange($event)"/>
-        </nz-input-group>
-        <ng-template #suffixIconSearch>
-          <i nz-icon nzType="search"></i>
-        </ng-template>
-      </div>
-      <div *ngIf="store.data.notes.isDownloadNotes"
-           style="text-align: center">
-        <i nz-icon
-           nzType="loading"
-           style="font-size: 38px; color:orange;"
-        ></i>
-      </div>
-
-      <section class="image-card--wrapper">
-        <div *ngFor="let note of items" class="image-card">
-          <img *ngIf="note.image_url; else image_plug" [src]="note.image_url" [alt]="'Image - ' + note.title">
-          <ng-template #image_plug>
-            <div class="image-plug">
-              <div>Hasn't image</div>
-            </div>
-          </ng-template>
-          <div class="image-card__title">
-            <div [innerHTML]="note.title | TextContentTruncate: 30"></div>
-          </div>
-        </div>
-      </section>
-
+<nz-content style="height:calc(100vh - 3.1em)" class="scrollbar my_scroll" infiniteScroll
+            [infiniteScrollDistance]="1.9"
+            [infiniteScrollThrottle]="900"
+            (scrolled)="getMoreNotesData()"
+            [scrollWindow]="false">
+  <div class="list-container">
+    <div class="notes-list-header">
+      <div style="visibility: hidden"></div>
+      <nz-radio-group class="item-type"
+                      nzButtonStyle="solid"
+                      [(ngModel)]="listType"
+                      (ngModelChange)="changeListType($event)">
+        <label nz-radio-button nzValue="note">Заметки</label>
+        <label nz-radio-button nzValue="tag">Теги</label>
+        <label nz-radio-button nzValue="file">Файлы</label>
+      </nz-radio-group>
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input nz-input
+               type="text"
+               class="search_note_input border1"
+               placeholder="Поиск"
+               [(ngModel)]="notesSearchString"
+               (ngModelChange)="onSearchNoteInputChange($event)"/>
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <i nz-icon nzType="search"></i>
+      </ng-template>
     </div>
-  </nz-content>
-</nz-layout>
+    <div *ngIf="store.data.notes.isDownloadNotes"
+         style="text-align: center">
+      <i nz-icon
+         nzType="loading"
+         style="font-size: 38px; color:orange;"
+      ></i>
+    </div>
+
+    <section class="image-card--wrapper">
+      <div *ngFor="let note of items" class="image-card">
+        <img *ngIf="note.image_url; else image_plug" [src]="note.image_url" [alt]="'Image - ' + note.title">
+        <ng-template #image_plug>
+          <div class="image-plug">
+            <div>Hasn't image</div>
+          </div>
+        </ng-template>
+        <div class="image-card__title">
+          <div [innerHTML]="note.title | TextContentTruncate: 30"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</nz-content>

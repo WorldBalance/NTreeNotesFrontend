@@ -15,8 +15,8 @@ const routes: Routes = [
     path: 'notes',
     canActivate: [AuthGuard],
     data: {animation: 'NotesPageAnimation'},
-    loadChildren: () => import('./modules/general/notes/notes.module')
-      .then(mod => mod.NotesModule)
+    loadChildren: () => import('./modules/general/notes-wrapper/notes-wrapper.module')
+      .then(mod => mod.NotesWrapperModule)
   },
   {
     path: 'items-view',

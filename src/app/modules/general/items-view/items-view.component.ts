@@ -14,11 +14,10 @@ import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
 import {toArray, truncateForHtml} from '../../../../utils/utils1';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {mapStaticTagReversed} from '../../shared/staticTags.module';
-import {TextContentTruncate} from "../notes/TextTruncate.pipe";
+import {mapStaticTagReversed} from '../../../../../in/StaticTag';
 
 @Component({
-  selector: 'app-notes',
+  selector: 'app-items-view',
   templateUrl: './items-view.component.html',
   styleUrls: ['./items-view.component.css'],
   providers: [],
@@ -114,7 +113,7 @@ export class ItemsViewComponent implements OnInit, OnDestroy {
   }
 
   public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
-    const prefix = this.location.prepareExternalUrl("");
+    const prefix = this.location.prepareExternalUrl('');
     const res = [window.location.origin, prefix, 'note/', item.id];
     if (opt && opt.titlev && item.title) {
       res.push('?titlev="', item.title, '"');
@@ -284,8 +283,8 @@ export class ItemsViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  // public async changeListType($event: ItemType): Promise<void> {
-  //   await this.crudService.setItemType($event);
-  //   this.refresh_url_search()
-  // }
+  public async changeListType($event: ItemType): Promise<void> {
+    await this.crudService.setItemType($event);
+    this.refresh_url_search()
+  }
 }

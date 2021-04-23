@@ -1,0 +1,26 @@
+<div>
+  <nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
+    <nz-sider class="scrollbar my_scroll">
+      <h3 class="white-text">Фильтр</h3>
+      <span>Включает:</span>
+      <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
+      <br>
+      <label nz-checkbox
+             [ngModel]="useTagsL"
+             (ngModelChange)="useTagsLCheckbox()" class="white-text use_tags_l">Косвенное включение</label>
+      <br><br>
+      <span>Исключает:</span>
+      <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
+    </nz-sider>
+    <nz-content *ngIf="listType === 'file'; else main" >
+      <app-items-view></app-items-view>
+    </nz-content>
+   </nz-layout>
+
+  <ng-template #main>
+    <app-notes></app-notes>
+  </ng-template>
+</div>
+
+
+
