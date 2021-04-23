@@ -45,13 +45,6 @@
           <i nz-icon nzType="search"></i>
         </ng-template>
       </div>
-      <div *ngIf="store.data.notes.isDownloadNotes"
-           style="text-align: center">
-        <i nz-icon
-           nzType="loading"
-           style="font-size: 38px; color:orange;"
-        ></i>
-      </div>
       <div *ngFor="let note of items" class="note_in_list">
         <div
           [title]="note.id"
@@ -160,12 +153,10 @@
         </nz-dropdown-menu>
 
       </div>
-      <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
-        <i nz-icon
-           nzType="loading"
-           style="font-size: 38px; color:orange;"></i>
-      </div>
 
+      <div *ngIf="store.data.notes.downloadMore" class="app-loader">
+        <i nz-icon nzType="loading" style="font-size: 38px;"></i>
+      </div>
     </div>
   </nz-content>
 </nz-layout>
