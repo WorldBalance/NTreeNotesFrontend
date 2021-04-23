@@ -153,11 +153,12 @@ ul {
   height: 100%;
 }
 
-nz-sider {
+.sidebar {
   overflow-y: scroll;
   overflow-x: hidden;
-  background-color: rgb(27, 23, 49);
+  background-color: transparent;
   color: white;
+  float: right;
 }
 
 .white-text {

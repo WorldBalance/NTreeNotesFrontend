@@ -1,35 +1,37 @@
 <nz-header>
-  <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu" *ngIf="userData?.ok">
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
-      <a class="nav-link animated slideInDown" routerLink="">
-        <i class="fas fa-home mr-1"></i>NtreeNote
-      </a>
-    </li>
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="!store.user.isAuthorized">
-      <a class="nav-link animated slideInDown" routerLink="/notes">
-        <i class="fas fa-book-open mr-1"></i>Заметки
-      </a>
-    </li>
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-      <a class="nav-link animated slideInDown" routerLink="/about">
-        <i class="fas fa-question-circle mr-1"></i>О проекте
-      </a>
-    </li>
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected">
-      <a class="nav-link animated slideInDown" routerLink="/contacts">
-        <i class="far fa-envelope mr-1"></i>Контакты
-      </a>
-    </li>
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="store.user.isAuthorized">
-      <a class="nav-link animated slideInDown" routerLink="/login">
-        <i class="far fa-envelope mr-1"></i>Войти
-      </a>
-    </li>
-    <li nz-menu-item routerLinkActive="ant-menu-item-selected" id="burger">
+  <div class="wrapper">
+    <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu" *ngIf="userData?.ok">
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link animated slideInDown" routerLink="">
+          <i class="fas fa-home mr-1"></i>NtreeNote
+        </a>
+      </li>
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="!store.user.isAuthorized">
+        <a class="nav-link animated slideInDown" routerLink="/notes">
+          <i class="fas fa-book-open mr-1"></i>Заметки
+        </a>
+      </li>
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected">
+        <a class="nav-link animated slideInDown" routerLink="/about">
+          <i class="fas fa-question-circle mr-1"></i>О проекте
+        </a>
+      </li>
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected">
+        <a class="nav-link animated slideInDown" routerLink="/contacts">
+          <i class="far fa-envelope mr-1"></i>Контакты
+        </a>
+      </li>
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="store.user.isAuthorized">
+        <a class="nav-link animated slideInDown" routerLink="/login">
+          <i class="far fa-envelope mr-1"></i>Войти
+        </a>
+      </li>
+      <li nz-menu-item routerLinkActive="ant-menu-item-selected" id="burger">
         <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight" class="avatar-btn">
           <div>
             {{userData?.object?.name}}
-            <img nz-icon nzType="user" [src]="userData?.object?.photo_url"  loading="lazy" alt="Avatar" class="avatar-image">
+            <img nz-icon nzType="user" [src]="userData?.object?.photo_url" loading="lazy" alt="Avatar"
+                 class="avatar-image">
             <i nz-icon nzType="down"></i>
           </div>
         </button>
@@ -53,8 +55,9 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
 </nz-header>
 
 <ng-template #loginBtn>
