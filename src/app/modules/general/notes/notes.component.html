@@ -26,7 +26,7 @@
                  class="search_note_input border1"
                  placeholder="Поиск"
                  [(ngModel)]="notesSearchString"
-                 (ngModelChange)="onSearchNoteInputChange($event)"/>
+                 (ngModelChange)="parent.onSearchNoteInputChange($event)"/>
         </nz-input-group>
         <ng-template #suffixIconSearch>
           <i nz-icon nzType="search"></i>

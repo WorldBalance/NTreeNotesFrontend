@@ -4,18 +4,16 @@ import {fromTopAnimation} from '../../../animations';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {Observable, Subject, OperatorFunction} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import { switchMap, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
-import {NzContextMenuService, NzDropdownMenuComponent, NzMessageService} from 'ng-zorro-antd';
-import {queryParamsPack, queryParamsUnpack} from 'src/utils/params'
-import {ItemType, NoteModel, NoteWithTags} from '../../../models/note.model';
-import {toArray, truncateForHtml} from '../../../../utils/utils1';
+import {NzContextMenuService, NzMessageService} from 'ng-zorro-antd';
+import {queryParamsPack} from 'src/utils/params'
+import {ItemType, NoteWithTags} from '../../../models/note.model';
 import {TagsService} from '../../../services/tags.service';
 import {TagModel} from '../../../models/tag.model'
-import {mapStaticTagReversed} from '../../shared/staticTags.module';
-import {NotesWrapperComponent} from "../notes-wrapper/notes-wrapper.component";
+import {NotesWrapperComponent} from '../notes-wrapper/notes-wrapper.component';
 
 @Component({
   selector: 'app-notes',
@@ -45,7 +43,7 @@ import {NotesWrapperComponent} from "../notes-wrapper/notes-wrapper.component";
     ])
   ]
 })
-export class NotesComponent implements OnInit, OnDestroy {
+export class NotesComponent implements OnDestroy {
   @Input() searchTags: string[];
   @Input() excludedTags: string[];
   @Input() useTagsL = false;
@@ -54,45 +52,22 @@ export class NotesComponent implements OnInit, OnDestroy {
   @Input() listType: ItemType;
   @Input() allTags: TagModel[];
 
-
   private unsubscribe$ = new Subject<void>();
-  private searchNoteDecouncer$: Subject<string> = new Subject();
 
   constructor(
     public store: StoreService,
-    public actionService: ActionService,
     private router: Router,
     private route: ActivatedRoute,
     public crudService: CrudService,
     private messageService: NzMessageService,
     private tagsService: TagsService,
-    private nzContextMenuService: NzContextMenuService,
-    private location: Location,
     public parent: NotesWrapperComponent
   ) {
-  }
-
-  public ngOnInit(): void {
-    this.setupSearchNotesDebouncer();
   }
 
   public ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  public onSearchNoteInputChange(term: string): void {
-    this.searchNoteDecouncer$.next(term);
-  }
-
-  private async setupSearchNotesDebouncer() {
-    this.searchNoteDecouncer$.pipe(
-      debounceTime(700),
-      distinctUntilChanged()
-    ).subscribe(async (term: string) => {
-      this.notesSearchString = term;
-      await this.parent.refresh_url_search();
-    });
   }
 
   public addNote(): void {
@@ -116,8 +91,8 @@ export class NotesComponent implements OnInit, OnDestroy {
 
   public deleteItem(id: string, event) {
     event.stopPropagation();
-    const r = confirm('Данный элемент будет удален! Вы уверены?');
-    if (r) {
+
+    if (confirm('Данный элемент будет удален! Вы уверены?')) {
       this.crudService.deleteItem(id).pipe(
         switchMap(() => this.route.queryParams),
         takeUntil(this.unsubscribe$)
