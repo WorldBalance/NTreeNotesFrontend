@@ -18,7 +18,14 @@
    </nz-layout>
 
   <ng-template #main>
-    <app-notes></app-notes>
+    <app-notes
+    [searchTags]="searchTags"
+    [useTagsL]="useTagsL"
+    [notesSearchString]="notesSearchString"
+    [items]="items"
+    [listType]="listType"
+    [allTags]="allTags"
+    > </app-notes>
   </ng-template>
 </div>
 

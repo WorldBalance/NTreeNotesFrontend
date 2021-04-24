@@ -1,7 +1,7 @@
   <nz-content style="height:calc(100vh - 3.1em); width: calc(100vw - 200px);" class="scrollbar my_scroll" infiniteScroll
               [infiniteScrollDistance]="1.9"
               [infiniteScrollThrottle]="900"
-              (scrolled)="getMoreNotesData()"
+              (scrolled)="parent.getMoreNotesData()"
               [scrollWindow]="false">
     <div class="list-container">
       <div class="notes-list-header">
@@ -15,7 +15,7 @@
         <nz-radio-group class="item-type"
                         nzButtonStyle="solid"
                         [(ngModel)]="listType"
-                        (ngModelChange)="changeListType($event)">
+                        (ngModelChange)="parent.changeListType($event)">
           <label nz-radio-button nzValue="note">Заметки</label>
           <label nz-radio-button nzValue="tag">Теги</label>
           <label nz-radio-button nzValue="file">Файлы</label>
@@ -40,7 +40,7 @@
             'animated flash updatedNote delay-1s':
               store.data.note.lastUpdatedId === note.id
           }"
-          (contextmenu)="contextMenu($event, menu)"
+          (contextmenu)="parent.contextMenu($event, menu)"
         >
           <div class="note-title-wrapper">
             <div class="note_title">
@@ -58,7 +58,7 @@
                 class="more_note"
                 nzTooltipPlacement="left"
                 [nzDropdownMenu]="menu"
-                (click)='closeMenu()'
+                (click)='parent.closeMenu()'
               >
 
               </i>
@@ -92,7 +92,7 @@
         </div>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="copyURL(note)">
+            <li nz-menu-item (click)="parent.copyURL(note)">
               Копировать URL
             </li>
             <li nz-menu-item (click)="noteSelect(note.id)">Редактировать</li>
@@ -110,7 +110,7 @@
                       <label
                         nz-checkbox
                         [(ngModel)]="tag.checked"
-                        (ngModelChange)="changeCheckbox(tag.id, true)"
+                        (ngModelChange)="parent.changeCheckbox(tag.id, true)"
                       >
                         {{ tag.title }}
                       </label>
@@ -125,7 +125,7 @@
                       nzColor="red"
                       class="tag_in_note tag_exclude"
                       nz-row
-                      (click)="changeCheckbox(tag.id, false)"
+                      (click)="parent.changeCheckbox(tag.id, false)"
                     >
                       {{ tag.title }}
                     </li>

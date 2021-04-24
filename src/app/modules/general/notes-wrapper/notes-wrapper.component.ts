@@ -31,7 +31,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
   public items: NoteWithTags[];
   public listType: ItemType;
   public allTags: TagModel[] = [];
-
+  public info = 'WORKING';
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -49,41 +49,41 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  // public contextMenu($event, menu: NzDropdownMenuComponent): void {
-  //   if ($event.target.tagName !== 'A') {
-  //     this.nzContextMenuService.create($event, menu);
-  //   }
-  // }
+  public contextMenu($event, menu: NzDropdownMenuComponent): void {
+    if ($event.target.tagName !== 'A') {
+      this.nzContextMenuService.create($event, menu);
+    }
+  }
 
-  // public closeMenu(): void {
-  //   this.nzContextMenuService.close();
-  // }
+  public closeMenu(): void {
+    this.nzContextMenuService.close();
+  }
 
-  // public changeCheckbox(tag: string, push: boolean): void {
-  //
-  //   const removeFromFilter = (array, removedTag) => {
-  //     const index: number = array.indexOf(removedTag);
-  //     if (index !== -1) {
-  //       array.splice(index, 1);
-  //     }
-  //   };
-  //
-  //   if (!this.searchTags.includes(tag) && push) {
-  //     this.searchTags.push(tag);
-  //
-  //     removeFromFilter(this.excludedTags, tag);
-  //   } else {
-  //     if (!push) {
-  //       this.excludedTags.push(tag);
-  //     }
-  //
-  //     removeFromFilter(this.searchTags, tag);
-  //   }
-  //
-  //   this.refresh_url_search();
-  //   this.closeMenu();
-  //
-  // }
+  public changeCheckbox(tag: string, push: boolean): void {
+
+    const removeFromFilter = (array, removedTag) => {
+      const index: number = array.indexOf(removedTag);
+      if (index !== -1) {
+        array.splice(index, 1);
+      }
+    };
+
+    if (!this.searchTags.includes(tag) && push) {
+      this.searchTags.push(tag);
+
+      removeFromFilter(this.excludedTags, tag);
+    } else {
+      if (!push) {
+        this.excludedTags.push(tag);
+      }
+
+      removeFromFilter(this.searchTags, tag);
+    }
+
+    this.refresh_url_search();
+    this.closeMenu();
+
+  }
 
   public useTagsLCheckbox(): void {
     this.useTagsL = !this.useTagsL;
@@ -123,6 +123,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     //  2.3. Return type of page using getItemType and switchMap;
     //  2.4. Set local var listType to pageType of our page and return new Observable with URL params
     //  2.5. Call this.getItems -> unpack params and return all Notes
+    //  2.6. Map tags to notes
 
     const tags$ = this.tagsService.getTags().pipe(
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
