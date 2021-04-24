@@ -5,6 +5,7 @@ import {animate, query, stagger, style, transition, trigger} from '@angular/anim
 import {Subject} from 'rxjs';
 import {ItemType, NoteWithTags} from '../../../models/note.model';
 import {NotesWrapperComponent} from '../notes-wrapper/notes-wrapper.component';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-items-view',
@@ -43,11 +44,16 @@ export class ItemsViewComponent implements OnDestroy {
 
   constructor(
     public store: StoreService,
-    public parent: NotesWrapperComponent
+    public parent: NotesWrapperComponent,
+    public router: Router
   ) {}
 
   public ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  public open(id): void {
+    this.router.navigate(['/view/' + id]);
   }
 }

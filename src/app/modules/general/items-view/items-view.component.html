@@ -35,7 +35,7 @@
     </div>
 
     <section class="image-card--wrapper">
-      <div *ngFor="let note of items" class="image-card">
+      <div *ngFor="let note of items" class="image-card" (click)="open(note.id)">
         <img *ngIf="note.image_url; else image_plug" [src]="note.image_url" [alt]="'Image - ' + note.title">
         <ng-template #image_plug>
           <div class="image-plug">
