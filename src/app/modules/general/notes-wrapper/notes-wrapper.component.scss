@@ -164,3 +164,82 @@ nz-sider {
 .white-text {
   color: white;
 }
+
+.image-card--wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.image-card {
+  height: 250px;
+  width: 98%;
+  max-width: 300px;
+  margin: 1%;
+  border: 1px solid #f0f0f0;
+  background: #fff;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.image-card:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow .3s, border-color .3s;
+}
+
+.image-card img {
+  height: 75%;
+  width: 100%;
+  object-fit: cover;
+  text-align: center;
+}
+
+.image-card__title {
+  height: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 1rem;
+}
+
+.image-card__title div {
+  overflow: hidden;
+}
+
+.image-plug {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 75%;
+}
+
+@media (min-width: 576px) {
+  .image-card {
+    width: 48%;
+  }
+
+  .image-card__title {
+    /*justify-content: flex-start;*/
+  }
+
+}
+
+@media (min-width: 768px) {
+  .image-card {
+    width: 31%;
+  }
+}
+
+@media (min-width: 992px) {
+  .image-card {
+    width: 23%;
+  }
+}

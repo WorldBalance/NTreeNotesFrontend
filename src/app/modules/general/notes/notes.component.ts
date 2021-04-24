@@ -1,14 +1,12 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Location} from '@angular/common';
+import {Component, Input, OnDestroy} from '@angular/core';
 import {fromTopAnimation} from '../../../animations';
 import {StoreService} from '../../../services/store.service';
-import {ActionService} from '../../../services/action.service';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Router} from '@angular/router';
 import { switchMap, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {CrudService} from '../../../services/crud.service';
-import {NzContextMenuService, NzMessageService} from 'ng-zorro-antd';
+import {NzMessageService} from 'ng-zorro-antd';
 import {queryParamsPack} from 'src/utils/params'
 import {ItemType, NoteWithTags} from '../../../models/note.model';
 import {TagsService} from '../../../services/tags.service';
@@ -44,13 +42,13 @@ import {NotesWrapperComponent} from '../notes-wrapper/notes-wrapper.component';
   ]
 })
 export class NotesComponent implements OnDestroy {
-  @Input() searchTags: string[];
-  @Input() excludedTags: string[];
+  @Input() searchTags: string[] = [];
+  @Input() excludedTags: string[] = [];
   @Input() useTagsL = false;
   @Input() notesSearchString: string;
   @Input() items: NoteWithTags[];
   @Input() listType: ItemType;
-  @Input() allTags: TagModel[];
+  @Input() allTags: TagModel[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -66,11 +64,13 @@ export class NotesComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    // Do unsubscribe (need for all subscription)
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
   public addNote(): void {
+    // Pack params from URL
     const queryParams = queryParamsPack({
         tags: this.searchTags,
         search: this.notesSearchString,
@@ -79,10 +79,13 @@ export class NotesComponent implements OnDestroy {
         listType: this.listType
       }
     );
+
+    // Go to Note-Form using recently packed parameters
     this.router.navigate(['/note'], {queryParams});
   }
 
   public noteSelect(id, event?): void {
+    // Open Note-From with id, if didn't click link in note
     if (event === undefined || event.target.tagName !== 'A') {
       this.store.data.note.lastUpdatedId = '';
       this.router.navigate(['/note/' + id]);

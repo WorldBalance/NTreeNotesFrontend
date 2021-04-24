@@ -19,13 +19,6 @@ const routes: Routes = [
       .then(mod => mod.NotesWrapperModule)
   },
   {
-    path: 'items-view',
-    canActivate: [AuthGuard],
-    data: {animation: 'NotesPageAnimation'},
-    loadChildren: () => import('./modules/general/items-view/items-view.module')
-      .then(mod => mod.ItemsViewModule)
-  },
-  {
     path: 'note',
     canActivate: [AuthGuard],
     loadChildren: () => import('./modules/general/note-form/note-form.module')

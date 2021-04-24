@@ -1,9 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
-import {fromTopAnimation} from '../../../animations';
 import {StoreService} from '../../../services/store.service';
 import {ActionService} from '../../../services/action.service';
-import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {debounceTime, distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {Observable, Subject, OperatorFunction} from 'rxjs';
@@ -31,7 +29,6 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
   public items: NoteWithTags[];
   public listType: ItemType;
   public allTags: TagModel[] = [];
-  public info = 'WORKING';
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -48,6 +45,43 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     private location: Location,
   ) {
   }
+
+
+  public ngOnInit(): void {
+    // Decoding!
+    // 1. Creating new Observable
+    // 2. Using getTags from tagsService and return Observable with tags
+    //  2.1. Mapping tags to local var with tags. Also adding field 'checked' (need for dropdown)
+    //  2.2. Taking params from URL using this.route.queryParams Observable. If there is another listType,
+    //       than we have in local var, set itemType, using crudService
+    //  2.3. Return type of page using getItemType and switchMap;
+    //  2.4. Set local var listType to pageType of our page and return new Observable with URL params
+    //  2.5. Call this.getItems -> unpack params and return all Notes
+    //  2.6. Map tags to notes
+
+    const tags$ = this.tagsService.getTags().pipe(
+      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
+        ...tag,
+        checked: this.searchTags.includes(tag.id)
+      }))),
+      tap(() => this.route.queryParams.subscribe(params => {
+        if (params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
+      })),
+      switchMap(() => this.crudService.getItemType()),
+      switchMap((itemType: ItemType) => {
+        this.listType = itemType;
+        return this.route.queryParams;
+      }),
+      switchMap((params: Params) => this.getItems(params)),
+      this.mapTagsToNote(),
+      shareReplay(1),
+      takeUntil(this.unsubscribe$),
+    );
+
+    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
+    this.setupSearchNotesDebouncer();
+  }
+
 
   public contextMenu($event, menu: NzDropdownMenuComponent): void {
     if ($event.target.tagName !== 'A') {
@@ -90,8 +124,22 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     this.refresh_url_search();
   }
 
+  // public addNote(): void {
+  //
+  //   const queryParams = queryParamsPack({
+  //       tags: this.searchTags,
+  //       search: this.notesSearchString,
+  //       exclude: this.excludedTags,
+  //       useTagsL: this.useTagsL,
+  //       listType: this.listType
+  //     }
+  //   );
+  //
+  //   this.router.navigate(['/note'], {queryParams});
+  // }
+
   public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
-    const prefix = this.location.prepareExternalUrl("");
+    const prefix = this.location.prepareExternalUrl('');
     const res = [window.location.origin, prefix, 'note/', item.id];
     if (opt && opt.titlev && item.title) {
       res.push('?titlev="', item.title, '"');
@@ -113,42 +161,6 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnInit(): void {
-    // Decoding!
-    // 1. Creating new Observable
-    // 2. Using getTags from tagsService and return Observable with tags
-    //  2.1. Mapping tags to local var with tags. Also adding field 'checked' (need for dropdown)
-    //  2.2. Taking params from URL using this.route.queryParams Observable. If there is another listType,
-    //       than we have in local var, set itemType, using crudService
-    //  2.3. Return type of page using getItemType and switchMap;
-    //  2.4. Set local var listType to pageType of our page and return new Observable with URL params
-    //  2.5. Call this.getItems -> unpack params and return all Notes
-    //  2.6. Map tags to notes
-
-    const tags$ = this.tagsService.getTags().pipe(
-      tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
-          ...tag,
-          checked: this.searchTags.includes(tag.id)
-        }))),
-      tap(() => this.route.queryParams.subscribe(params => {
-        if (params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
-      })),
-      switchMap(() =>  this.crudService.getItemType()),
-      switchMap((itemType: ItemType) => {
-        this.listType = itemType;
-        console.log(this.listType);
-        return this.route.queryParams;
-      }),
-      switchMap((params: Params) => this.getItems(params)),
-      this.mapTagsToNote(),
-      shareReplay(1),
-      takeUntil(this.unsubscribe$),
-    );
-
-    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
-    this.setupSearchNotesDebouncer();
-  }
-
   public ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
@@ -158,7 +170,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     this.searchNoteDecouncer$.next(term);
   }
 
-  private async setupSearchNotesDebouncer() {
+  public async setupSearchNotesDebouncer() {
     this.searchNoteDecouncer$.pipe(
       debounceTime(700),
       distinctUntilChanged()
@@ -188,7 +200,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     return this.router.navigate(['/notes'], {queryParams});
   }
 
-  private getItems(urlParams: Params): Observable<NoteModel[]> {
+  public getItems(urlParams: Params): Observable<NoteModel[]> {
     const params = queryParamsUnpack(urlParams);
     this.notesSearchString = params.search || '';
     this.searchTags = params.tags || [];
@@ -219,7 +231,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     );
   }
 
-  private mapTagsToNote(): OperatorFunction<NoteModel[], NoteWithTags[]> {
+  public mapTagsToNote(): OperatorFunction<NoteModel[], NoteWithTags[]> {
     return source => source.pipe(
       map((items: NoteModel[]) => items.map((item: NoteModel) => item.tags ?
         {

@@ -1,7 +1,7 @@
 <nz-content style="height:calc(100vh - 3.1em)" class="scrollbar my_scroll" infiniteScroll
             [infiniteScrollDistance]="1.9"
             [infiniteScrollThrottle]="900"
-            (scrolled)="getMoreNotesData()"
+            (scrolled)="parent.getMoreNotesData()"
             [scrollWindow]="false">
   <div class="list-container">
     <div class="notes-list-header">
@@ -9,7 +9,7 @@
       <nz-radio-group class="item-type"
                       nzButtonStyle="solid"
                       [(ngModel)]="listType"
-                      (ngModelChange)="changeListType($event)">
+                      (ngModelChange)="parent.changeListType($event)">
         <label nz-radio-button nzValue="note">Заметки</label>
         <label nz-radio-button nzValue="tag">Теги</label>
         <label nz-radio-button nzValue="file">Файлы</label>
@@ -20,7 +20,7 @@
                class="search_note_input border1"
                placeholder="Поиск"
                [(ngModel)]="notesSearchString"
-               (ngModelChange)="onSearchNoteInputChange($event)"/>
+               (ngModelChange)="parent.onSearchNoteInputChange($event)"/>
       </nz-input-group>
       <ng-template #suffixIconSearch>
         <i nz-icon nzType="search"></i>
