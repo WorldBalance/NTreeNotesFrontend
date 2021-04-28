@@ -27,8 +27,9 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
   public useTagsL = false;
   public notesSearchString: string;
   public items: NoteWithTags[];
-  public listType: ItemType;
+  public listType: ItemType = ItemType.note;
   public allTags: TagModel[] = [];
+  public wait = true;
 
   private unsubscribe$ = new Subject<void>();
   private searchNoteDecouncer$: Subject<string> = new Subject();
@@ -48,37 +49,31 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
 
 
   public ngOnInit(): void {
-    // Decoding!
-    // 1. Creating new Observable
-    // 2. Using getTags from tagsService and return Observable with tags
-    //  2.1. Mapping tags to local var with tags. Also adding field 'checked' (need for dropdown)
-    //  2.2. Taking params from URL using this.route.queryParams Observable. If there is another listType,
-    //       than we have in local var, set itemType, using crudService
-    //  2.3. Return type of page using getItemType and switchMap;
-    //  2.4. Set local var listType to pageType of our page and return new Observable with URL params
-    //  2.5. Call this.getItems -> unpack params and return all Notes
-    //  2.6. Map tags to notes
-
     const tags$ = this.tagsService.getTags().pipe(
       tap((tags: TagModel[]) => this.allTags = tags.map((tag: TagModel) => ({
         ...tag,
         checked: this.searchTags.includes(tag.id)
       }))),
-      tap(() => this.route.queryParams.subscribe(params => {
-        if (params.listType && params.listType !== this.listType) this.crudService.setItemType(params.listType)
-      })),
-      switchMap(() => this.crudService.getItemType()),
-      switchMap((itemType: ItemType) => {
-        this.listType = itemType;
-        return this.route.queryParams;
+      switchMap(() => this.route.queryParams),
+      tap((params: Params) => {
+        if (params.listType && params.listType !== this.listType) {
+          this.crudService.setItemType(params.listType)
+          this.listType = params.listType;
+        }
       }),
-      switchMap((params: Params) => this.getItems(params)),
+      switchMap((params: Params) => {
+        return this.getItems(params);
+      }),
       this.mapTagsToNote(),
       shareReplay(1),
       takeUntil(this.unsubscribe$),
     );
 
-    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
+    tags$.subscribe((notes: NoteWithTags[]) => {
+      this.items = notes;
+      this.wait = false;
+    });
+
     this.setupSearchNotesDebouncer();
   }
 
@@ -123,20 +118,6 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     this.useTagsL = !this.useTagsL;
     this.refresh_url_search();
   }
-
-  // public addNote(): void {
-  //
-  //   const queryParams = queryParamsPack({
-  //       tags: this.searchTags,
-  //       search: this.notesSearchString,
-  //       exclude: this.excludedTags,
-  //       useTagsL: this.useTagsL,
-  //       listType: this.listType
-  //     }
-  //   );
-  //
-  //   this.router.navigate(['/note'], {queryParams});
-  // }
 
   public getURL(item: NoteWithTags, opt?: { titlev?: boolean }): string {
     const prefix = this.location.prepareExternalUrl('');
@@ -248,8 +229,12 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
     );
   }
 
-  public async changeListType($event: ItemType): Promise<void> {
-    await this.crudService.setItemType($event);
-    this.refresh_url_search()
+  public async changeListType($event: ItemType){
+    if (this.listType !== $event) {
+      this.crudService.setItemType($event);
+      this.wait = true;
+      this.listType = $event;
+      this.refresh_url_search()
+    }
   }
 }

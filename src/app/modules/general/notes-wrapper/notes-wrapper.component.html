@@ -12,6 +12,7 @@
       <span>Исключает:</span>
       <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
     </nz-sider>
+    <ng-container *ngIf="!wait">
     <nz-content *ngIf="listType === 'file'; else main">
         <app-items-view
           [notesSearchString]="notesSearchString"
@@ -19,6 +20,7 @@
           [listType]="listType"
         ></app-items-view>
     </nz-content>
+    </ng-container>
   </nz-layout>
 
   <ng-template #main>

@@ -140,7 +140,7 @@
         </nz-dropdown-menu>
 
       </div>
-      <div *ngIf="store.data.notes.downloadMore" style="text-align: center;">
+      <div *ngIf="store.data.notes.downloadMore || parent.wait === true" style="text-align: center;">
         <i nz-icon
            nzType="loading"
            style="font-size: 38px; color:orange;"></i>
