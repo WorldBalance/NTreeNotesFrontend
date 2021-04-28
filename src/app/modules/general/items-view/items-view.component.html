@@ -26,13 +26,6 @@
         <i nz-icon nzType="search"></i>
       </ng-template>
     </div>
-    <div *ngIf="store.data.notes.isDownloadNotes"
-         style="text-align: center">
-      <i nz-icon
-         nzType="loading"
-         style="font-size: 38px; color:orange;"
-      ></i>
-    </div>
 
     <section class="image-card--wrapper">
       <div *ngFor="let note of items" class="image-card" (click)="open(note.id)">

@@ -12,14 +12,21 @@
       <span>Исключает:</span>
       <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
     </nz-sider>
+    <div *ngIf="store.data.notes.isDownloadNotes || wait"
+         style="margin: auto">
+      <i nz-icon
+         nzType="loading"
+         style="font-size: 38px; color:orange;"
+      ></i>
+    </div>
     <ng-container *ngIf="!wait">
-    <nz-content *ngIf="listType === 'file'; else main">
+      <nz-content *ngIf="listType === 'file'; else main">
         <app-items-view
           [notesSearchString]="notesSearchString"
           [items]="items"
           [listType]="listType"
         ></app-items-view>
-    </nz-content>
+      </nz-content>
     </ng-container>
   </nz-layout>
 
