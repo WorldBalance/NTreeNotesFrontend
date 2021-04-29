@@ -57,13 +57,11 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
       switchMap(() => this.route.queryParams),
       tap((params: Params) => {
         if (params.listType && params.listType !== this.listType) {
-          this.crudService.setItemType(params.listType)
+          this.crudService.setItemType(params.listType);
           this.listType = params.listType;
         }
       }),
-      switchMap((params: Params) => {
-        return this.getItems(params);
-      }),
+      switchMap((params: Params) => this.getItems(params)),
       this.mapTagsToNote(),
       shareReplay(1),
       takeUntil(this.unsubscribe$),
