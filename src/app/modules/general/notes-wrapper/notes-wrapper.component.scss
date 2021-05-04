@@ -147,7 +147,7 @@ ul {
 }
 
 .list-container {
-  height: 100%;
+  height: 101%;
 }
 
 nz-radio-group {
@@ -165,7 +165,7 @@ nz-sider {
   color: white;
 }
 
-.image-card--wrapper {
+.image-card__wrapper {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -225,11 +225,6 @@ nz-sider {
   .image-card {
     width: 48%;
   }
-
-  .image-card__title {
-    /*justify-content: flex-start;*/
-  }
-
 }
 
 @media (min-width: 768px) {
@@ -241,5 +236,17 @@ nz-sider {
 @media (min-width: 992px) {
   .image-card {
     width: 23%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .image-card__wrapper {
+    padding-left: calc((100% - 4 * (300px + 2%)) / 2);
+  }
+}
+
+@media (min-width: 1920px) {
+  .image-card__wrapper {
+    padding-left: calc((100% - 5 * (300px + 2%)) / 2);
   }
 }
