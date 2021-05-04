@@ -50,10 +50,13 @@ export class CrudService {
     offset: 0,
     countMax: 20
   }): Observable<NoteModel[]> {
+    const typeValue = this.itemType$.getValue();
+    const type = typeValue === ItemType.file2 ? ItemType.file : typeValue;
+
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,
       actionId: ActionIds.find,
-      object: {type: this.itemType$.getValue(), text, tags},
+      object: {type, text, tags},
       options
     };
     return this.http.post(this.urlapi, postBody, this.httpOptions).pipe(
