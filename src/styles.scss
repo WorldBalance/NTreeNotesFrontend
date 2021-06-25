@@ -1,9 +1,8 @@
 .scrollbar
 {
-	//float: left;
-  // why do we need float ?
-	background: #F5F5F5;
-	overflow-y: scroll;
+  background: #F5F5F5;
+  overflow-y: hidden;
+  padding: 0.35em;
 }
 
 .my_scroll::-webkit-scrollbar-track
