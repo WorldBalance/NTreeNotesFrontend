@@ -13,7 +13,7 @@ html {
 .scrollbar {
   background: #F5F5F5;
   overflow-y: hidden;
-  padding: 0.35em;
+  padding-left: 0.35em;
 }
 
 
@@ -42,6 +42,10 @@ html {
   max-width: var(--max-size);
 }
 
+.wrapper-without-sidebar {
+  max-width: var(--max-size);
+}
+
 .main {
   width: 100%;
 }
@@ -64,6 +68,11 @@ html {
     color: orange;
     display: block;
   }
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes appear {

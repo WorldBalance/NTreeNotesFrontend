@@ -1,16 +1,18 @@
 <div>
   <nz-layout style="height:calc(100vh - 3.1em)" class="flex-center" nzTheme="dark">
-    <nz-sider class="scrollbar my_scroll" nzWidth="200">
-      <h3 class="white-text">Фильтр</h3>
-      <span>Включает:</span>
-      <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
-      <br>
-      <label nz-checkbox
-             [ngModel]="useTagsL"
-             (ngModelChange)="useTagsLCheckbox()" class="white-text use_tags_l">Косвенное включение</label>
-      <br><br>
-      <span>Исключает:</span>
-      <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
+<!--    Add attribute nzWidth="200" for each sidebar which uses nz-sider component -->
+<!--    if count of sidebars 2 and more -->
+    <nz-sider class="scrollbar my_scroll">
+        <h3 class="white-text">Фильтр</h3>
+        <span>Включает:</span>
+        <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
+        <br>
+        <label nz-checkbox
+               [ngModel]="useTagsL"
+               (ngModelChange)="useTagsLCheckbox()" class="white-text use_tags_l">Косвенное включение</label>
+        <br><br>
+        <span>Исключает:</span>
+        <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
     </nz-sider>
     <div *ngIf="store.data.notes.isDownloadNotes || wait"
          style="margin: auto">
