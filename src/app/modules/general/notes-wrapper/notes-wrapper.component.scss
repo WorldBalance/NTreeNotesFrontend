@@ -250,6 +250,11 @@ nz-sider {
   float: right;
 }
 
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
 nz-radio-group {
   text-align: center;
   margin: auto 1rem;

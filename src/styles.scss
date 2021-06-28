@@ -37,7 +37,7 @@ html {
 }
 
 .main__wrapper {
-  width: calc(100% - var(--all-sidebars));
+  //width: calc(100% - var(--all-sidebars));
   max-width: var(--max-size);
 }
 
