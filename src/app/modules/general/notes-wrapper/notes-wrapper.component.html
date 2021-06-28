@@ -1,6 +1,6 @@
 <div>
   <nz-layout style="height:calc(100vh - 3.1em)" class="flex-center" nzTheme="dark">
-    <nz-sider class="scrollbar my_scroll">
+    <nz-sider class="scrollbar my_scroll" nzWidth="200">
       <h3 class="white-text">Фильтр</h3>
       <span>Включает:</span>
       <app-tags [value]="searchTags" (valueChanged)="filterNotesTag($event, true)"></app-tags>
