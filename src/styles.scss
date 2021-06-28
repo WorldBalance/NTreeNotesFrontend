@@ -1,8 +1,12 @@
 html {
   min-width: 576px;
-  --max-size: 1920px;
-  --sidebar-width: 300px;
-  --main-width: 1620px;
+
+  //You can change parameters --max-size and --sidebar-width here
+  --max-size: 31cm;
+  --sidebar-width: 200px;
+  //If you will add new sidebar, you have to add sidebar2-width (for second sidebar) here and add into row under
+  //this sentence '+ var(--sidebar2-width)'
+  --all-sidebars: var(--sidebar-width);
 }
 
 .scrollbar {
@@ -27,34 +31,20 @@ html {
 }
 
 .sidebar__wrapper {
-  width: 20%;
-  min-width: 10em;
+  width: var(--sidebar-width);
   background-color: rgb(27, 23, 49);
 }
 
 .main__wrapper {
-  width: 80%;
+  width: calc(100% - var(--all-sidebars));
+  max-width: var(--max-size);
 }
 
 .main {
-  max-width: var(--main-width);
   width: 100%;
 }
 
 .sidebar {
-  max-width: var(--sidebar-width);
   width: 100%;
   padding: 0 0.5rem;
 }
-
-@media (min-width: 1920px) {
-  .sidebar__wrapper {
-    width: calc((100% - var(--max-size)) / 2 + var(--sidebar-width));
-    background-color: rgb(27, 23, 49);
-  }
-
-  .main__wrapper {
-    width: calc((100% - var(--max-size)) / 2 + var(--main-width));
-  }
-}
-
