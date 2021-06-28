@@ -5,7 +5,7 @@
             [scrollWindow]="false">
   <div class="list-container">
     <div class="notes-list-header">
-      <div style="visibility: hidden"></div>
+      <div style="width: 15em;visibility: hidden"></div>
       <nz-radio-group class="item-type"
                       nzButtonStyle="solid"
                       [(ngModel)]="listType"
@@ -15,10 +15,10 @@
         <label nz-radio-button nzValue="file">Файлы</label>
         <label nz-radio-button nzValue="file2">Файлы2</label>
       </nz-radio-group>
-      <nz-input-group [nzSuffix]="suffixIconSearch">
+      <nz-input-group class="search_note_input" [nzSuffix]="suffixIconSearch">
         <input nz-input
                type="text"
-               class="search_note_input border1"
+               class="border1"
                placeholder="Поиск"
                [(ngModel)]="notesSearchString"
                (ngModelChange)="parent.onSearchNoteInputChange($event)"/>

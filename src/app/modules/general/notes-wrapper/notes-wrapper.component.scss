@@ -130,20 +130,8 @@ ul {
   color: red;
 }
 
-.new-item-btn {
-  cursor: pointer;
-  width: 10em;
-}
-
 .new-item-btn.disabled {
   cursor: default;
-}
-
-.notes-list-header {
-  padding: 8px 7px 0;
-  display: grid;
-  grid-template-columns: 15em auto 15em;
-  align-items: center;
 }
 
 .list-container {
@@ -227,7 +215,12 @@ nz-sider {
 
 .new-item-btn {
   cursor: pointer;
-  width: 20em;
+  width: 15em;
+  max-width: 25%;
+}
+
+.search_note_input {
+  width: 15em;
   max-width: 25%;
 }
 
