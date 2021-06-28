@@ -20,7 +20,8 @@ export interface NoteFileModel {
 export enum ItemType {
   note = 'note',
   tag = 'tag',
-  file = 'file'
+  file = 'file',
+  file2 = 'file2'
 }
 
 // TODO: rename it to ItemWithTags

@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
-import { NotesComponent } from './notes.component';
-import { TextContentTruncate } from './TextTruncate.pipe';
 import { NgxInfiniteScrollerModule } from 'ngx-infinite-scroller';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {RouterModule, Routes} from '@angular/router';
 import {AppSharedModule} from '../../shared/shared.module';
+import {NotesWrapperComponent} from './notes-wrapper.component';
+import {ItemsViewComponent} from '../items-view/items-view.component';
+import {NotesComponent} from "../notes/notes.component";
 
 const routes: Routes = [
-  { path: '', component: NotesComponent },
+  { path: '', component: NotesWrapperComponent },
 ];
 
 @NgModule({
@@ -20,8 +21,9 @@ const routes: Routes = [
     AppSharedModule,
   ],
   declarations: [
+    NotesWrapperComponent,
+    ItemsViewComponent,
     NotesComponent,
-    TextContentTruncate
   ],
 })
-export class NotesModule { }
+export class NotesWrapperModule { }
