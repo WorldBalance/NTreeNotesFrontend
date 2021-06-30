@@ -143,10 +143,11 @@ nz-radio-group {
 }
 
 nz-sider {
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
   background-color: rgb(27, 23, 49);
   color: white;
+  padding: 0.5em;
 }
 
 .white-text {
