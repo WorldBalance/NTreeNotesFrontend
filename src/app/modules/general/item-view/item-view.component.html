@@ -1,34 +1,36 @@
 <nz-layout>
-  <nz-content *ngIf="note">
-    <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs" id="item_history">
-      <nz-breadcrumb-item *ngFor="let bread of breadcrumbs | slice: -5">
-        <a routerLink="../{{bread.id}}" onclick="return false">{{bread.title}}</a>
-      </nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <ng-template #iconTemplate><i nz-icon nzType="arrow-right"></i></ng-template>
-    <div class="header">
-      <h2 nz-typography *ngIf="note.title" class="title">{{note.title}}</h2>
-      <kbd><a routerLink="/note/{{noteId}}" onclick="return false" class="disable-link">Редактировать</a></kbd>
-    </div>
-    <div *ngIf="note.tags">
-      <a *ngFor="let tag of note.tags" onclick="return false" routerLink="../{{tag.id}}">
-        <nz-tag nzColor="orange" [title]="tag.title || ''">
-          {{tag.title}}
-        </nz-tag>
-      </a>
-    </div>
-    <p nz-typography *ngIf="note.url">URL(s):
-      <span nz-typography *ngFor="let url of note.url">
+  <div class="flex-center">
+    <nz-content *ngIf="note" class="wrapper-without-sidebar">
+      <nz-breadcrumb [nzSeparator]="iconTemplate" *ngIf="breadcrumbs" id="item_history">
+        <nz-breadcrumb-item *ngFor="let bread of breadcrumbs | slice: -5">
+          <a routerLink="../{{bread.id}}" onclick="return false">{{bread.title}}</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <ng-template #iconTemplate><i nz-icon nzType="arrow-right"></i></ng-template>
+      <div class="header">
+        <h2 nz-typography *ngIf="note.title" class="title">{{note.title}}</h2>
+        <kbd><a routerLink="/note/{{noteId}}" onclick="return false" class="disable-link">Редактировать</a></kbd>
+      </div>
+      <div *ngIf="note.tags">
+        <a *ngFor="let tag of note.tags" onclick="return false" routerLink="../{{tag.id}}">
+          <nz-tag nzColor="orange" [title]="tag.title || ''">
+            {{tag.title}}
+          </nz-tag>
+        </a>
+      </div>
+      <p nz-typography *ngIf="note.url">URL(s):
+        <span nz-typography *ngFor="let url of note.url">
         <a href="{{url}}" target="_blank">
           {{url}}
-          <Link />
+          <Link/>
         </a>{{note.url.length > 1 && note.url.indexOf(url) !== note.url.length - 1 ? ', ' : ''}}
       </span>
-    </p>
-    <div nz-typography *ngIf="note.text" [innerHTML]="displayText(note.text)"></div>
+      </p>
+      <div nz-typography *ngIf="note.text" [innerHTML]="displayText(note.text)"></div>
 
-    <div class="popup-gallery">
-      <a *ngFor="let photo of store.data.note.files; let i = index" [href]='photo.src'><img [src]="photo.src"></a>
-    </div>
-  </nz-content>
+      <div class="popup-gallery">
+        <a *ngFor="let photo of store.data.note.files; let i = index" [href]='photo.src'><img [src]="photo.src"></a>
+      </div>
+    </nz-content>
+  </div>
 </nz-layout>
