@@ -37,9 +37,16 @@ html {
   background-color: rgb(27, 23, 49);
 }
 
-.main__wrapper {
+.loading-spinner,
+.main__wrapper{
   width: calc(100vw - var(--all-sidebars));
   max-width: var(--max-size);
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .wrapper-without-sidebar {

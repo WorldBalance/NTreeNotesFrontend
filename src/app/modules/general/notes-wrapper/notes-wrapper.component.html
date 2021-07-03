@@ -1,5 +1,5 @@
 <div>
-  <nz-layout style="height:calc(100vh - 3.1em)" class="flex-center" nzTheme="dark">
+  <nz-layout style="height:calc(100vh - 3.1em)" nzTheme="dark">
 <!--    Add attribute nzWidth="200" for each sidebar which uses nz-sider component -->
 <!--    if count of sidebars 2 and more -->
     <nz-sider class="scrollbar my_scroll">
@@ -15,7 +15,8 @@
         <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
     </nz-sider>
     <div *ngIf="store.data.notes.isDownloadNotes || wait"
-         style="margin: auto">
+         style="margin: auto; background-color: red"
+         class="loading-spinner">
       <i nz-icon
          nzType="loading"
          style="font-size: 38px; color:orange;"
@@ -39,7 +40,9 @@
       [notesSearchString]="notesSearchString"
       [items]="items"
       [listType]="listType"
-      [allTags]="allTags"></app-notes>
+      [allTags]="allTags"
+      [wait]="wait"
+    ></app-notes>
   </ng-template>
 </div>
 
