@@ -67,10 +67,7 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$),
     );
 
-    tags$.subscribe((notes: NoteWithTags[]) => {
-      this.items = notes;
-      this.wait = false;
-    });
+    tags$.subscribe((notes: NoteWithTags[]) => this.items = notes);
 
     this.setupSearchNotesDebouncer();
   }
@@ -230,7 +227,6 @@ export class NotesWrapperComponent implements OnInit, OnDestroy {
   public async changeListType($event: ItemType){
     if (this.listType !== $event) {
       this.crudService.setItemType($event);
-      this.wait = true;
       this.listType = $event;
       this.refresh_url_search()
     }

@@ -14,36 +14,38 @@
         <span>Исключает:</span>
         <app-tags [value]="excludedTags" (valueChanged)="filterNotesTag($event, false)"></app-tags>
     </nz-sider>
-    <div *ngIf="store.data.notes.isDownloadNotes || wait"
-         style="margin: auto; background-color: red"
-         class="loading-spinner">
-      <i nz-icon
-         nzType="loading"
-         style="font-size: 38px; color:orange;"
-      ></i>
-    </div>
-    <ng-container *ngIf="!wait">
-      <nz-content *ngIf="listType === 'file2'; else main">
-        <app-items-view
-          [notesSearchString]="notesSearchString"
-          [items]="items"
-          [listType]="listType"
-        ></app-items-view>
-      </nz-content>
-    </ng-container>
-  </nz-layout>
 
-  <ng-template #main>
-    <app-notes
-      [searchTags]="searchTags"
-      [useTagsL]="useTagsL"
-      [notesSearchString]="notesSearchString"
-      [items]="items"
-      [listType]="listType"
-      [allTags]="allTags"
-      [wait]="wait"
-    ></app-notes>
-  </ng-template>
+    <div [ngSwitch]="listType">
+<!--    Spinner shows while data is loading-->
+      <div *ngIf="store.data.notes.isDownloadNotes"
+           style="margin: auto; position:absolute; top: 50%;"
+           class="loading-spinner">
+        <i nz-icon
+           nzType="loading"
+           style="font-size: 38px; color:orange;"
+        ></i>
+      </div>
+
+<!--      app-notes shows when selected 'Note', 'Tag' or 'File'  -->
+      <app-notes
+        *ngSwitchDefault
+        [searchTags]="searchTags"
+        [useTagsL]="useTagsL"
+        [notesSearchString]="notesSearchString"
+        [items]="items"
+        [listType]="listType"
+        [allTags]="allTags"
+      ></app-notes>
+
+      <!--      app-items-view shows when selected 'File2'  -->
+      <app-items-view
+        *ngSwitchCase="'file2'"
+        [notesSearchString]="notesSearchString"
+        [items]="items"
+        [listType]="listType"
+      ></app-items-view>
+    </div>
+  </nz-layout>
 </div>
 
 
