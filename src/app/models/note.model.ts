@@ -21,7 +21,7 @@ export enum ItemType {
   note = 'note',
   tag = 'tag',
   file = 'file',
-  file2 = 'file2'
+  image = 'image'
 }
 
 // TODO: rename it to ItemWithTags

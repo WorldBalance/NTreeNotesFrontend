@@ -3,7 +3,7 @@
     <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu" *ngIf="userData?.ok">
       <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
         <a class="nav-link animated slideInDown" routerLink="">
-          <i class="fas fa-home mr-1"></i>NtreeNote
+          <i class="fas fa-home mr-1"></i>NTreeNotes
         </a>
       </li>
       <li nz-menu-item routerLinkActive="ant-menu-item-selected" [hidden]="!store.user.isAuthorized">
@@ -38,7 +38,7 @@
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
-              <a class="nav-link animated slideInDown" routerLink="">NtreeNote</a>
+              <a class="nav-link animated slideInDown" routerLink="">NTreeNotes</a>
             </li>
             <li nz-menu-item routerLinkActive="ant-menu-item-selected">
               <a class="nav-link animated slideInDown" routerLink="/notes">Заметки</a>
