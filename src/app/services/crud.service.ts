@@ -51,7 +51,7 @@ export class CrudService {
     countMax: 20
   }): Observable<NoteModel[]> {
     const typeValue = this.itemType$.getValue();
-    const type = typeValue === ItemType.file2 ? ItemType.file : typeValue;
+    const type = typeValue === ItemType.image ? ItemType.file : typeValue;
 
     const postBody: PostNotesModel = {
       namespace: NAMESPACE,

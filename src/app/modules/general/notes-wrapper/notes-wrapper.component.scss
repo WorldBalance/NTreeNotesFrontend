@@ -130,20 +130,8 @@ ul {
   color: red;
 }
 
-.new-item-btn {
-  cursor: pointer;
-  width: 10em;
-}
-
 .new-item-btn.disabled {
   cursor: default;
-}
-
-.notes-list-header {
-  padding: 8px 7px 0;
-  display: grid;
-  grid-template-columns: 15em auto 15em;
-  align-items: center;
 }
 
 .list-container {
@@ -155,10 +143,11 @@ nz-radio-group {
 }
 
 nz-sider {
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
   background-color: rgb(27, 23, 49);
   color: white;
+  padding: 0.5em;
 }
 
 .white-text {
@@ -220,11 +209,68 @@ nz-sider {
   width: 100%;
   height: 75%;
 }
+.search-bar {
+  width: 20em;
+  max-width: 25%;
+}
+
+.new-item-btn {
+  cursor: pointer;
+  width: 15em;
+  max-width: 25%;
+}
+
+.search_note_input {
+  width: 15em;
+  max-width: 25%;
+}
+
+.notes-list-header {
+  padding: 8px 7px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-container {
+  height: 100%;
+}
+
+.sidebar {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: transparent;
+  color: white;
+  float: right;
+}
+
+
+
+nz-radio-group {
+  text-align: center;
+  margin: auto 1rem;
+}
 
 @media (min-width: 576px) {
   .image-card {
     width: 48%;
   }
+}
+
+@media (max-width: 576px) {
+  .notes-list-header {
+    flex-direction: column;
+  }
+
+  .new-item-btn,
+  .item-type,
+  .search-bar {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
 }
 
 @media (min-width: 768px) {

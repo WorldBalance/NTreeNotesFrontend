@@ -1,9 +1,9 @@
-<div style=" position: fixed; height: 100%; width: 100%;">
+<div style="height: 100%; width: 100%">
   <nz-layout *ngIf="userData$ | async as userData; else loader">
     <app-header [userData]="userData"></app-header>
     <nz-layout>
       <main>
-        <div class="container-fluid">
+        <div class="container-fluid flex-center">
           <router-outlet #outlet="outlet" ></router-outlet>
         </div>
       </main>
@@ -12,7 +12,7 @@
 </div>
 
 <ng-template #loader>
-  <div class="app-loader">
+  <div class="app-loader loading-spinner">
     <i nz-icon nzType="loading"></i>
   </div>
 </ng-template>

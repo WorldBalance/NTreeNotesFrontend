@@ -2,9 +2,15 @@
   .ant-layout-header {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     height: 46px;
     padding: 0;
+
+    .wrapper {
+      min-width: var(--width-min-jd1);
+      max-width: calc(var(--width-max-jd1) + var(--all-sidebars));
+      width: 100%;
+    }
 
     li:last-child {
       background-color: unset;
@@ -38,5 +44,11 @@
         color: inherit;
       }
     }
+  }
+}
+
+@media (max-width: 576px) {
+  .header-menu li:not(#burger) {
+    display: none;
   }
 }
