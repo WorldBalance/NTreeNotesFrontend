@@ -38,8 +38,9 @@ html {
 
 .loading-spinner,
 .main__wrapper{
-  width: calc(100vw - var(--all-sidebars));
+  min-width: var(--width-min-jd1);
   max-width: var(--width-max-jd1);
+  width: calc(100vw - var(--all-sidebars));
 }
 
 .loading-spinner {
@@ -49,6 +50,7 @@ html {
 }
 
 .wrapper-without-sidebar {
+  min-width: var(--width-min-jd1);
   max-width: var(--width-max-jd1);
 }
 
