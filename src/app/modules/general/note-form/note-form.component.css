@@ -4,6 +4,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-width: var(--width-min-jd1);
+  max-width: var(--width-max-jd1);
 }
 
 .note-title-field {
@@ -95,7 +97,7 @@ nz-upload {
 form {
   height: 100%;
   display: grid;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .footer {

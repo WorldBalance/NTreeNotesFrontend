@@ -1,8 +1,7 @@
 html {
-  min-width: 576px;
-
-  //You can change parameters --max-size and --sidebar-width here
-  --max-size: 31cm;
+  //You can change parameters here:
+  --width-min-jd1: max(53vw, 576px);
+  --width-max-jd1: 31cm;
   //If you change sidebar width use nz-width into nz-sider, cause there are 200px by default
   --sidebar-width: 200px;
   //If you will add new sidebar, you have to add sidebar2-width (for second sidebar) here and add into row under
@@ -40,7 +39,7 @@ html {
 .loading-spinner,
 .main__wrapper{
   width: calc(100vw - var(--all-sidebars));
-  max-width: var(--max-size);
+  max-width: var(--width-max-jd1);
 }
 
 .loading-spinner {
@@ -50,7 +49,7 @@ html {
 }
 
 .wrapper-without-sidebar {
-  max-width: var(--max-size);
+  max-width: var(--width-max-jd1);
 }
 
 .main {
